@@ -1,0 +1,38 @@
+{
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"],
+	"compilerOptions": {
+		"traceResolution": true,
+		"baseUrl": ".",
+		"allowJs": true,
+		"jsx": "react-jsx",
+		"jsxImportSource": "preact",
+		"module": "ESNext",
+		"target": "ES2022",
+		"rootDir": ".",
+		"outDir": "dist",
+		"skipLibCheck": true,
+		"removeComments": true,
+
+		// Module resolution
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+
+		// Strict Checks
+		"strict": true,
+		"alwaysStrict": true,
+		"allowUnreachableCode": false,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitReturns": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": true
+	},
+	// Overrides used only by ts-node
+	"ts-node": {
+		"transpileOnly": true
+	}
+}
