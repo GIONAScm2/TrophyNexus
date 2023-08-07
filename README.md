@@ -24,7 +24,7 @@ TrophyNexus will eventually match all the features of my prior userscripts ([PSN
   - Multi-filtering
   - Search bar
 
-![Series table](https://github.com/GIONAScm2/TrophyNexus/assets/18505056/8318ba95-4f4a-4f8f-b6ac-b8ed1dd58851)
+![Series table](https://i.imgur.com/fHBQoTJ.jpg)
 
 ### Forum
 - Adds "🏆" shortcut button to game topics to quickly navigate to corresponding trophy list
