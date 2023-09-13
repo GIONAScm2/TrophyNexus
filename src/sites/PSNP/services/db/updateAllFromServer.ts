@@ -6,6 +6,7 @@ import {findItems} from '../../../../shared/services/mongoApi';
 import {getProgressMetrics} from '../../../../shared/utils/getProgress';
 import {DbStoreName} from './types';
 import {SeriesDocMongo} from '../../models/dbSeries';
+import {fetchLatestGameIdsWithDlc} from './updateAllGamesLocally';
 
 const MAX_GAMES_PER_REQUEST = 6000;
 const MAX_SERIES_PER_REQUEST = 2000;
@@ -20,13 +21,13 @@ export function parseMaxPageNum(doc: Document): number {
 	return pageNum;
 }
 
-async function getTotalGames() {
+async function countPsnpGames() {
 	const MAX_GAMES_PER_PAGE = 50;
 	const res = await fetchDoc('https://psnprofiles.com/games?shovelware');
 	const numPages = parseMaxPageNum(res.doc);
 	return numPages * MAX_GAMES_PER_PAGE;
 }
-async function getTotalSeries() {
+async function countPsnpSeries() {
 	const MAX_SERIES_PER_PAGE = 50;
 	const res = await fetchDoc('https://psnprofiles.com/series');
 	const numPages = parseMaxPageNum(res.doc);
@@ -34,7 +35,7 @@ async function getTotalSeries() {
 }
 /** Fetches all games and series from MongoDB and stores them in IDB. */
 export async function* populateIDBFromServer(nexus: TrophyNexusPsnp) {
-	const [numGames, numSeries] = await Promise.all([getTotalGames(), getTotalSeries()]);
+	const [numGames, numSeries] = await Promise.all([countPsnpGames(), countPsnpSeries()]);
 	const totals = {fetched: 0, all: numGames + numSeries};
 
 	const populateStoreFromServer = async function* (storeName: DbStoreName, batchSize: number) {
@@ -56,17 +57,35 @@ export async function* populateIDBFromServer(nexus: TrophyNexusPsnp) {
 		}
 	};
 
-	for await (const t of populateStoreFromServer('psnp_series', MAX_SERIES_PER_REQUEST)) {
-		yield t;
+	for await (const progressMetrics of populateStoreFromServer('psnp_series', MAX_SERIES_PER_REQUEST)) {
+		yield progressMetrics;
 	}
 	nexus.userPrefs.PSNP.lastUpdatedAllSeries = Date.now();
 	await nexus.userPrefs.save();
 
-	for await (const t of populateStoreFromServer('psnp_games', MAX_GAMES_PER_REQUEST)) {
-		yield t;
+	for await (const progressMetrics of populateStoreFromServer('psnp_games', MAX_GAMES_PER_REQUEST)) {
+		yield progressMetrics;
 	}
-
+	await populateLatestDlcListings(nexus);
 	nexus.userPrefs.PSNP.lastUpdatedAllGames = Date.now();
 	await nexus.userPrefs.save();
+
 	return totals;
+}
+
+async function populateLatestDlcListings(nexus: TrophyNexusPsnp) {
+	const latestGameIdsWithDlc = await fetchLatestGameIdsWithDlc();
+	const gameDetails = (await findItems({
+		collection: 'games',
+		projection: {metaData: 1, trophyGroups: 1},
+		limit: 50,
+		offset: 0,
+		filter: {
+			_id: {
+				$in: latestGameIdsWithDlc,
+			},
+		},
+	})) as GameDocMongo[];
+	console.log(gameDetails);
+	await nexus.idb.upsert('psnp_games', gameDetails);
 }

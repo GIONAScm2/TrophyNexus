@@ -1,10 +1,11 @@
 import {diffUpdate, ParserGamePage, ChangeData, Select, IPsnpEntity} from 'trophyutil';
 import {fetchDoc} from '../../../../shared/utils/fetch';
-import {DbGame, GameDocIDB} from '../../models/dbGame';
+import {DbGame, GameDocIDB, GameDocMongo} from '../../models/dbGame';
 import type {TrophyNexusPsnp} from '../../nexus';
 import parseHeaderStats from '../../pages/profile/parseHeaderStats';
 import {type CacheStoppingOptions, type PageItemData, type ScrapeResult, type UpdateData} from './types';
 import {DbSeries} from '../../models/dbSeries';
+import {findItems} from '../../../../shared/services/mongoApi';
 
 export function initScrapeResult<T>(): ScrapeResult<T> {
 	return {
@@ -109,12 +110,38 @@ export async function fetchNewGameDetails(newGames: IPsnpEntity[], consoleLogPre
 		console.log('%c' + msg, 'color:yellowgreen');
 	}
 
-	const parser = new ParserGamePage();
-	for (const game of newGames) {
-		const doc = (await fetchDoc(DbGame.url(game))).doc;
-		const gamePage = parser.parse(doc);
-		Object.assign(game, gamePage);
+	const sortedNewGames = newGames.sort((a, b) => a._id - b._id);
+
+	
+	if (sortedNewGames.length >= 10) { // To avoid making too many fetch requests, let's update from the server.
+		const sortedVerboseGames = (await findItems({
+			collection: 'games',
+			limit: 2000,
+			offset: 0,
+			projection: {},
+			filter: {
+				_id: {
+					$in: sortedNewGames.map(g => g._id),
+				},
+			},
+			sort: {
+				_id: 1,
+			},
+		})) as GameDocMongo[];
+
+		sortedVerboseGames.forEach((game, i) => {
+			Object.assign(sortedNewGames[i] ?? {}, game);
+		});
+	} else {
+		const parser = new ParserGamePage();
+		for (const game of sortedNewGames) {
+			const doc = (await fetchDoc(DbGame.url(game))).doc;
+			const gamePage = parser.parse(doc);
+			Object.assign(game, gamePage);
+		}
 	}
+
+	console.log(`fetchNewGameDetails updated ${sortedNewGames.length} games.`)
 }
 
 export function isFinished({currentPage, maxPages, newPageItems, updatedPageItems, itemsPerPage}: CacheStoppingOptions): boolean {

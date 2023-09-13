@@ -1,4 +1,3 @@
-import {PrefKey as Key} from '../../../shared/services/userPrefs/defaults';
 import {logMethodSpeed} from '../../../shared/utils/decorators';
 import {DbGame} from '../models/dbGame';
 import {DbSeries, SeriesStageVerbose} from '../models/dbSeries';
@@ -59,7 +58,7 @@ export class DbSeriesController {
 
 	/** Updates a series' user metrics based on a single provided `game`. */
 	private updateGameScopedMetrics(series: DbSeries, game: DbGame) {
-		const platifyComplation = this.prefs[Key.platifyComplation].value;
+		const platifyComplation = this.prefs.platifyComplation.value;
 
 		if (game.percent) series.userNumGamesPlayed++;
 		if (game.userTrophyCount?.platinum) series.userNumGamesPlatted++;
@@ -80,8 +79,8 @@ export class DbSeriesController {
 
 	/** Updates a series' user metrics based on a single provided `stage`. */
 	private updateStageScopedMetrics(series: DbSeries, stage: SeriesStageVerbose) {
-		const platifyComplation = this.prefs[Key.platifyComplation].value;
-		const hideNonplats = this.prefs[Key.platifySeriesHideNonplats].value;
+		const platifyComplation = this.prefs.platifyComplation.value;
+		const hideNonplats = this.prefs.platifySeriesHideNonplats.value;
 
 		const stageGamesWithPlat = stage.games?.filter(game => game && game.trophyCount?.platinum) ?? [];
 		const stageGamesPlatted = stageGamesWithPlat.filter(game => game && game.userTrophyCount?.platinum);

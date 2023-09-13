@@ -4,7 +4,7 @@
 // @run-at       document-start
 // @namespace    https://github.com/GIONAScm2/TrophyNexus
 // @description  I love trophies, and with this script, so will you
-// @version      1.0.0
+// @version      1.1.0
 // @downloadURL  https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js
 // @updateURL    https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js	
 // @match        https://psnprofiles.com/*
@@ -1999,7 +1999,7 @@ try {
     if (!siteName) {
         throw new Error(`Script not authorized to run on ${browserContext.url.hostname}`);
     }
-    const userPrefs = await _shared_services_userPrefs__WEBPACK_IMPORTED_MODULE_3__.UserPrefs.load();
+    const userPrefs = await _shared_services_userPrefs__WEBPACK_IMPORTED_MODULE_3__.UserSettings.load();
     const nexus = new _sites_nexus__WEBPACK_IMPORTED_MODULE_2__["default"]({ browserContext, siteName, userPrefs });
     const mountNode = document.createElement('div');
     const body = await (0,_shared_utils_domUtil__WEBPACK_IMPORTED_MODULE_4__.waitForEl)();
@@ -2264,20 +2264,9 @@ const PROXY_URL = `https://us-central1-trophynexus.cloudfunctions.net/proxyScrap
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   PrefKey: () => (/* binding */ PrefKey),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/shared/services/userPrefs/types.ts");
-
-var PrefKey;
-(function (PrefKey) {
-    PrefKey["renderSeriesTable"] = "renderSeriesTable";
-    PrefKey["rarestTrophiesUnique"] = "rarestTrophiesUnique";
-    PrefKey["hideFlagBlock"] = "hideFlagBlock";
-    PrefKey["platifyComplation"] = "platifyComplation";
-    PrefKey["platifySeriesHideNonplats"] = "platifySeriesHideNonplats";
-})(PrefKey || (PrefKey = {}));
-const DefaultUserPrefs = {
+const DefaultUserSettings = {
     psnId: '',
     PSNP: {
         isFlagged: false,
@@ -2286,40 +2275,40 @@ const DefaultUserPrefs = {
         lastUpdatedAllSeries: 0,
         suppressCacheModal: false,
         bools: {
-            [PrefKey.renderSeriesTable]: {
+            renderSeriesTable: {
                 value: true,
                 name: 'Render Series Table',
                 desc: `Replaces the series catalog with a powerful custom table`,
-                category: _types__WEBPACK_IMPORTED_MODULE_0__.PrefCategory.General,
+                category: 'general',
             },
-            [PrefKey.rarestTrophiesUnique]: {
+            rarestTrophiesUnique: {
                 value: true,
                 name: 'Unique rarest trophies',
                 desc: `Forces 'Rarest Trophies' to show only one trophy per game.`,
-                category: _types__WEBPACK_IMPORTED_MODULE_0__.PrefCategory.General,
+                category: 'general',
             },
-            [PrefKey.hideFlagBlock]: {
+            hideFlagBlock: {
                 value: true,
                 name: 'Hide flag block',
                 desc: 'Hides red flag block from profile',
-                category: _types__WEBPACK_IMPORTED_MODULE_0__.PrefCategory.Flagged,
+                category: 'flagged',
             },
-            [PrefKey.platifyComplation]: {
+            platifyComplation: {
                 value: false,
                 name: `Complation`,
                 desc: `Platted games are treated as completed games, like when viewing a game series stage.`,
-                category: _types__WEBPACK_IMPORTED_MODULE_0__.PrefCategory.Platify,
+                category: 'platify',
             },
-            [PrefKey.platifySeriesHideNonplats]: {
+            platifySeriesHideNonplats: {
                 value: false,
                 name: '[Series] Hide Nonplats',
                 desc: 'Hides nonplats on series pages',
-                category: _types__WEBPACK_IMPORTED_MODULE_0__.PrefCategory.Platify,
+                category: 'platify',
             },
         },
     },
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DefaultUserPrefs);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DefaultUserSettings);
 
 
 /***/ }),
@@ -2330,31 +2319,38 @@ const DefaultUserPrefs = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   UserPrefs: () => (/* binding */ UserPrefs)
+/* harmony export */   UserSettings: () => (/* binding */ UserSettings)
 /* harmony export */ });
 /* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
 /* harmony import */ var _defaults__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/services/userPrefs/defaults.ts");
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/shared/services/userPrefs/types.ts");
 
 
-
-class UserPrefs {
+class UserSettings {
     static KEY = 'tn-prefs';
     psnId;
     PSNP;
     constructor(prefs = {}) {
+        const vals = this.extractValuesFromPrefBools({
+            ..._defaults__WEBPACK_IMPORTED_MODULE_1__["default"].PSNP.bools,
+            ...(prefs.PSNP?.bools ?? {}),
+        });
+        console.log(vals);
         this.psnId = prefs.psnId ?? _defaults__WEBPACK_IMPORTED_MODULE_1__["default"].psnId;
         this.PSNP = {
             ..._defaults__WEBPACK_IMPORTED_MODULE_1__["default"].PSNP,
             ...prefs.PSNP,
             bools: {
                 ..._defaults__WEBPACK_IMPORTED_MODULE_1__["default"].PSNP.bools,
-                ...prefs.PSNP?.bools ?? {},
+                ...(prefs.PSNP?.bools ?? {}),
             },
         };
     }
     async save() {
-        await GM.setValue(UserPrefs.KEY, JSON.stringify(this));
+        await GM.setValue(UserSettings.KEY, JSON.stringify(this));
+    }
+    extractValuesFromPrefBools(bools) {
+        const valuesOnly = Object.fromEntries(Object.entries(bools).map(([key, pref]) => [key, { value: pref.value }]));
+        return valuesOnly;
     }
     async update(updateObj) {
         const updatedPrefs = {
@@ -2373,39 +2369,18 @@ class UserPrefs {
         await this.save();
     }
     static async load() {
-        const loadedData = JSON.parse(await GM.getValue(UserPrefs.KEY, '{}'));
-        if (!(0,_types__WEBPACK_IMPORTED_MODULE_2__.isUserPrefs)(loadedData)) {
+        const loadedData = JSON.parse(await GM.getValue(UserSettings.KEY, '{}'));
+        if (!isUserSettings(loadedData)) {
             console.info(`[TrophyNexus] No user prefs detected; using defaults.`);
         }
         const updatedData = (0,trophyutil__WEBPACK_IMPORTED_MODULE_0__.pruneExtraneousProperties)(_defaults__WEBPACK_IMPORTED_MODULE_1__["default"], loadedData) ?? {};
-        return new UserPrefs(updatedData);
+        return new UserSettings(updatedData);
     }
 }
-
-
-/***/ }),
-
-/***/ "./src/shared/services/userPrefs/types.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   PrefCategory: () => (/* binding */ PrefCategory),
-/* harmony export */   isUserPrefs: () => (/* binding */ isUserPrefs)
-/* harmony export */ });
-/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
-
-function isUserPrefs(obj) {
+function isUserSettings(obj) {
     const keys = ['PSNP', 'psnId'];
     return (0,trophyutil__WEBPACK_IMPORTED_MODULE_0__.isStandardObj)(obj) && keys.every(key => key in obj);
 }
-var PrefCategory;
-(function (PrefCategory) {
-    PrefCategory["General"] = "general";
-    PrefCategory["Platify"] = "platify";
-    PrefCategory["Flagged"] = "flagged";
-})(PrefCategory || (PrefCategory = {}));
 
 
 /***/ }),
@@ -2694,8 +2669,6 @@ const ModalCache = ({ baseGenerator, userGenerator, isOpen, title, nexus, onClos
             if (!operationFinished) {
                 nexus.userPrefs.PSNP.suppressCacheModal = true;
                 nexus.userPrefs.save();
-            }
-            else {
             }
         }
     };
@@ -3830,14 +3803,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var preact__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/dist/preact.module.js");
 /* harmony import */ var _components_series_table_SeriesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/series_table/SeriesTable.tsx");
 /* harmony import */ var _services_DbSeriesController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/services/DbSeriesController.ts");
-/* harmony import */ var _shared_services_userPrefs_defaults__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/shared/services/userPrefs/defaults.ts");
-
 
 
 
 
 async function initSeriesCatalog(nexus) {
-    if (!nexus.userPrefs.PSNP.bools[_shared_services_userPrefs_defaults__WEBPACK_IMPORTED_MODULE_4__.PrefKey.renderSeriesTable].value)
+    if (!nexus.userPrefs.PSNP.bools.renderSeriesTable.value)
         return;
     const seriesController = new _services_DbSeriesController__WEBPACK_IMPORTED_MODULE_3__.DbSeriesController(nexus);
     const allSeriesPromise = seriesController.retrieveAllSeriesWithProgress();
@@ -3964,10 +3935,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DbSeriesController: () => (/* binding */ DbSeriesController)
 /* harmony export */ });
-/* harmony import */ var _shared_services_userPrefs_defaults__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/shared/services/userPrefs/defaults.ts");
-/* harmony import */ var _shared_utils_decorators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/utils/decorators.ts");
-/* harmony import */ var _models_dbGame__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/models/dbGame.ts");
-/* harmony import */ var _models_dbSeries__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/models/dbSeries.ts");
+/* harmony import */ var _shared_utils_decorators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/shared/utils/decorators.ts");
+/* harmony import */ var _models_dbGame__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/models/dbGame.ts");
+/* harmony import */ var _models_dbSeries__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/models/dbSeries.ts");
 var __runInitializers = (undefined && undefined.__runInitializers) || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
@@ -4005,13 +3975,12 @@ var __esDecorate = (undefined && undefined.__esDecorate) || function (ctor, desc
 
 
 
-
 let DbSeriesController = (() => {
     let _instanceExtraInitializers = [];
     let _retrieveAllSeriesWithProgress_decorators;
     return class DbSeriesController {
         static {
-            _retrieveAllSeriesWithProgress_decorators = [(0,_shared_utils_decorators__WEBPACK_IMPORTED_MODULE_1__.logMethodSpeed)()];
+            _retrieveAllSeriesWithProgress_decorators = [(0,_shared_utils_decorators__WEBPACK_IMPORTED_MODULE_0__.logMethodSpeed)()];
             __esDecorate(this, null, _retrieveAllSeriesWithProgress_decorators, { kind: "method", name: "retrieveAllSeriesWithProgress", static: false, private: false, access: { has: obj => "retrieveAllSeriesWithProgress" in obj, get: obj => obj.retrieveAllSeriesWithProgress } }, null, _instanceExtraInitializers);
         }
         allSeries = (__runInitializers(this, _instanceExtraInitializers), []);
@@ -4029,7 +3998,7 @@ let DbSeriesController = (() => {
         }
         async retrieveAllSeries() {
             const allSeriesRaw = await this.nexus.idb.getAll('psnp_series');
-            this.allSeries = allSeriesRaw.map(data => new _models_dbSeries__WEBPACK_IMPORTED_MODULE_3__.DbSeries(data));
+            this.allSeries = allSeriesRaw.map(data => new _models_dbSeries__WEBPACK_IMPORTED_MODULE_2__.DbSeries(data));
             return this.allSeries;
         }
         async assignGamesToSeries(_seriesList) {
@@ -4038,7 +4007,7 @@ let DbSeriesController = (() => {
             const dbGameData = await this.nexus.idb.getByIds('psnp_games', allGameIds);
             const dbGamesLookup = dbGameData.reduce((lookup, gameData) => {
                 if (gameData) {
-                    lookup[gameData._id] = new _models_dbGame__WEBPACK_IMPORTED_MODULE_2__.DbGame(gameData);
+                    lookup[gameData._id] = new _models_dbGame__WEBPACK_IMPORTED_MODULE_1__.DbGame(gameData);
                 }
                 return lookup;
             }, {});
@@ -4057,7 +4026,7 @@ let DbSeriesController = (() => {
             return seriesList;
         }
         updateGameScopedMetrics(series, game) {
-            const platifyComplation = this.prefs[_shared_services_userPrefs_defaults__WEBPACK_IMPORTED_MODULE_0__.PrefKey.platifyComplation].value;
+            const platifyComplation = this.prefs.platifyComplation.value;
             if (game.percent)
                 series.userNumGamesPlayed++;
             if (game.userTrophyCount?.platinum)
@@ -4080,8 +4049,8 @@ let DbSeriesController = (() => {
             series.userNumGamesTotal += platifyComplation ? game.trophyCount?.platinum ?? 0 : 1;
         }
         updateStageScopedMetrics(series, stage) {
-            const platifyComplation = this.prefs[_shared_services_userPrefs_defaults__WEBPACK_IMPORTED_MODULE_0__.PrefKey.platifyComplation].value;
-            const hideNonplats = this.prefs[_shared_services_userPrefs_defaults__WEBPACK_IMPORTED_MODULE_0__.PrefKey.platifySeriesHideNonplats].value;
+            const platifyComplation = this.prefs.platifyComplation.value;
+            const hideNonplats = this.prefs.platifySeriesHideNonplats.value;
             const stageGamesWithPlat = stage.games?.filter(game => game && game.trophyCount?.platinum) ?? [];
             const stageGamesPlatted = stageGamesWithPlat.filter(game => game && game.userTrophyCount?.platinum);
             const stageGames100Percented = stage.games?.filter(game => game?.percent === 100) ?? [];
@@ -4123,6 +4092,7 @@ __webpack_require__.r(__webpack_exports__);
 
 let dbPromise;
 class TrophyIDB {
+    static version = 2;
     static async count(storeName) {
         const db = await initDB();
         const tx = db.transaction(storeName, 'readonly');
@@ -4179,7 +4149,7 @@ class TrophyIDB {
 }
 async function initDB() {
     if (!dbPromise) {
-        dbPromise = (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)(_types__WEBPACK_IMPORTED_MODULE_1__.DB_NAME, _types__WEBPACK_IMPORTED_MODULE_1__.DB_VERSION, {
+        dbPromise = (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)(_types__WEBPACK_IMPORTED_MODULE_1__.DB_NAME, TrophyIDB.version, {
             upgrade(db, oldV, _newV, _transaction, _event) {
                 if (oldV < 1) {
                     const gameStore = db.createObjectStore(_types__WEBPACK_IMPORTED_MODULE_1__.DB_STORE_GAMES, { keyPath: '_id' });
@@ -4207,7 +4177,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   DB_NAME: () => (/* binding */ DB_NAME),
 /* harmony export */   DB_STORE_GAMES: () => (/* binding */ DB_STORE_GAMES),
 /* harmony export */   DB_STORE_SERIES: () => (/* binding */ DB_STORE_SERIES),
-/* harmony export */   DB_VERSION: () => (/* binding */ DB_VERSION),
 /* harmony export */   isDbGameUpdateData: () => (/* binding */ isDbGameUpdateData),
 /* harmony export */   isDbSeriesUpdateData: () => (/* binding */ isDbSeriesUpdateData)
 /* harmony export */ });
@@ -4216,7 +4185,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const DB_NAME = 'TrophyNexus';
-const DB_VERSION = 1;
 const DB_STORE_GAMES = 'psnp_games';
 const DB_STORE_SERIES = 'psnp_series';
 function isDbGameUpdateData(arg) {
@@ -4242,6 +4210,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/utils/fetch.ts");
 /* harmony import */ var _shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/shared/services/mongoApi/index.ts");
 /* harmony import */ var _shared_utils_getProgress__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/shared/utils/getProgress.ts");
+/* harmony import */ var _updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/services/db/updateAllGamesLocally.ts");
+
 
 
 
@@ -4256,20 +4226,20 @@ function parseMaxPageNum(doc) {
     }
     return pageNum;
 }
-async function getTotalGames() {
+async function countPsnpGames() {
     const MAX_GAMES_PER_PAGE = 50;
     const res = await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)('https://psnprofiles.com/games?shovelware');
     const numPages = parseMaxPageNum(res.doc);
     return numPages * MAX_GAMES_PER_PAGE;
 }
-async function getTotalSeries() {
+async function countPsnpSeries() {
     const MAX_SERIES_PER_PAGE = 50;
     const res = await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)('https://psnprofiles.com/series');
     const numPages = parseMaxPageNum(res.doc);
     return numPages * MAX_SERIES_PER_PAGE - (MAX_SERIES_PER_PAGE - 1);
 }
 async function* populateIDBFromServer(nexus) {
-    const [numGames, numSeries] = await Promise.all([getTotalGames(), getTotalSeries()]);
+    const [numGames, numSeries] = await Promise.all([countPsnpGames(), countPsnpSeries()]);
     const totals = { fetched: 0, all: numGames + numSeries };
     const populateStoreFromServer = async function* (storeName, batchSize) {
         const collection = storeName === 'psnp_games' ? 'games' : 'series';
@@ -4285,17 +4255,34 @@ async function* populateIDBFromServer(nexus) {
             yield (0,_shared_utils_getProgress__WEBPACK_IMPORTED_MODULE_3__.getProgressMetrics)(totals.fetched, totals.all);
         }
     };
-    for await (const t of populateStoreFromServer('psnp_series', MAX_SERIES_PER_REQUEST)) {
-        yield t;
+    for await (const progressMetrics of populateStoreFromServer('psnp_series', MAX_SERIES_PER_REQUEST)) {
+        yield progressMetrics;
     }
     nexus.userPrefs.PSNP.lastUpdatedAllSeries = Date.now();
     await nexus.userPrefs.save();
-    for await (const t of populateStoreFromServer('psnp_games', MAX_GAMES_PER_REQUEST)) {
-        yield t;
+    for await (const progressMetrics of populateStoreFromServer('psnp_games', MAX_GAMES_PER_REQUEST)) {
+        yield progressMetrics;
     }
+    await populateLatestDlcListings(nexus);
     nexus.userPrefs.PSNP.lastUpdatedAllGames = Date.now();
     await nexus.userPrefs.save();
     return totals;
+}
+async function populateLatestDlcListings(nexus) {
+    const latestGameIdsWithDlc = await (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.fetchLatestGameIdsWithDlc)();
+    const gameDetails = (await (0,_shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_2__.findItems)({
+        collection: 'games',
+        projection: { metaData: 1, trophyGroups: 1 },
+        limit: 50,
+        offset: 0,
+        filter: {
+            _id: {
+                $in: latestGameIdsWithDlc,
+            },
+        },
+    }));
+    console.log(gameDetails);
+    await nexus.idb.upsert('psnp_games', gameDetails);
 }
 
 
@@ -4307,6 +4294,10 @@ async function* populateIDBFromServer(nexus) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fetchGamesOrDLCPage: () => (/* binding */ fetchGamesOrDLCPage),
+/* harmony export */   fetchLatestGameIdsWithDlc: () => (/* binding */ fetchLatestGameIdsWithDlc),
+/* harmony export */   filterOutSeenItems: () => (/* binding */ filterOutSeenItems),
+/* harmony export */   parseCatalogDLCs: () => (/* binding */ parseCatalogDLCs),
 /* harmony export */   updateAllGamesLocally: () => (/* binding */ updateAllGamesLocally)
 /* harmony export */ });
 /* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
@@ -4316,11 +4307,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 async function updateAllGamesLocally(nexus) {
-    const changes = (0,_util__WEBPACK_IMPORTED_MODULE_2__.initScrapeResult)();
-    const hoursSinceLastFetch = nexus.hoursSinceLastUpdate('lastUpdatedAllGames');
-    const shouldUpdate = hoursSinceLastFetch >= 1 || nexus.pageType === trophyutil__WEBPACK_IMPORTED_MODULE_0__.PsnpPageType.Games;
-    if (!shouldUpdate)
+    if (!shouldUpdateGames(nexus))
         return null;
+    const changes = (0,_util__WEBPACK_IMPORTED_MODULE_2__.initScrapeResult)();
     let currentPage = 1;
     let doc = await fetchGamesOrDLCPage(currentPage, 'games');
     const TOTAL_GAME_PAGES = (0,_util__WEBPACK_IMPORTED_MODULE_2__.parseMaxPageNum)(doc);
@@ -4348,10 +4337,48 @@ async function updateAllGamesLocally(nexus) {
     }
     const seenGames = {};
     currentPage = 1;
+    doc = await fetchGamesOrDLCPage(currentPage, 'dlc');
+    upToDate = false;
+    while (!upToDate) {
+        try {
+            doc = await fetchGamesOrDLCPage(currentPage, 'dlc', doc);
+            const dlcListingsRaw = parseCatalogDLCs(doc);
+            const dlcListings = filterOutSeenItems(dlcListingsRaw, seenGames);
+            const gameIds = dlcListings.map(dlc => dlc._id);
+            const dbGames = await nexus.idb.getByIds('psnp_games', gameIds);
+            const gamesToUpdate = [];
+            for (const dlc of dlcListings) {
+                const dbGame = dbGames.find(g => g?._id === dlc._id);
+                const dlcAlreadyExists = dbGame?.trophyGroups?.some(group => group.groupNum === dlc.groupNum);
+                if (dlcAlreadyExists) {
+                    upToDate = true;
+                    break;
+                }
+                else {
+                    if (dbGame)
+                        gamesToUpdate.push([dbGame, dlc, (0,trophyutil__WEBPACK_IMPORTED_MODULE_0__.diffUpdate)(dbGame, dlc, false)]);
+                }
+            }
+            const dbGamesToUpdate = gamesToUpdate.map(tuple => tuple[0]);
+            await (0,_util__WEBPACK_IMPORTED_MODULE_2__.fetchNewGameDetails)(dbGamesToUpdate);
+            await (0,_util__WEBPACK_IMPORTED_MODULE_2__.commitDbGameChanges)(nexus, changes, dbGamesToUpdate, []);
+            if (upToDate)
+                console.log(`DLC: Stopping at page ${currentPage}`);
+            currentPage++;
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
     nexus.userPrefs.PSNP.lastUpdatedAllGames = Date.now();
     nexus.userPrefs.save();
     (0,_util__WEBPACK_IMPORTED_MODULE_2__.logChanges)(changes, '[ALL GAMES] ');
     return changes;
+}
+function shouldUpdateGames(nexus) {
+    const hoursSinceLastFetch = nexus.hoursSinceLastUpdate('lastUpdatedAllGames');
+    const shouldUpdate = hoursSinceLastFetch >= 1 || nexus.pageType === trophyutil__WEBPACK_IMPORTED_MODULE_0__.PsnpPageType.Games;
+    return !!shouldUpdate;
 }
 async function fetchGamesOrDLCPage(targetPage, type, prevDoc) {
     const alreadyFetchedPage = prevDoc && targetPage === 1;
@@ -4363,6 +4390,13 @@ async function fetchGamesOrDLCPage(targetPage, type, prevDoc) {
         : `https://psnprofiles.com/games/dlc?page=${targetPage}`;
     const res = await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)(url);
     return res.doc;
+}
+async function fetchLatestGameIdsWithDlc() {
+    const latestDlcPage = await fetchGamesOrDLCPage(1, 'dlc');
+    const dlcListings = parseCatalogDLCs(latestDlcPage);
+    const seenGames = {};
+    const gameIdsToFetchDetailsFor = filterOutSeenItems(dlcListings, seenGames).map(dlc => dlc._id);
+    return gameIdsToFetchDetailsFor;
 }
 function parseCatalogGames(doc) {
     const parser = new trophyutil__WEBPACK_IMPORTED_MODULE_0__.ParserGameStandard();
@@ -4617,6 +4651,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/utils/fetch.ts");
 /* harmony import */ var _models_dbGame__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/models/dbGame.ts");
 /* harmony import */ var _pages_profile_parseHeaderStats__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/pages/profile/parseHeaderStats.ts");
+/* harmony import */ var _shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/shared/services/mongoApi/index.ts");
+
 
 
 
@@ -4693,12 +4729,35 @@ async function fetchNewGameDetails(newGames, consoleLogPrefix) {
         const msg = `⚡${consoleLogPrefix} Fetching page details for ${newGames.length} games...`;
         console.log('%c' + msg, 'color:yellowgreen');
     }
-    const parser = new trophyutil__WEBPACK_IMPORTED_MODULE_0__.ParserGamePage();
-    for (const game of newGames) {
-        const doc = (await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)(_models_dbGame__WEBPACK_IMPORTED_MODULE_2__.DbGame.url(game))).doc;
-        const gamePage = parser.parse(doc);
-        Object.assign(game, gamePage);
+    const sortedNewGames = newGames.sort((a, b) => a._id - b._id);
+    if (sortedNewGames.length >= 10) {
+        const sortedVerboseGames = (await (0,_shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_4__.findItems)({
+            collection: 'games',
+            limit: 2000,
+            offset: 0,
+            projection: {},
+            filter: {
+                _id: {
+                    $in: sortedNewGames.map(g => g._id),
+                },
+            },
+            sort: {
+                _id: 1,
+            },
+        }));
+        sortedVerboseGames.forEach((game, i) => {
+            Object.assign(sortedNewGames[i] ?? {}, game);
+        });
     }
+    else {
+        const parser = new trophyutil__WEBPACK_IMPORTED_MODULE_0__.ParserGamePage();
+        for (const game of sortedNewGames) {
+            const doc = (await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)(_models_dbGame__WEBPACK_IMPORTED_MODULE_2__.DbGame.url(game))).doc;
+            const gamePage = parser.parse(doc);
+            Object.assign(game, gamePage);
+        }
+    }
+    console.log(`fetchNewGameDetails updated ${sortedNewGames.length} games.`);
 }
 function isFinished({ currentPage, maxPages, newPageItems, updatedPageItems, itemsPerPage }) {
     const numMeaningfulChanges = getMeaningfulChanges(updatedPageItems.map(x => x[1])).length + newPageItems.length;

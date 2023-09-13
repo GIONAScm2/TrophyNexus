@@ -1,5 +1,5 @@
 import {openDB, IDBPDatabase} from 'idb';
-import {type ITrophyDB, DB_NAME, DB_VERSION, DB_STORE_GAMES, DB_STORE_SERIES, DbStoreName, DbStoreValue} from './types';
+import {type ITrophyDB, DB_NAME, DB_STORE_GAMES, DB_STORE_SERIES, DbStoreName, DbStoreValue} from './types';
 import {diffUpdate} from 'trophyutil';
 import {GameDocIDB, GameDocMongo} from '../../models/dbGame';
 import {SeriesDocIDB, SeriesDocMongo} from '../../models/dbSeries';
@@ -7,6 +7,8 @@ import {SeriesDocIDB, SeriesDocMongo} from '../../models/dbSeries';
 let dbPromise: Promise<IDBPDatabase<ITrophyDB>>;
 
 export class TrophyIDB {
+	static version = 2;
+
 	/** Returns the total count of records in the DB store */
 	static async count<T extends DbStoreName>(storeName: T) {
 		const db = await initDB();
@@ -84,7 +86,7 @@ export class TrophyIDB {
 
 async function initDB() {
 	if (!dbPromise) {
-		dbPromise = openDB<ITrophyDB>(DB_NAME, DB_VERSION, {
+		dbPromise = openDB<ITrophyDB>(DB_NAME, TrophyIDB.version, {
 			upgrade(db, oldV, _newV, _transaction, _event) {
 				if (oldV < 1) {
 					const gameStore = db.createObjectStore(DB_STORE_GAMES, {keyPath: '_id'});

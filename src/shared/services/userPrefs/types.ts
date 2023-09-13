@@ -1,38 +1,39 @@
-import {isStandardObj} from 'trophyutil';
-import type DefaultUserPrefs from './defaults';
-import {BooleanKeys} from '../../types';
-import {PrefKey} from './defaults';
+export type IUserSettings = {psnId: string; PSNP: UserDataPSNP};
 
-export function isUserPrefs(obj: unknown): obj is IUserPrefs {
-	const keys: (keyof IUserPrefs)[] = ['PSNP', 'psnId'];
-	return isStandardObj(obj) && keys.every(key => key in obj);
-}
+export type UserDataPSNP = {
+	isFlagged: boolean;
+	lastUpdatedUserGames: number;
+	lastUpdatedAllGames: number;
+	lastUpdatedAllSeries: number;
+	/** If true, ModalCache isn't rendered and the user must manually initiate it. */
+	suppressCacheModal: boolean;
+	bools: UserBoolsPSNP;
+};
 
-export enum PrefCategory {
-	General = 'general',
-	Platify = 'platify',
-	Flagged = 'flagged',
+export interface UserBoolsPSNP {
+	/** May wish to disable on lower-end hardware. */
+	renderSeriesTable: BoolProps;
+	rarestTrophiesUnique: BoolProps;
+	hideFlagBlock: BoolProps;
+	/** Platted games are treated as completed games, like when viewing a game series stage. */
+	platifyComplation: BoolProps;
+	/** Hides nonplats on series pages */
+	platifySeriesHideNonplats: BoolProps;
+	/** Platted games always display a full progress bar. (number is unaffected) */
+	// platifyProgressBarFilled = 'platifyProgressBarFilled',
+	/** Platted games' progress bar always displays 100%. (bar fill is unaffected) */
+	// platifyProgressBar100 = 'platifyProgressBar100',
+	// inject100Club = 'inject100Club',
 }
-/** Properties of a boolean setting */
-export interface PrefBoolProps {
-	/** User-friendly alias */
+export type BoolProps = {
+	/** User-facing alias */
 	name: string;
-	/** Tooltip that further explains what the setting does */
 	desc: string;
 	value: boolean;
-	/** `general` for general settings.
-	 *
-	 * `platify` for platinum-oriented settings.
-	 *
-	 * `flagged` options should only appear to users who are actually flagged. */
-	category: PrefCategory;
-}
+	category: 'general' | 'platify' | 'flagged';
+};
 
-export type IUserPrefs = typeof DefaultUserPrefs;
-export type UserPrefsPsnpBools = typeof DefaultUserPrefs.PSNP.bools;
 export type PrefTimestampKey = keyof Pick<
-	IUserPrefs['PSNP'],
+	IUserSettings['PSNP'],
 	'lastUpdatedAllGames' | 'lastUpdatedAllSeries' | 'lastUpdatedUserGames'
 >;
-
-export type BooleanPrefKey = BooleanKeys<IUserPrefs['PSNP']> | keyof typeof PrefKey;

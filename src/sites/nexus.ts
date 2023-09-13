@@ -1,7 +1,7 @@
 import {type BrowserContext} from 'trophyutil';
-import {UserPrefs} from '../shared/services/userPrefs';
+import {UserSettings} from '../shared/services/userPrefs';
 import {TrophyIDB} from './PSNP/services/db/IDB';
-import {BooleanPrefKey, PrefTimestampKey} from '../shared/services/userPrefs/types';
+import {PrefTimestampKey} from '../shared/services/userPrefs/types';
 
 export const HostnameToSiteName = {
 	'psnprofiles.com': 'PSNP',
@@ -23,14 +23,14 @@ export function getSiteName(hostname: string): SiteName | undefined {
 interface NexusOptions {
 	browserContext: BrowserContext;
 	siteName: SiteName;
-	userPrefs: UserPrefs;
+	userPrefs: UserSettings;
 }
 
 export default class TrophyNexus {
 	public readonly idb = TrophyIDB;
 	public browserContext: BrowserContext;
 	public readonly siteName: SiteName;
-	public readonly userPrefs: UserPrefs;
+	public readonly userPrefs: UserSettings;
 
 	constructor({siteName, userPrefs, browserContext}: NexusOptions) {
 		this.browserContext = browserContext;
