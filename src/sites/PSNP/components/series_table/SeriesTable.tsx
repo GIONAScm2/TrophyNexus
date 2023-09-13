@@ -27,11 +27,11 @@ import {TrophyCount, parseNum} from 'trophyutil';
 import {fractionInner} from '../css/SeriesRow';
 import {JSX} from 'preact';
 import {JSXInternal} from 'preact/src/jsx';
-import {IUserPrefs} from '../../../../shared/services/userPrefs/types';
+import {IUserSettings} from '../../../../shared/services/userPrefs/types';
 
 interface SeriesTableProps {
 	allSeries: DbSeries[];
-	prefs: IUserPrefs;
+	prefs: IUserSettings;
 }
 
 // TODO: Add advanced filter (Show|hide) series missing (>|exactly|<)  <text input num> (games|stages)

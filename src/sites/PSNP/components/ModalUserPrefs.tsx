@@ -3,7 +3,7 @@ import * as css from './css/ModalUserPrefs';
 import {tooltipStyle, tooltipTextStyle, tooltipHoverStyle} from './css/tooltip';
 import {faCircleInfo} from '@fortawesome/free-solid-svg-icons/faCircleInfo';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {PrefBools, PrefKey} from '../../../shared/services/userPrefs/defaults';
+import { UserBoolsPSNP } from 'src/shared/services/userPrefs/types';
 import {TrophyNexusPsnp} from '../nexus';
 
 type UserPrefsMenuProps = {
@@ -17,11 +17,11 @@ export const ModalUserPrefs: preact.FunctionComponent<UserPrefsMenuProps> = ({ne
 	const handleCheckboxChange = (key: string) => async (e: Event) => {
 		const target = e.target as HTMLInputElement;
 
-		nexus.userPrefs.PSNP.bools[key as PrefKey].value = target.checked;
+		nexus.userPrefs.PSNP.bools[key as keyof UserBoolsPSNP].value = target.checked;
 		await nexus.userPrefs.save();
 	};
 
-	const renderBoolSection = (title: string, bools: PrefBools) => (
+	const renderBoolSection = (title: string, bools: UserBoolsPSNP) => (
 		<div>
 			<h2 style={{textAlign: 'center'}}>{title}</h2>
 			{Object.entries(bools).map(([key, pref]) => {
@@ -68,14 +68,14 @@ export const ModalUserPrefs: preact.FunctionComponent<UserPrefsMenuProps> = ({ne
 	);
 
 	const renderContent = () => {
-		const generalBools = {} as PrefBools;
-		const platifyBools = {} as PrefBools;
-		const flaggedBools = {} as PrefBools;
+		const generalBools = {} as UserBoolsPSNP;
+		const platifyBools = {} as UserBoolsPSNP;
+		const flaggedBools = {} as UserBoolsPSNP;
 
 		Object.entries(nexus.userPrefs.PSNP.bools).forEach(([key, pref]) => {
-			if (pref.category === 'general') generalBools[key as PrefKey] = pref;
-			if (pref.category === 'platify') platifyBools[key as PrefKey] = pref;
-			if (pref.category === 'flagged' && nexus.userPrefs.PSNP.isFlagged) flaggedBools[key as PrefKey] = pref;
+			if (pref.category === 'general') generalBools[key as keyof UserBoolsPSNP] = pref;
+			if (pref.category === 'platify') platifyBools[key as keyof UserBoolsPSNP] = pref;
+			if (pref.category === 'flagged' && nexus.userPrefs.PSNP.isFlagged) flaggedBools[key as keyof UserBoolsPSNP] = pref;
 		});
 
 		switch (activeTab) {

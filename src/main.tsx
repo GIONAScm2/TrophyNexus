@@ -1,6 +1,6 @@
 import {BrowserContext} from 'trophyutil';
 import TrophyNexus, {getSiteName} from './sites/nexus';
-import {UserPrefs} from './shared/services/userPrefs';
+import {UserSettings} from './shared/services/userPrefs';
 import {waitForEl} from './shared/utils/domUtil';
 import {render} from 'preact';
 import {App} from './shared/components/App';
@@ -13,7 +13,7 @@ try {
 		throw new Error(`Script not authorized to run on ${browserContext.url.hostname}`);
 	}
 
-	const userPrefs = await UserPrefs.load();
+	const userPrefs = await UserSettings.load();
 	const nexus = new TrophyNexus({browserContext, siteName, userPrefs});
 
 	const mountNode = document.createElement('div');
