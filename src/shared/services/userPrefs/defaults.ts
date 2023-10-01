@@ -15,6 +15,12 @@ const DefaultUserSettings = {
 				desc: `Replaces the series catalog with a powerful custom table`,
 				category: 'general',
 			},
+			renderGamesTable: {
+				value: false as boolean,
+				name: 'Render Games Table',
+				desc: `Replaces the games catalog with a powerful custom table`,
+				category: 'general',
+			},
 			rarestTrophiesUnique: {
 				value: true as boolean,
 				name: 'Unique rarest trophies',
@@ -33,7 +39,6 @@ const DefaultUserSettings = {
 			// 	desc: `Inject yourself into '100% Club' leaderboards`,
 			// 	category: PrefCategory.Flagged,
 			// },
-
 			// [PrefKey.stackifyHideCompleted]: {
 			// 	value: false,
 			// 	name: `Stackify - Hide Completed`,
@@ -45,7 +50,6 @@ const DefaultUserSettings = {
 			// 	name: `Distinct 'Rarest Trophies' games`,
 			// 	desc: `Only shows one trophy per game.`,
 			// },
-
 			platifyComplation: {
 				value: false as boolean,
 				name: `Complation`,
@@ -70,22 +74,6 @@ const DefaultUserSettings = {
 				desc: 'Hides nonplats on series pages',
 				category: 'platify',
 			},
-
-			// ownershipIcons: {
-			//     val: true,
-			//     name: `Ownership Icons`,
-			//     desc: `Lets you mark any game as 'owned', coloring it blue whenever it appears`,
-			// },
-			// loadAllHideCompleted: {
-			//     val: false,
-			//     name: `[Load All] Hide Completed`,
-			//     desc: `"Load All" buttons will hide your completed games instead of coloring them`,
-			// },
-			// hideMultiplatform: {
-			//     val: false,
-			//     name: `Hide Multiplatform From Filtered`,
-			//     desc: `Hides multiplatform games from the 'Games' page when a platform filter is applied`,
-			// },
 		},
 	},
 } satisfies IUserSettings;

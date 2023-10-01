@@ -19,6 +19,7 @@ export async function initSeriesCatalog(nexus: TrophyNexusPsnp) {
 		defaultRows.forEach(tr => tr.remove());
 
 		const root = table.closest('div.col-xs-8')?.parentElement;
+		root?.replaceChildren();
 		root && render(<SeriesTable allSeries={allSeries} prefs={nexus.userPrefs} />, root);
 	});
 }

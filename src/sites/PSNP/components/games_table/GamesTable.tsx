@@ -1,6 +1,8 @@
-import {useMemo} from 'preact/hooks';
+import {useMemo, useState} from 'preact/hooks';
 import {DbGame} from '../../models/dbGame';
-import {createColumnHelper, getCoreRowModel, useReactTable} from '@tanstack/react-table';
+import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table';
+import { SeriesRowName } from '../series_table/SeriesRow';
+import * as css from '../css/SeriesTable';
 
 interface GamesTableProps {
 	allGames: DbGame[];
@@ -9,37 +11,22 @@ interface GamesTableProps {
 const col = createColumnHelper<DbGame>();
 
 export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}) => {
+	const [numRowsToShow, setNumRowsToShow] = useState(50);
+	
 	const columns = useMemo(() => {
 		return [
 			col.accessor('name', {
-				cell: ({row}) => <span>{row.original.name}</span>,
+				size: 350,
+				maxSize: 400,
+				cell: ({row}) => <SeriesRowName series={row.original} />,
 				header: h => (
 					<>
 						{/* <FilterIcon headerContext={h} /> */}
 						<span style={{margin: '0px 5px'}}>Name</span>
-						{/* <SortingIcon headerContext={h} /> */}
+						{/* <SortingIcon column={h.column} /> */}
 					</>
 				),
-				// sortingFn: (rowA, rowB, columnId) => {
-				// 	let comparisonValue = rowA.original.name.localeCompare(rowB.original.name);
-				// 	const columnSort = sorting.find(s => s.id === columnId);
-				// 	const isDesc = columnSort?.desc || false;
-
-				// 	// case 'userLatestTrophy':
-				// 	// 	if (rowA.original.userLatestTrophy === 0 && rowB.original.userLatestTrophy !== 0)
-				// 	// 		comparisonValue = isDesc ? -1 : 1;
-				// 	// 	else if (rowB.original.userLatestTrophy === 0 && rowA.original.userLatestTrophy !== 0)
-				// 	// 		comparisonValue = isDesc ? 1 : -1;
-				// 	// 	else comparisonValue = rowA.original.userLatestTrophy - rowB.original.userLatestTrophy;
-				// 	// 	break;
-				// 	// case '_id':
-				// 	// 	comparisonValue = rowA.original._id - rowB.original._id;
-				// 	// 	break;
-
-				// 	return comparisonValue;
-				// },
-				size: 350,
-				maxSize: 400,
+				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
 			}),
 		];
 	}, []);
@@ -58,5 +45,79 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 		getCoreRowModel: getCoreRowModel(),
 	});
 
-	return <></>;
+	return (
+		<div className="col-xs-8" style={{flexBasis: '100%', maxWidth: '100%'}}>
+			<div className="title flex v-align">
+				<div className="grow">
+					<h3>Games</h3>
+				</div>
+			</div>
+			<div className="p-2">
+				{/* START OF INFO PANEL */}
+				<div style={{display: 'flex'}}>
+		
+				</div>
+
+				{/* END OF INFO PANEL */}
+
+				<table id="game_list" style={css.table}>
+					<thead>
+						{table.getHeaderGroups().map(headerGroup => (
+							<tr key={headerGroup.id}>
+								{headerGroup.headers.map(header => (
+									<th
+										key={header.id}
+										colSpan={header.colSpan}
+										style={{...css.th, width: header.getSize() !== 0 ? header.getSize() : undefined}}
+									>
+										{header.isPlaceholder ? null : (
+											<>
+												<div
+													{...{
+														className: header.column.getCanSort() ? 'cursor-pointer select-none' : '',
+													}}
+												>
+													{flexRender(header.column.columnDef.header, header.getContext())}
+												</div>
+												{header.column.getCanFilter() ? (
+													<div>
+														{/* <Filter column={header.column} table={table} /> */}
+													</div>
+												) : null}
+											</>
+										)}
+									</th>
+								))}
+							</tr>
+						))}
+					</thead>
+
+					<tbody>
+						{table
+							.getRowModel()
+							.rows.slice(0, numRowsToShow)
+							.map(row => {
+								return (
+									<tr key={row.id}>
+										{row.getVisibleCells().map(cell => {
+											return (
+												<td
+													key={cell.id}
+													style={{
+														...css.td,
+														width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
+													}}
+												>
+													{flexRender(cell.column.columnDef.cell, cell.getContext())}
+												</td>
+											);
+										})}
+									</tr>
+								);
+							})}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	);
 };

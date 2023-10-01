@@ -13,6 +13,7 @@ export type UserDataPSNP = {
 export interface UserBoolsPSNP {
 	/** May wish to disable on lower-end hardware. */
 	renderSeriesTable: BoolProps;
+	renderGamesTable: BoolProps;
 	rarestTrophiesUnique: BoolProps;
 	hideFlagBlock: BoolProps;
 	/** Platted games are treated as completed games, like when viewing a game series stage. */

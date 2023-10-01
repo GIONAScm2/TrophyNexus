@@ -14,6 +14,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {populateIDBFromServer} from '../services/db/updateAllFromServer';
 import {updateAllSeriesLocally} from '../services/db/updateAllSeriesLocally';
 import {updateAllGamesLocally} from '../services/db/updateAllGamesLocally';
+import { initGamesCatalog } from '../pages/gamesCatalog';
 
 interface PSNPProps {
 	nexus: TrophyNexusPsnp;
@@ -41,6 +42,9 @@ export const PSNP: preact.FunctionComponent<PSNPProps> = ({children, nexus}) => 
 					Promise.all([updateAllSeriesLocally(nexus), updateAllGamesLocally(nexus)]).then(([_games]) => {
 						if (nexus.pageType === PsnpPageType.SeriesCatalog) {
 							initSeriesCatalog(nexus);
+						}
+						else if (nexus.pageType === PsnpPageType.Games) {
+							initGamesCatalog(nexus);
 						}
 					});
 				}
