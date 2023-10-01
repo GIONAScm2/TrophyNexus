@@ -4213,6 +4213,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/utils/fetch.ts");
 /* harmony import */ var _shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/shared/services/mongoApi/index.ts");
 /* harmony import */ var _shared_utils_getProgress__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/shared/utils/getProgress.ts");
+/* harmony import */ var _updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/services/db/updateAllGamesLocally.ts");
+
 
 
 
@@ -4227,20 +4229,20 @@ function parseMaxPageNum(doc) {
     }
     return pageNum;
 }
-async function getTotalGames() {
+async function countPsnpGames() {
     const MAX_GAMES_PER_PAGE = 50;
     const res = await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)('https://psnprofiles.com/games?shovelware');
     const numPages = parseMaxPageNum(res.doc);
     return numPages * MAX_GAMES_PER_PAGE;
 }
-async function getTotalSeries() {
+async function countPsnpSeries() {
     const MAX_SERIES_PER_PAGE = 50;
     const res = await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)('https://psnprofiles.com/series');
     const numPages = parseMaxPageNum(res.doc);
     return numPages * MAX_SERIES_PER_PAGE - (MAX_SERIES_PER_PAGE - 1);
 }
 async function* populateIDBFromServer(nexus) {
-    const [numGames, numSeries] = await Promise.all([getTotalGames(), getTotalSeries()]);
+    const [numGames, numSeries] = await Promise.all([countPsnpGames(), countPsnpSeries()]);
     const totals = { fetched: 0, all: numGames + numSeries };
     const populateStoreFromServer = async function* (storeName, batchSize) {
         const collection = storeName === 'psnp_games' ? 'games' : 'series';
@@ -4256,17 +4258,21 @@ async function* populateIDBFromServer(nexus) {
             yield (0,_shared_utils_getProgress__WEBPACK_IMPORTED_MODULE_3__.getProgressMetrics)(totals.fetched, totals.all);
         }
     };
-    for await (const t of populateStoreFromServer('psnp_series', MAX_SERIES_PER_REQUEST)) {
-        yield t;
+    for await (const progressMetrics of populateStoreFromServer('psnp_series', MAX_SERIES_PER_REQUEST)) {
+        yield progressMetrics;
     }
     nexus.userPrefs.PSNP.lastUpdatedAllSeries = Date.now();
     await nexus.userPrefs.save();
-    for await (const t of populateStoreFromServer('psnp_games', MAX_GAMES_PER_REQUEST)) {
-        yield t;
+    for await (const progressMetrics of populateStoreFromServer('psnp_games', MAX_GAMES_PER_REQUEST)) {
+        yield progressMetrics;
     }
     nexus.userPrefs.PSNP.lastUpdatedAllGames = Date.now();
     await nexus.userPrefs.save();
     return totals;
+}
+async function populateRecentTrophyListDetails() {
+    const latestDlcPage = await (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.fetchGamesOrDLCPage)(1, 'dlc');
+    const dlcListings = (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.parseCatalogDLCs)(latestDlcPage);
 }
 
 
@@ -4278,6 +4284,8 @@ async function* populateIDBFromServer(nexus) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fetchGamesOrDLCPage: () => (/* binding */ fetchGamesOrDLCPage),
+/* harmony export */   parseCatalogDLCs: () => (/* binding */ parseCatalogDLCs),
 /* harmony export */   updateAllGamesLocally: () => (/* binding */ updateAllGamesLocally)
 /* harmony export */ });
 /* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
@@ -4287,11 +4295,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 async function updateAllGamesLocally(nexus) {
-    const changes = (0,_util__WEBPACK_IMPORTED_MODULE_2__.initScrapeResult)();
-    const hoursSinceLastFetch = nexus.hoursSinceLastUpdate('lastUpdatedAllGames');
-    const shouldUpdate = hoursSinceLastFetch >= 1 || nexus.pageType === trophyutil__WEBPACK_IMPORTED_MODULE_0__.PsnpPageType.Games;
-    if (!shouldUpdate)
+    if (!shouldUpdateGames(nexus))
         return null;
+    const changes = (0,_util__WEBPACK_IMPORTED_MODULE_2__.initScrapeResult)();
     let currentPage = 1;
     let doc = await fetchGamesOrDLCPage(currentPage, 'games');
     const TOTAL_GAME_PAGES = (0,_util__WEBPACK_IMPORTED_MODULE_2__.parseMaxPageNum)(doc);
@@ -4323,6 +4329,11 @@ async function updateAllGamesLocally(nexus) {
     nexus.userPrefs.save();
     (0,_util__WEBPACK_IMPORTED_MODULE_2__.logChanges)(changes, '[ALL GAMES] ');
     return changes;
+}
+function shouldUpdateGames(nexus) {
+    const hoursSinceLastFetch = nexus.hoursSinceLastUpdate('lastUpdatedAllGames');
+    const shouldUpdate = hoursSinceLastFetch >= 1 || nexus.pageType === trophyutil__WEBPACK_IMPORTED_MODULE_0__.PsnpPageType.Games;
+    return !!shouldUpdate;
 }
 async function fetchGamesOrDLCPage(targetPage, type, prevDoc) {
     const alreadyFetchedPage = prevDoc && targetPage === 1;

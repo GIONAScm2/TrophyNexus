@@ -12,13 +12,13 @@ import {
 	parseMaxPageNum,
 } from './util';
 
+
+
 /** Updates games IDB (incl. DLC) if it's been 1h+ since the last fetch. */
 export async function updateAllGamesLocally(nexus: TrophyNexusPsnp) {
+	if (!shouldUpdateGames(nexus)) return null;
+	
 	const changes = initScrapeResult<DbGame>();
-	const hoursSinceLastFetch = nexus.hoursSinceLastUpdate('lastUpdatedAllGames');
-	const shouldUpdate = hoursSinceLastFetch >= 1 || nexus.pageType === PsnpPageType.Games;
-
-	if (!shouldUpdate) return null;
 
 	// UPDATE GAMES
 	let currentPage = 1;
@@ -50,6 +50,8 @@ export async function updateAllGamesLocally(nexus: TrophyNexusPsnp) {
 			console.error(err);
 		}
 	}
+
+	// TODO: Check stackLabel of past couple pages to see if any changed.
 
 	// UPDATE DLC
 	const seenGames: Record<number, boolean> = {};
@@ -98,7 +100,13 @@ export async function updateAllGamesLocally(nexus: TrophyNexusPsnp) {
 	return changes;
 }
 
-async function fetchGamesOrDLCPage(targetPage: number, type: 'games' | 'dlc', prevDoc?: Document | undefined) {
+function shouldUpdateGames(nexus: TrophyNexusPsnp) {
+	const hoursSinceLastFetch = nexus.hoursSinceLastUpdate('lastUpdatedAllGames');
+	const shouldUpdate = hoursSinceLastFetch >= 1 || nexus.pageType === PsnpPageType.Games;
+	return !!shouldUpdate;
+}
+
+export async function fetchGamesOrDLCPage(targetPage: number, type: 'games' | 'dlc', prevDoc?: Document | undefined) {
 	const alreadyFetchedPage = prevDoc && targetPage === 1;
 	if (alreadyFetchedPage) {
 		return prevDoc;
@@ -117,7 +125,7 @@ function parseCatalogGames(doc: Document) {
 	const gameListings = gameNodes.map(tr => parser.parse(tr));
 	return gameListings;
 }
-function parseCatalogDLCs(doc: Document) {
+export function parseCatalogDLCs(doc: Document) {
 	const parser = new ParserDlcListing();
 	const dlcNodes = PsnpGameBase.getGameNodes(PsnpPageType.Games, doc);
 	const dlcListings = dlcNodes.map(tr => parser.parse(tr));
