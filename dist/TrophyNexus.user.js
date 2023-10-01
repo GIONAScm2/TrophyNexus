@@ -2670,8 +2670,6 @@ const ModalCache = ({ baseGenerator, userGenerator, isOpen, title, nexus, onClos
                 nexus.userPrefs.PSNP.suppressCacheModal = true;
                 nexus.userPrefs.save();
             }
-            else {
-            }
         }
     };
     (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
@@ -4094,6 +4092,7 @@ __webpack_require__.r(__webpack_exports__);
 
 let dbPromise;
 class TrophyIDB {
+    static version = 2;
     static async count(storeName) {
         const db = await initDB();
         const tx = db.transaction(storeName, 'readonly');
@@ -4150,7 +4149,7 @@ class TrophyIDB {
 }
 async function initDB() {
     if (!dbPromise) {
-        dbPromise = (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)(_types__WEBPACK_IMPORTED_MODULE_1__.DB_NAME, _types__WEBPACK_IMPORTED_MODULE_1__.DB_VERSION, {
+        dbPromise = (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)(_types__WEBPACK_IMPORTED_MODULE_1__.DB_NAME, TrophyIDB.version, {
             upgrade(db, oldV, _newV, _transaction, _event) {
                 if (oldV < 1) {
                     const gameStore = db.createObjectStore(_types__WEBPACK_IMPORTED_MODULE_1__.DB_STORE_GAMES, { keyPath: '_id' });
@@ -4178,7 +4177,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   DB_NAME: () => (/* binding */ DB_NAME),
 /* harmony export */   DB_STORE_GAMES: () => (/* binding */ DB_STORE_GAMES),
 /* harmony export */   DB_STORE_SERIES: () => (/* binding */ DB_STORE_SERIES),
-/* harmony export */   DB_VERSION: () => (/* binding */ DB_VERSION),
 /* harmony export */   isDbGameUpdateData: () => (/* binding */ isDbGameUpdateData),
 /* harmony export */   isDbSeriesUpdateData: () => (/* binding */ isDbSeriesUpdateData)
 /* harmony export */ });
@@ -4187,7 +4185,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const DB_NAME = 'TrophyNexus';
-const DB_VERSION = 1;
 const DB_STORE_GAMES = 'psnp_games';
 const DB_STORE_SERIES = 'psnp_series';
 function isDbGameUpdateData(arg) {
@@ -4272,7 +4269,7 @@ async function* populateIDBFromServer(nexus) {
     return totals;
 }
 async function populateLatestDlcListings(nexus) {
-    const latestGameIdsWithDlc = await fetchLatestGameIdsWithDlc();
+    const latestGameIdsWithDlc = await (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.fetchLatestGameIdsWithDlc)();
     const gameDetails = (await (0,_shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_2__.findItems)({
         collection: 'games',
         projection: { metaData: 1, trophyGroups: 1 },
@@ -4287,13 +4284,6 @@ async function populateLatestDlcListings(nexus) {
     console.log(gameDetails);
     await nexus.idb.upsert('psnp_games', gameDetails);
 }
-async function fetchLatestGameIdsWithDlc() {
-    const latestDlcPage = await (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.fetchGamesOrDLCPage)(1, 'dlc');
-    const dlcListings = (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.parseCatalogDLCs)(latestDlcPage);
-    const gameIdToDlc = {};
-    const gameIdsToFetchDetailsFor = (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.filterOutSeenItems)(dlcListings, gameIdToDlc).map(dlc => dlc._id);
-    return gameIdsToFetchDetailsFor;
-}
 
 
 /***/ }),
@@ -4305,6 +4295,7 @@ async function fetchLatestGameIdsWithDlc() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   fetchGamesOrDLCPage: () => (/* binding */ fetchGamesOrDLCPage),
+/* harmony export */   fetchLatestGameIdsWithDlc: () => (/* binding */ fetchLatestGameIdsWithDlc),
 /* harmony export */   filterOutSeenItems: () => (/* binding */ filterOutSeenItems),
 /* harmony export */   parseCatalogDLCs: () => (/* binding */ parseCatalogDLCs),
 /* harmony export */   updateAllGamesLocally: () => (/* binding */ updateAllGamesLocally)
@@ -4346,6 +4337,39 @@ async function updateAllGamesLocally(nexus) {
     }
     const seenGames = {};
     currentPage = 1;
+    doc = await fetchGamesOrDLCPage(currentPage, 'dlc');
+    upToDate = false;
+    while (!upToDate) {
+        try {
+            doc = await fetchGamesOrDLCPage(currentPage, 'dlc', doc);
+            const dlcListingsRaw = parseCatalogDLCs(doc);
+            const dlcListings = filterOutSeenItems(dlcListingsRaw, seenGames);
+            const gameIds = dlcListings.map(dlc => dlc._id);
+            const dbGames = await nexus.idb.getByIds('psnp_games', gameIds);
+            const gamesToUpdate = [];
+            for (const dlc of dlcListings) {
+                const dbGame = dbGames.find(g => g?._id === dlc._id);
+                const dlcAlreadyExists = dbGame?.trophyGroups?.some(group => group.groupNum === dlc.groupNum);
+                if (dlcAlreadyExists) {
+                    upToDate = true;
+                    break;
+                }
+                else {
+                    if (dbGame)
+                        gamesToUpdate.push([dbGame, dlc, (0,trophyutil__WEBPACK_IMPORTED_MODULE_0__.diffUpdate)(dbGame, dlc, false)]);
+                }
+            }
+            const dbGamesToUpdate = gamesToUpdate.map(tuple => tuple[0]);
+            await (0,_util__WEBPACK_IMPORTED_MODULE_2__.fetchNewGameDetails)(dbGamesToUpdate);
+            await (0,_util__WEBPACK_IMPORTED_MODULE_2__.commitDbGameChanges)(nexus, changes, dbGamesToUpdate, []);
+            if (upToDate)
+                console.log(`DLC: Stopping at page ${currentPage}`);
+            currentPage++;
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
     nexus.userPrefs.PSNP.lastUpdatedAllGames = Date.now();
     nexus.userPrefs.save();
     (0,_util__WEBPACK_IMPORTED_MODULE_2__.logChanges)(changes, '[ALL GAMES] ');
@@ -4366,6 +4390,13 @@ async function fetchGamesOrDLCPage(targetPage, type, prevDoc) {
         : `https://psnprofiles.com/games/dlc?page=${targetPage}`;
     const res = await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)(url);
     return res.doc;
+}
+async function fetchLatestGameIdsWithDlc() {
+    const latestDlcPage = await fetchGamesOrDLCPage(1, 'dlc');
+    const dlcListings = parseCatalogDLCs(latestDlcPage);
+    const seenGames = {};
+    const gameIdsToFetchDetailsFor = filterOutSeenItems(dlcListings, seenGames).map(dlc => dlc._id);
+    return gameIdsToFetchDetailsFor;
 }
 function parseCatalogGames(doc) {
     const parser = new trophyutil__WEBPACK_IMPORTED_MODULE_0__.ParserGameStandard();
@@ -4620,6 +4651,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/utils/fetch.ts");
 /* harmony import */ var _models_dbGame__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/models/dbGame.ts");
 /* harmony import */ var _pages_profile_parseHeaderStats__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/pages/profile/parseHeaderStats.ts");
+/* harmony import */ var _shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/shared/services/mongoApi/index.ts");
+
 
 
 
@@ -4696,12 +4729,35 @@ async function fetchNewGameDetails(newGames, consoleLogPrefix) {
         const msg = `⚡${consoleLogPrefix} Fetching page details for ${newGames.length} games...`;
         console.log('%c' + msg, 'color:yellowgreen');
     }
-    const parser = new trophyutil__WEBPACK_IMPORTED_MODULE_0__.ParserGamePage();
-    for (const game of newGames) {
-        const doc = (await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)(_models_dbGame__WEBPACK_IMPORTED_MODULE_2__.DbGame.url(game))).doc;
-        const gamePage = parser.parse(doc);
-        Object.assign(game, gamePage);
+    const sortedNewGames = newGames.sort((a, b) => a._id - b._id);
+    if (sortedNewGames.length >= 10) {
+        const sortedVerboseGames = (await (0,_shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_4__.findItems)({
+            collection: 'games',
+            limit: 2000,
+            offset: 0,
+            projection: {},
+            filter: {
+                _id: {
+                    $in: sortedNewGames.map(g => g._id),
+                },
+            },
+            sort: {
+                _id: 1,
+            },
+        }));
+        sortedVerboseGames.forEach((game, i) => {
+            Object.assign(sortedNewGames[i] ?? {}, game);
+        });
     }
+    else {
+        const parser = new trophyutil__WEBPACK_IMPORTED_MODULE_0__.ParserGamePage();
+        for (const game of sortedNewGames) {
+            const doc = (await (0,_shared_utils_fetch__WEBPACK_IMPORTED_MODULE_1__.fetchDoc)(_models_dbGame__WEBPACK_IMPORTED_MODULE_2__.DbGame.url(game))).doc;
+            const gamePage = parser.parse(doc);
+            Object.assign(game, gamePage);
+        }
+    }
+    console.log(`fetchNewGameDetails updated ${sortedNewGames.length} games.`);
 }
 function isFinished({ currentPage, maxPages, newPageItems, updatedPageItems, itemsPerPage }) {
     const numMeaningfulChanges = getMeaningfulChanges(updatedPageItems.map(x => x[1])).length + newPageItems.length;

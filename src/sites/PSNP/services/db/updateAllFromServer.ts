@@ -1,4 +1,4 @@
-import {IGameDlc, Select} from 'trophyutil';
+import {Select} from 'trophyutil';
 import {fetchDoc} from '../../../../shared/utils/fetch';
 import {TrophyNexusPsnp} from '../../nexus';
 import {GameDocMongo} from '../../models/dbGame';
@@ -6,7 +6,7 @@ import {findItems} from '../../../../shared/services/mongoApi';
 import {getProgressMetrics} from '../../../../shared/utils/getProgress';
 import {DbStoreName} from './types';
 import {SeriesDocMongo} from '../../models/dbSeries';
-import {fetchGamesOrDLCPage, filterOutSeenItems, parseCatalogDLCs} from './updateAllGamesLocally';
+import {fetchLatestGameIdsWithDlc} from './updateAllGamesLocally';
 
 const MAX_GAMES_PER_REQUEST = 6000;
 const MAX_SERIES_PER_REQUEST = 2000;
@@ -88,12 +88,4 @@ async function populateLatestDlcListings(nexus: TrophyNexusPsnp) {
 	})) as GameDocMongo[];
 	console.log(gameDetails);
 	await nexus.idb.upsert('psnp_games', gameDetails);
-}
-async function fetchLatestGameIdsWithDlc() {
-	const latestDlcPage = await fetchGamesOrDLCPage(1, 'dlc');
-	const dlcListings = parseCatalogDLCs(latestDlcPage);
-
-	const gameIdToDlc: Record<number, boolean> = {};
-	const gameIdsToFetchDetailsFor = filterOutSeenItems(dlcListings, gameIdToDlc).map(dlc => dlc._id);
-	return gameIdsToFetchDetailsFor;
 }

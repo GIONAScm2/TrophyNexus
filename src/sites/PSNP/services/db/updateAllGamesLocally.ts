@@ -1,7 +1,7 @@
-import {IGameDlc, ParserDlcListing, ParserGameStandard, PsnpGameBase, PsnpPageType, diffUpdate} from 'trophyutil';
+import {ChangeData, IGameDlc, ParserDlcListing, ParserGameStandard, PsnpGameBase, PsnpPageType, diffUpdate} from 'trophyutil';
 import {fetchDoc} from '../../../../shared/utils/fetch';
 import {TrophyNexusPsnp} from '../../nexus';
-import {DbGame} from '../../models/dbGame';
+import {DbGame, GameDocIDB} from '../../models/dbGame';
 import {
 	classifyPageData,
 	commitDbGameChanges,
@@ -12,12 +12,10 @@ import {
 	parseMaxPageNum,
 } from './util';
 
-
-
 /** Updates games IDB (incl. DLC) if it's been 1h+ since the last fetch. */
 export async function updateAllGamesLocally(nexus: TrophyNexusPsnp) {
 	if (!shouldUpdateGames(nexus)) return null;
-	
+
 	const changes = initScrapeResult<DbGame>();
 
 	// UPDATE GAMES
@@ -56,42 +54,41 @@ export async function updateAllGamesLocally(nexus: TrophyNexusPsnp) {
 	// UPDATE DLC
 	const seenGames: Record<number, boolean> = {};
 	currentPage = 1;
-	// doc = await fetchGamesOrDLCPage(currentPage, 'dlc');
+	doc = await fetchGamesOrDLCPage(currentPage, 'dlc');
 
-	// upToDate = false;
-	// while (!upToDate) {
-	// 	try {
-	// 		doc = await fetchGamesOrDLCPage(currentPage, 'dlc', doc);
-	// 		const dlcListingsRaw = parseCatalogDLCs(doc);
-	// 		const dlcListings = filterOutSeenItems(dlcListingsRaw, seenGames); // Only shows one DLC per game ID
+	upToDate = false;
+	while (!upToDate) {
+		try {
+			doc = await fetchGamesOrDLCPage(currentPage, 'dlc', doc);
+			const dlcListingsRaw = parseCatalogDLCs(doc);
+			const dlcListings = filterOutSeenItems(dlcListingsRaw, seenGames); // Only shows one DLC per game ID
 
-	// 		const gameIds = dlcListings.map(dlc => dlc._id);
-	// 		const dbGames = await nexus.idb.getByIds('psnp_games', gameIds);
+			const gameIds = dlcListings.map(dlc => dlc._id);
+			const dbGames = await nexus.idb.getByIds('psnp_games', gameIds);
 
-	// 		const gamesToUpdate= [];
-	// 		for (const dlc of dlcListings) {
-	// 			const dbGame = dbGames.find(g => g?._id === dlc._id);
-	// 			const dlcAlreadyExists = dbGame?.trophyGroups?.some(group => group.groupNum === dlc.groupNum);
-	// 			if (dlcAlreadyExists) {
-	// 				upToDate = true;
-	// 				break;
-	// 			} else {
-	// 				if (dbGame) gamesToUpdate.push([dbGame, dlc, diffUpdate(dbGame,dlc,false)]);
-	// 			}
-	// 		}
-	// 		console.log(gamesToUpdate);
-	// 		break;
+			const gamesToUpdate: [GameDocIDB, IGameDlc, ChangeData][] = [];
+			for (const dlc of dlcListings) {
+				const dbGame = dbGames.find(g => g?._id === dlc._id);
+				const dlcAlreadyExists = dbGame?.trophyGroups?.some(group => group.groupNum === dlc.groupNum);
+				if (dlcAlreadyExists) {
+					upToDate = true;
+					break;
+				} else {
+					if (dbGame) gamesToUpdate.push([dbGame, dlc, diffUpdate(dbGame, dlc as any, false)]);
+				}
+			}
 
-	// 		await fetchNewGameDetails(gamesToUpdate);
-	// 		await commitDbGameChanges(nexus, changes, gamesToUpdate, []);
+			const dbGamesToUpdate = gamesToUpdate.map(tuple=>tuple[0])
+			await fetchNewGameDetails(dbGamesToUpdate);
+			await commitDbGameChanges(nexus, changes, dbGamesToUpdate, []);
 
-	// 		if (upToDate) console.log(`DLC: Stopping at page ${currentPage}`);
+			if (upToDate) console.log(`DLC: Stopping at page ${currentPage}`);
 
-	// 		currentPage++;
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
+			currentPage++;
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 	nexus.userPrefs.PSNP.lastUpdatedAllGames = Date.now();
 	nexus.userPrefs.save();
@@ -117,6 +114,15 @@ export async function fetchGamesOrDLCPage(targetPage: number, type: 'games' | 'd
 			: `https://psnprofiles.com/games/dlc?page=${targetPage}`;
 	const res = await fetchDoc(url);
 	return res.doc;
+}
+
+export async function fetchLatestGameIdsWithDlc() {
+	const latestDlcPage = await fetchGamesOrDLCPage(1, 'dlc');
+	const dlcListings = parseCatalogDLCs(latestDlcPage);
+
+	const seenGames: Record<number, boolean> = {};
+	const gameIdsToFetchDetailsFor = filterOutSeenItems(dlcListings, seenGames).map(dlc => dlc._id);
+	return gameIdsToFetchDetailsFor;
 }
 
 function parseCatalogGames(doc: Document) {
