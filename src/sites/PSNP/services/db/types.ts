@@ -7,7 +7,6 @@ import {DbSeries, SeriesDocIDB} from '../../models/dbSeries';
 // IDB
 
 export const DB_NAME = 'TrophyNexus' as const;
-export const DB_VERSION = 1 as const;
 export const DB_STORE_GAMES = 'psnp_games' as const;
 export const DB_STORE_SERIES = 'psnp_series' as const;
 

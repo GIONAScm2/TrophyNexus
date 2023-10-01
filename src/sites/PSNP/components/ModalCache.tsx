@@ -27,7 +27,6 @@ export const ModalCache: preact.FunctionComponent<ModalCacheProps> = ({
 	const [baseProgress, setBaseProgress] = useState<ProgressMetrics>(() => getProgressMetrics());
 	const [userProgress, setUserProgress] = useState<ProgressMetrics>(() => getProgressMetrics());
 	const [operationInProgress, setOperationInProgress] = useState(false);
-	// const [baseGenFinished, setBaseGenFinished] = useState(false);
 	const [operationFinished, setOperationFinished] = useState(false);
 
 	const handleClose = () => {
@@ -36,8 +35,6 @@ export const ModalCache: preact.FunctionComponent<ModalCacheProps> = ({
 			if (!operationFinished) {
 				nexus.userPrefs.PSNP.suppressCacheModal = true;
 				nexus.userPrefs.save();
-			} else {
-				// save lastUpdatedAll?
 			}
 		}
 	};
