@@ -132,7 +132,7 @@ export function parseCatalogDLCs(doc: Document) {
 	return dlcListings;
 }
 
-function filterOutSeenItems(items: IGameDlc[], seenItems: Record<number, boolean>) {
+export function filterOutSeenItems(items: IGameDlc[], seenItems: Record<number, boolean>) {
 	const uniqueItems = items.filter(dlc => {
 		if (seenItems[dlc._id]) {
 			return false;

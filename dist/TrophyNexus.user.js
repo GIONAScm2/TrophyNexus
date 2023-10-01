@@ -4266,13 +4266,33 @@ async function* populateIDBFromServer(nexus) {
     for await (const progressMetrics of populateStoreFromServer('psnp_games', MAX_GAMES_PER_REQUEST)) {
         yield progressMetrics;
     }
+    await populateLatestDlcListings(nexus);
     nexus.userPrefs.PSNP.lastUpdatedAllGames = Date.now();
     await nexus.userPrefs.save();
     return totals;
 }
-async function populateRecentTrophyListDetails() {
+async function populateLatestDlcListings(nexus) {
+    const latestGameIdsWithDlc = await fetchLatestGameIdsWithDlc();
+    const gameDetails = (await (0,_shared_services_mongoApi__WEBPACK_IMPORTED_MODULE_2__.findItems)({
+        collection: 'games',
+        projection: { metaData: 1, trophyGroups: 1 },
+        limit: 50,
+        offset: 0,
+        filter: {
+            _id: {
+                $in: latestGameIdsWithDlc,
+            },
+        },
+    }));
+    console.log(gameDetails);
+    await nexus.idb.upsert('psnp_games', gameDetails);
+}
+async function fetchLatestGameIdsWithDlc() {
     const latestDlcPage = await (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.fetchGamesOrDLCPage)(1, 'dlc');
     const dlcListings = (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.parseCatalogDLCs)(latestDlcPage);
+    const gameIdToDlc = {};
+    const gameIdsToFetchDetailsFor = (0,_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_4__.filterOutSeenItems)(dlcListings, gameIdToDlc).map(dlc => dlc._id);
+    return gameIdsToFetchDetailsFor;
 }
 
 
@@ -4285,6 +4305,7 @@ async function populateRecentTrophyListDetails() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   fetchGamesOrDLCPage: () => (/* binding */ fetchGamesOrDLCPage),
+/* harmony export */   filterOutSeenItems: () => (/* binding */ filterOutSeenItems),
 /* harmony export */   parseCatalogDLCs: () => (/* binding */ parseCatalogDLCs),
 /* harmony export */   updateAllGamesLocally: () => (/* binding */ updateAllGamesLocally)
 /* harmony export */ });
