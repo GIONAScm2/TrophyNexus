@@ -358,10 +358,6 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		// debugAll: true
-		// debugTable: true,
-		// debugHeaders: true,
-		// debugColumns: true,
 	});
 
 	const updatePlatRadioFilter = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => {

@@ -1,8 +1,9 @@
 import {useMemo, useState} from 'preact/hooks';
 import {DbGame} from '../../models/dbGame';
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table';
-import { SeriesRowName } from '../series_table/SeriesRow';
+import {SeriesRowName} from '../series_table/SeriesRow';
 import * as css from '../css/SeriesTable';
+import {GameRowImage, GameRowName, GameRowPlatform, GameRowTrophyCount} from './GameRow';
 
 interface GamesTableProps {
 	allGames: DbGame[];
@@ -12,13 +13,13 @@ const col = createColumnHelper<DbGame>();
 
 export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}) => {
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
-	
+
 	const columns = useMemo(() => {
 		return [
-			col.accessor('name', {
-				size: 350,
-				maxSize: 400,
-				cell: ({row}) => <SeriesRowName series={row.original} />,
+			col.accessor('_id', {
+				size: 80,
+				maxSize: 100,
+				cell: ({row}) => <GameRowImage game={row.original} />,
 				header: h => (
 					<>
 						{/* <FilterIcon headerContext={h} /> */}
@@ -27,6 +28,29 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 					</>
 				),
 				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
+			}),
+			col.accessor('name', {
+				size: 350,
+				maxSize: 400,
+				cell: ({row}) => <GameRowName game={row.original} />,
+				header: h => (
+					<>
+						{/* <FilterIcon headerContext={h} /> */}
+						<span style={{margin: '0px 5px'}}>Name</span>
+						{/* <SortingIcon column={h.column} /> */}
+					</>
+				),
+				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
+			}),
+			col.accessor('platforms', {
+				size: 30,
+				maxSize: 50,
+				cell: ({row}) => <GameRowPlatform game={row.original} />,
+			}),
+			col.accessor('numTrophies', {
+				size: 250,
+				maxSize: 300,
+				cell: ({row}) => <GameRowTrophyCount game={row.original} />,
 			}),
 		];
 	}, []);
@@ -54,9 +78,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 			</div>
 			<div className="p-2">
 				{/* START OF INFO PANEL */}
-				<div style={{display: 'flex'}}>
-		
-				</div>
+				<div style={{display: 'flex'}}></div>
 
 				{/* END OF INFO PANEL */}
 
@@ -80,9 +102,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 													{flexRender(header.column.columnDef.header, header.getContext())}
 												</div>
 												{header.column.getCanFilter() ? (
-													<div>
-														{/* <Filter column={header.column} table={table} /> */}
-													</div>
+													<div>{/* <Filter column={header.column} table={table} /> */}</div>
 												) : null}
 											</>
 										)}

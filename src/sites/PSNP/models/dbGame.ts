@@ -66,7 +66,9 @@ export class DbGame extends PsnpEntity implements GameDocIDB {
 	metaData?: IMetadataFields | undefined;
 	numOwners?: number | undefined;
 	stackIds: number[];
-
+	get _idAndName() {
+		return `${this._id}-${this._nameSerialized}`;
+	}
 	get url() {
 		return `https://psnprofiles.com/trophies/${this._id}-${this._nameSerialized}`;
 	}
@@ -107,10 +109,10 @@ export class DbGame extends PsnpEntity implements GameDocIDB {
 		this.points = game.points;
 		this.numTrophies = game.numTrophies;
 		// User progress
-		this.userTrophyCount = game.userTrophyCount;
-		this.userPoints = game.userPoints;
-		this.userNumTrophies = game.userNumTrophies;
-		this.percent = game.percent;
+		this.userTrophyCount = game.userTrophyCount ?? {bronze: 0, silver: 0, gold: 0, platinum: 0};
+		this.userPoints = game.userPoints ?? 0;
+		this.userNumTrophies = game.userNumTrophies ?? 0;
+		this.percent = game.percent ?? 0;
 		this.latestTrophy = game.latestTrophy;
 		this.completionStatus = game.completionStatus;
 		this.completionSpeed = game.completionSpeed;
