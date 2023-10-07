@@ -3,7 +3,8 @@ import {DbGame} from '../../models/dbGame';
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import {SeriesRowName} from '../series_table/SeriesRow';
 import * as css from '../css/SeriesTable';
-import {GameRowImage, GameRowName, GameRowPlatform, GameRowTrophyCount} from './GameRow';
+import {GameRowImage, GameRowName, GameRowPlatform} from './GameRow';
+import {TrophyCountRow} from '../TrophyCount';
 
 interface GamesTableProps {
 	allGames: DbGame[];
@@ -47,10 +48,10 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 				maxSize: 50,
 				cell: ({row}) => <GameRowPlatform game={row.original} />,
 			}),
-			col.accessor('numTrophies', {
-				size: 250,
-				maxSize: 300,
-				cell: ({row}) => <GameRowTrophyCount game={row.original} />,
+			col.accessor('trophyCount', {
+				size: 100,
+				maxSize: 150,
+				cell: ({row}) => <TrophyCountRow entity={row.original} />,
 			}),
 		];
 	}, []);

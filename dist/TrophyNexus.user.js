@@ -2891,54 +2891,48 @@ const PSNP = ({ children, nexus }) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   TrophyCountIcons: () => (/* binding */ TrophyCountIcons),
-/* harmony export */   TrophyCountMetrics: () => (/* binding */ TrophyCountMetrics)
+/* harmony export */   TrophyCountRow: () => (/* binding */ TrophyCountRow)
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faTrophy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faTrophy.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faStar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faStar.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faTrophy__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faTrophy.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faStar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faStar.js");
+/* harmony import */ var _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/css/TrophyCount.ts");
 
 
 
 
-const tcIconCSS = {
-    display: 'grid',
-    gridTemplateRows: 'auto auto',
-    gridTemplateColumns: 'auto auto',
-    alignItems: 'center',
-    justifyItems: 'center',
-    columnGap: '3px',
+
+const TrophyCountRow = ({ entity }) => {
+    const fallback = {
+        bronze: 0,
+        silver: 0,
+        gold: 0,
+        platinum: 0,
+    };
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-cell", style: _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.tcCell, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(GradeIconGroup, { tcAll: entity.trophyCount ?? fallback, tcUser: entity.userTrophyCount }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(MetricIconGroup, { numTrophies: entity.numTrophies ?? 0, numPoints: entity.points ?? 0, userNumTrophies: entity.userNumTrophies, userNumPoints: entity.userPoints })] }));
 };
-const TrophyCountIcon = ({ grade, total, earned }) => {
-    const css = {
-        bronze: { color: '#C46438', backgroundPosition: '0 -60px' },
-        silver: { color: '#777777', backgroundPosition: '0 -40px' },
-        gold: { color: '#C2903E', backgroundPosition: '0 -20px' },
-        platinum: { color: '#667FB2', backgroundPosition: '0 0px' },
-    }[grade];
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-icon", style: tcIconCSS, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: `icon-sprite ${grade}`, style: { height: '12px', width: '14px', gridRow: 'span 2', ...css } }), typeof earned === 'number' && (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: earned.toLocaleString() }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: typeof earned === 'number' ? { borderTop: '1px solid black' } : {}, children: total.toLocaleString() })] }));
+const GradeIconGroup = ({ tcAll, tcUser }) => {
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tcGradeIconGroup", style: _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.tcGradeIconGroup, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "platinum", total: tcAll.platinum, earned: tcUser?.platinum }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "gold", total: tcAll.gold, earned: tcUser?.gold }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "silver", total: tcAll.silver, earned: tcUser?.silver }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "bronze", total: tcAll.bronze, earned: tcUser?.bronze })] }));
 };
-const tcIconsCSS = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, auto)',
-    width: 'min-content',
-    gap: '10px',
+const MetricIconGroup = ({ numTrophies, numPoints, userNumPoints, userNumTrophies }) => {
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tcMetricIconGroup", style: _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.tcMetricIconGroup, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "numTrophies", total: numTrophies, earned: userNumTrophies }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "numPoints", total: numPoints, earned: userNumPoints })] }));
 };
-const TrophyCountIcons = ({ tcAll, tcUser }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-icons", style: tcIconsCSS, children: [!!tcAll.platinum && (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TrophyCountIcon, { grade: "platinum", total: tcAll.platinum, earned: tcUser?.platinum }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TrophyCountIcon, { grade: "gold", total: tcAll.gold, earned: tcUser?.gold }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TrophyCountIcon, { grade: "silver", total: tcAll.silver, earned: tcUser?.silver }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(TrophyCountIcon, { grade: "bronze", total: tcAll.bronze, earned: tcUser?.bronze })] }));
-};
-const tcMetricsCSS = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, auto)',
-    alignItems: 'center',
-    columnGap: '20px',
-    fontSize: '1.2rem',
-    lineHeight: '1.0rem',
-    color: '#666666',
-};
-const TrophyCountMetrics = ({ numTrophies, numPoints, userNumPoints, userNumTrophies, }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-metrics", style: tcMetricsCSS, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-num-trophies", style: { ...tcIconCSS, alignItems: 'center', lineHeight: '1.5rem' }, children: [typeof userNumTrophies === 'number' && (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { gridColumn: '1' }, children: userNumTrophies.toLocaleString() }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { ...(typeof userNumTrophies === 'number' && { borderTop: '1px solid black' }), gridColumn: '1' }, children: numTrophies.toLocaleString() }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faTrophy__WEBPACK_IMPORTED_MODULE_2__.faTrophy, style: { gridArea: '1 / 2 / 3 / 3', height: '50%' } })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-num-points", style: { ...tcIconCSS, alignItems: 'center', lineHeight: '1.5rem' }, children: [typeof userNumPoints === 'number' && (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { gridColumn: '1' }, children: userNumPoints.toLocaleString() }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { ...(typeof userNumPoints === 'number' && { borderTop: '1px solid black' }), gridColumn: '1' }, children: numPoints.toLocaleString() }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faStar__WEBPACK_IMPORTED_MODULE_3__.faStar, style: { gridArea: '1 / 2 / 3 / 3', height: '50%', color: 'limegreen' } })] })] }));
+const IconCount = ({ iconType, total, grade, earned }) => {
+    let iconSprite;
+    if (iconType === 'grade' && grade) {
+        const trophyGradeCSS = _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.getTrophyGradeCSS(grade);
+        iconSprite = ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: `icon-sprite ${grade}`, style: { ..._css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.iconCountSprite(iconType, !!earned), ...trophyGradeCSS } }));
+    }
+    else if (iconType === 'numTrophies') {
+        iconSprite = (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faTrophy__WEBPACK_IMPORTED_MODULE_3__.faTrophy, style: { ..._css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.iconCountSprite(iconType, !!earned) } });
+    }
+    else if (iconType === 'numPoints') {
+        iconSprite = (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faStar__WEBPACK_IMPORTED_MODULE_4__.faStar, style: { ..._css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.iconCountSprite(iconType, !!earned) } });
+    }
+    if (grade === 'platinum' && total === 0)
+        return (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {});
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: `iconCount`, style: _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.iconCount(iconType), children: [iconSprite, !!earned && (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: earned.toLocaleString() }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: earned ? { borderTop: '1px solid black' } : {}, children: total.toLocaleString() })] }));
 };
 
 
@@ -3188,6 +3182,70 @@ const inputDebounced = {
 
 /***/ }),
 
+/***/ "./src/sites/PSNP/components/css/TrophyCount.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getTrophyGradeCSS: () => (/* binding */ getTrophyGradeCSS),
+/* harmony export */   iconCount: () => (/* binding */ iconCount),
+/* harmony export */   iconCountSprite: () => (/* binding */ iconCountSprite),
+/* harmony export */   tcCell: () => (/* binding */ tcCell),
+/* harmony export */   tcGradeIconGroup: () => (/* binding */ tcGradeIconGroup),
+/* harmony export */   tcMetricIconGroup: () => (/* binding */ tcMetricIconGroup)
+/* harmony export */ });
+function getTrophyGradeCSS(grade) {
+    const trophyGradeCSS = {
+        bronze: { color: '#C46438', backgroundPosition: '0 -60px' },
+        silver: { color: '#777777', backgroundPosition: '0 -40px' },
+        gold: { color: '#C2903E', backgroundPosition: '0 -20px' },
+        platinum: { color: '#667FB2', backgroundPosition: '0 0px' },
+    };
+    return trophyGradeCSS[grade];
+}
+const tcCell = {
+    display: 'grid',
+    gridTemplateRows: '1fr 1fr',
+    justifyItems: 'center',
+    rowGap: '1rem',
+};
+const tcGradeIconGroup = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, auto)',
+    alignItems: 'center',
+    gap: '1rem',
+};
+const tcMetricIconGroup = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, auto)',
+    alignItems: 'center',
+    columnGap: '20px',
+    fontSize: '1.2rem',
+    lineHeight: '1.0rem',
+    color: '#666666',
+};
+const iconCount = (iconType) => ({
+    display: 'grid',
+    gridTemplateRows: 'repeat(2, min-content)',
+    gridTemplateColumns: 'repeat(2, min-content)',
+    alignItems: 'center',
+    justifyItems: 'center',
+    justifyContent: 'center',
+    columnGap: '3px',
+    width: '100%',
+    lineHeight: iconType === 'grade' ? 'auto' : '1.5rem',
+});
+const iconCountSprite = (iconType, earnedTrophies) => ({
+    gridRow: 'span 2',
+    height: earnedTrophies ? '50%' : '100%',
+    width: iconType === 'grade' ? '14px' : 'auto',
+    color: iconType === 'numPoints' ? 'limegreen' : 'auto',
+});
+
+
+/***/ }),
+
 /***/ "./src/sites/PSNP/components/css/tooltip.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -3236,30 +3294,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   GameRowImage: () => (/* binding */ GameRowImage),
 /* harmony export */   GameRowName: () => (/* binding */ GameRowName),
-/* harmony export */   GameRowPlatform: () => (/* binding */ GameRowPlatform),
-/* harmony export */   GameRowTrophyCount: () => (/* binding */ GameRowTrophyCount)
+/* harmony export */   GameRowPlatform: () => (/* binding */ GameRowPlatform)
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
-/* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
-
 
 const GameRowImage = ({ game: g }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { href: `/trophies/${g._idAndName}`, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("picture", { class: "game", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", { src: g.src }) }) }) }));
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { href: `/trophies/${g._idAndName}`, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("picture", { class: "game", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", { src: g.src }) }) }));
 };
 const GameRowName = ({ game: g }) => {
     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("td", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "ellipsis", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { class: "title", href: `/trophies/${g._idAndName}`, children: g.name }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "small-info", style: "margin-top: 4px;", children: g.numOwners && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("b", { children: g.numOwners.toLocaleString() }), " Owners"] })) })] }));
 };
 const GameRowPlatform = ({ game: g }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "separator right", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "platforms", style: "width:100%", children: g.platforms.map(platform => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: `tag platform ${platform.toLowerCase()}`, children: platform }))) }) }) }));
-};
-const GameRowTrophyCount = ({ game: g }) => {
-    const fallbackTrophyCount = {
-        bronze: 0,
-        silver: 0,
-        gold: 0,
-        platinum: 0,
-    };
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-cell", style: { display: 'grid', gridTemplateRows: '1fr 1fr', justifyItems: 'center', rowGap: '1rem' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_1__.TrophyCountIcons, { tcAll: g.trophyCount, tcUser: g.userTrophyCount }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_1__.TrophyCountMetrics, { numTrophies: g.numTrophies, numPoints: g.points, userNumTrophies: g.userNumTrophies, userNumPoints: g.userPoints })] }));
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "separator right", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "platforms", style: "width:100%", children: g.platforms.map(platform => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: `tag platform ${platform.toLowerCase()}`, children: platform }))) }) }));
 };
 
 
@@ -3275,16 +3321,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
 /* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
 /* harmony import */ var _GameRow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/games_table/GameRow.tsx");
+/* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
 
 
 
 
 
-const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_4__.createColumnHelper)();
+
+const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.createColumnHelper)();
 const GamesTable = ({ allGames }) => {
     const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(50);
     const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
@@ -3308,23 +3356,23 @@ const GamesTable = ({ allGames }) => {
                 maxSize: 50,
                 cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_3__.GameRowPlatform, { game: row.original }),
             }),
-            col.accessor('numTrophies', {
-                size: 250,
-                maxSize: 300,
-                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_3__.GameRowTrophyCount, { game: row.original }),
+            col.accessor('trophyCount', {
+                size: 100,
+                maxSize: 150,
+                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_4__.TrophyCountRow, { entity: row.original }),
             }),
         ];
     }, []);
-    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.useReactTable)({
+    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.useReactTable)({
         defaultColumn: {
             minSize: 0,
             size: 0,
         },
         data: allGames,
         columns,
-        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_4__.getCoreRowModel)(),
+        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.getCoreRowModel)(),
     });
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {})) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {})) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
                                     .getRowModel()
                                     .rows.slice(0, numRowsToShow)
                                     .map(row => {
@@ -3332,7 +3380,7 @@ const GamesTable = ({ allGames }) => {
                                             return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { style: {
                                                     ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.td,
                                                     width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
-                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
+                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
                                         }) }, row.id));
                                 }) })] })] })] }));
 };
@@ -3348,15 +3396,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SeriesRowGames: () => (/* binding */ SeriesRowGames),
 /* harmony export */   SeriesRowName: () => (/* binding */ SeriesRowName),
-/* harmony export */   SeriesRowStages: () => (/* binding */ SeriesRowStages),
-/* harmony export */   SeriesRowTrophyCount: () => (/* binding */ SeriesRowTrophyCount)
+/* harmony export */   SeriesRowStages: () => (/* binding */ SeriesRowStages)
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var _shared_components_ProgressBar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/components/ProgressBar.tsx");
 /* harmony import */ var _util_dates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/util/dates.tsx");
-/* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
-/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
-
+/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
 
 
 
@@ -3366,13 +3411,10 @@ const SeriesRowName = ({ series: s }) => {
 };
 const SeriesRowStages = ({ series: s }) => {
     const stagePercentage = s.userPercentStagesCompleted;
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { class: "separator", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "typo-top", style: _css_SeriesRow__WEBPACK_IMPORTED_MODULE_4__.fractionInner, children: `${s.userNumStagesCompleted}/${s.userNumStagesTotal}` }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_shared_components_ProgressBar__WEBPACK_IMPORTED_MODULE_1__["default"], { progress: stagePercentage / 100, children: `${stagePercentage}%` })] }) }));
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { class: "separator", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "typo-top", style: _css_SeriesRow__WEBPACK_IMPORTED_MODULE_3__.fractionInner, children: `${s.userNumStagesCompleted}/${s.userNumStagesTotal}` }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_shared_components_ProgressBar__WEBPACK_IMPORTED_MODULE_1__["default"], { progress: stagePercentage / 100, children: `${stagePercentage}%` })] }) }));
 };
 const SeriesRowGames = ({ series: s }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { class: "separator", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "typo-top", style: _css_SeriesRow__WEBPACK_IMPORTED_MODULE_4__.fractionInner, children: `${s.userNumGamesCompleted}/${s.userNumGamesTotal}` }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_shared_components_ProgressBar__WEBPACK_IMPORTED_MODULE_1__["default"], { progress: s.userPercentGamesCompleted / 100, children: `${s.userPercentGamesCompleted}%` })] }) }));
-};
-const SeriesRowTrophyCount = ({ series: s }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-cell", style: { display: 'grid', gridTemplateRows: '1fr 1fr', justifyItems: 'center', rowGap: '1rem' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_3__.TrophyCountIcons, { tcAll: s.trophyCount, tcUser: s.userTrophyCount }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_3__.TrophyCountMetrics, { numTrophies: s.numTrophies, numPoints: s.points, userNumTrophies: s.userNumTrophies, userNumPoints: s.userPoints })] }));
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { class: "separator", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "typo-top", style: _css_SeriesRow__WEBPACK_IMPORTED_MODULE_3__.fractionInner, children: `${s.userNumGamesCompleted}/${s.userNumGamesTotal}` }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_shared_components_ProgressBar__WEBPACK_IMPORTED_MODULE_1__["default"], { progress: s.userPercentGamesCompleted / 100, children: `${s.userPercentGamesCompleted}%` })] }) }));
 };
 
 
@@ -3388,17 +3430,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var _SeriesRow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/components/series_table/SeriesRow.tsx");
-/* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
-/* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSort.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortUp.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortDown.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faFilter.js");
-/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
-/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
+/* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
+/* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
+/* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSort.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortUp.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortDown.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faFilter.js");
+/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
+/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
 
 
 
@@ -3411,7 +3454,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.createColumnHelper)();
+
+const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.createColumnHelper)();
 const renderCheckboxFilter = props => {
     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "filter-bool", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("label", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "checkbox", checked: props.state, onChange: e => props.setState(e.currentTarget.checked), style: { marginRight: '5px' } }), props.labelText] }) }));
 };
@@ -3419,24 +3463,24 @@ const SortingIcon = ({ column, css = {} }) => {
     if (!column)
         return null;
     const sortDir = column.getIsSorted();
-    const icon = !sortDir ? _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_8__.faSort : sortDir === 'asc' ? _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_9__.faSortUp : _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_10__.faSortDown;
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { onClick: column.getToggleSortingHandler(), children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FontAwesomeIcon, { icon: icon, style: { color: sortDir ? 'cornflowerblue' : '', ...css } }) }));
+    const icon = !sortDir ? _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_9__.faSort : sortDir === 'asc' ? _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_10__.faSortUp : _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_11__.faSortDown;
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { onClick: column.getToggleSortingHandler(), children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_5__.FontAwesomeIcon, { icon: icon, style: { color: sortDir ? 'cornflowerblue' : '', ...css } }) }));
 };
 const FilterIcon = ({ headerContext }) => {
     const isFiltered = headerContext.column.getIsFiltered();
-    return isFiltered ? (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_11__.faFilter }) }) : null;
+    return isFiltered ? (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_5__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_12__.faFilter }) }) : null;
 };
 const SeriesTable = ({ allSeries, prefs }) => {
-    const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)(50);
-    const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)([{ id: 'userLatestTrophy', desc: true }]);
-    const [stagesCellSortKey, setStagesCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)('userNumStagesCompleted');
-    const [gamesCellSortKey, setGamesCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)('userNumGamesCompleted');
-    const [trophyCellSortKey, setTrophyCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)(['userNumTrophies', null]);
-    const [miscSortKey, setMiscSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)('userLatestTrophy');
-    const [radioValPlats, setRadioValPlats] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)(prefs.PSNP.bools.platifySeriesHideNonplats.value ? 1 : null);
-    const [radioValCompletion, setRadioValCompletion] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
-    const [columnFilters, setColumnFilters] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)(() => [{ id: 'bestCompleted', value: radioValPlats }]);
-    const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useMemo)(() => {
+    const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)(50);
+    const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)([{ id: 'userLatestTrophy', desc: true }]);
+    const [stagesCellSortKey, setStagesCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)('userNumStagesCompleted');
+    const [gamesCellSortKey, setGamesCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)('userNumGamesCompleted');
+    const [trophyCellSortKey, setTrophyCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)(['userNumTrophies', null]);
+    const [miscSortKey, setMiscSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)('userLatestTrophy');
+    const [radioValPlats, setRadioValPlats] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)(prefs.PSNP.bools.platifySeriesHideNonplats.value ? 1 : null);
+    const [radioValCompletion, setRadioValCompletion] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)(null);
+    const [columnFilters, setColumnFilters] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)(() => [{ id: 'bestCompleted', value: radioValPlats }]);
+    const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => {
         return [
             col.accessor(x => '', {
                 id: 'bestCompleted',
@@ -3502,7 +3546,7 @@ const SeriesTable = ({ allSeries, prefs }) => {
                             gridTemplateRows: 'repeat(5, 1fr)',
                             justifyItems: 'center',
                             alignItems: 'center',
-                        }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_6__.fractionInner, fontSize: '30px', gridArea: '1 / 1 / 5 / 2' }, children: index }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { gridArea: '5 / 1 / 6 / 2' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("b", { children: "#" }), row.original._id] })] }));
+                        }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_7__.fractionInner, fontSize: '30px', gridArea: '1 / 1 / 5 / 2' }, children: index }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { gridArea: '5 / 1 / 6 / 2' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("b", { children: "#" }), row.original._id] })] }));
                 },
             }),
             col.accessor('name', {
@@ -3544,7 +3588,7 @@ const SeriesTable = ({ allSeries, prefs }) => {
                 id: `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`,
                 size: 250,
                 maxSize: 300,
-                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SeriesRow__WEBPACK_IMPORTED_MODULE_1__.SeriesRowTrophyCount, { series: row.original }),
+                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.TrophyCountRow, { entity: row.original }),
                 header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Trophies" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SortingIcon, { column: h.column }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { marginTop: '10px' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("select", { value: JSON.stringify(trophyCellSortKey), onChange: e => {
                                     const newValue = JSON.parse(e.currentTarget.value);
                                     setTrophyCellSortKey(newValue);
@@ -3564,7 +3608,7 @@ const SeriesTable = ({ allSeries, prefs }) => {
             }),
         ];
     }, [sorting, stagesCellSortKey, gamesCellSortKey, trophyCellSortKey]);
-    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.useReactTable)({
+    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.useReactTable)({
         defaultColumn: {
             minSize: 0,
             size: 0,
@@ -3582,13 +3626,13 @@ const SeriesTable = ({ allSeries, prefs }) => {
             columnFilters,
         },
         onColumnFiltersChange: setColumnFilters,
-        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFilteredRowModel)(),
-        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFacetedRowModel)(),
-        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFacetedUniqueValues)(),
-        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFacetedMinMaxValues)(),
+        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFilteredRowModel)(),
+        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFacetedRowModel)(),
+        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFacetedUniqueValues)(),
+        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFacetedMinMaxValues)(),
         onSortingChange: setSorting,
-        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getCoreRowModel)(),
-        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getSortedRowModel)(),
+        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getCoreRowModel)(),
+        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getSortedRowModel)(),
     });
     const updatePlatRadioFilter = (e) => {
         const val = JSON.parse(e.currentTarget.value);
@@ -3608,12 +3652,12 @@ const SeriesTable = ({ allSeries, prefs }) => {
             return updated;
         });
     };
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Series" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Series" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.infoPanel, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
                                                         const val = e.currentTarget.value;
-                                                        const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_5__.parseNum)(val);
+                                                        const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_6__.parseNum)(val);
                                                         const numRows = Number.isNaN(num) ? allSeries.length : num;
                                                         setNumRowsToShow(numRows);
-                                                    }, children: ['50', '100', '250', '500', '1000', `${allSeries.length}`].map(num => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: num, children: num }))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "num-rows-select", children: " Rows" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { id: "series-count", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_6__.fractionInner, marginRight: '20px' }, children: [table.getFilteredRowModel().rows.length, "/", allSeries.length] }) })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col2", id: "sorting-presets", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Sorting Presets:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                                                    }, children: ['50', '100', '250', '500', '1000', `${allSeries.length}`].map(num => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: num, children: num }))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "num-rows-select", children: " Rows" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { id: "series-count", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_7__.fractionInner, marginRight: '20px' }, children: [table.getFilteredRowModel().rows.length, "/", allSeries.length] }) })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col2", id: "sorting-presets", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.infoPanel2 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Sorting Presets:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
                                                 display: 'grid',
                                                 gridTemplateRows: 'auto',
                                                 gridTemplateColumns: 'min-content auto',
@@ -3622,7 +3666,7 @@ const SeriesTable = ({ allSeries, prefs }) => {
                                             }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("select", { value: miscSortKey, onChange: e => {
                                                         setMiscSortKey(e.currentTarget.value);
                                                         setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
-                                                    }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'userLatestTrophy', children: "Date Played" }, miscSortKey), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'bestCompleted', children: "Best Completions" }, miscSortKey)] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                                                    }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'userLatestTrophy', children: "Date Played" }, miscSortKey), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'bestCompleted', children: "Best Completions" }, miscSortKey)] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
                                                 display: 'grid',
                                                 gridTemplateRows: 'repeat(1, auto)',
                                                 gridTemplateColumns: 'repeat(6, min-content)',
@@ -3634,24 +3678,24 @@ const SeriesTable = ({ allSeries, prefs }) => {
                                                 gridTemplateColumns: 'repeat(6, min-content)',
                                                 columnGap: '5px',
                                                 fontSize: '16px',
-                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "completion", value: "null", checked: radioValCompletion === null, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "incomplete", name: "completion", value: "0", checked: radioValCompletion === 0, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "incomplete", children: "Incomplete" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "completed", name: "completion", value: "1", checked: radioValCompletion === 1, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "completed", children: "Completed" })] })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Filter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "completion", value: "null", checked: radioValCompletion === null, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "incomplete", name: "completion", value: "0", checked: radioValCompletion === 0, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "incomplete", children: "Incomplete" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "completed", name: "completion", value: "1", checked: radioValCompletion === 1, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "completed", children: "Completed" })] })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Filter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
                                     .getRowModel()
                                     .rows.slice(0, numRowsToShow)
                                     .map(row => {
                                     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: row.getVisibleCells().map(cell => {
                                             return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { style: {
-                                                    ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.td,
+                                                    ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.td,
                                                     width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
-                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
+                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
                                         }) }, row.id));
                                 }) })] })] })] }));
 };
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 300, ...props }) => {
-    const [value, setValue] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useState)(initialValue);
-    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
+    const [value, setValue] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)(initialValue);
+    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
         setValue(initialValue);
     }, [initialValue]);
-    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
+    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
         const timeout = setTimeout(() => {
             onChange(value);
         }, debounce);
@@ -3662,7 +3706,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 300, ...prop
 function Filter({ column, table }) {
     const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
     const columnFilterValue = column.getFilterValue();
-    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.inputDebounced, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.inputDebounced })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} rows`, className: "w-36 border shadow rounded", list: column.id + 'list', style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.inputDebounced }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
+    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.inputDebounced, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.inputDebounced })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} rows`, className: "w-36 border shadow rounded", list: column.id + 'list', style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.inputDebounced }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
 }
 
 

@@ -1,7 +1,6 @@
 import ProgressBar from '../../../../shared/components/ProgressBar';
 import {DbSeries} from '../../models/dbSeries';
 import {msToDateString} from '../../util/dates';
-import {TrophyCountIcons, TrophyCountMetrics} from '../TrophyCount';
 import * as _css from '../css/SeriesRow';
 
 interface SeriesRowProps {
@@ -53,20 +52,5 @@ export const SeriesRowGames: preact.FunctionComponent<SeriesRowProps> = ({series
 				<ProgressBar progress={s.userPercentGamesCompleted / 100}>{`${s.userPercentGamesCompleted}%`}</ProgressBar>
 			</span>
 		</>
-	);
-};
-
-/** A 1x2 grid housing one row for the trophy icons and one for the count of trophies & points. */
-export const SeriesRowTrophyCount: preact.FunctionComponent<SeriesRowProps> = ({series: s}) => {
-	return (
-		<div class="tc-cell" style={{display: 'grid', gridTemplateRows: '1fr 1fr', justifyItems: 'center', rowGap: '1rem'}}>
-			<TrophyCountIcons tcAll={s.trophyCount} tcUser={s.userTrophyCount} />
-			<TrophyCountMetrics
-				numTrophies={s.numTrophies}
-				numPoints={s.points}
-				userNumTrophies={s.userNumTrophies}
-				userNumPoints={s.userPoints}
-			/>
-		</div>
 	);
 };

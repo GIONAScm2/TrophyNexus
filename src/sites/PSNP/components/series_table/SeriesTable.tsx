@@ -1,5 +1,6 @@
 import {DbSeries} from '../../models/dbSeries';
-import {SeriesRowGames, SeriesRowName, SeriesRowStages, SeriesRowTrophyCount} from './SeriesRow';
+import {SeriesRowGames, SeriesRowName, SeriesRowStages} from './SeriesRow';
+import {TrophyCountRow} from '../TrophyCount';
 import * as css from '../css/SeriesTable';
 import {
 	Column,
@@ -282,7 +283,7 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 					id: `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`,
 					size: 250,
 					maxSize: 300,
-					cell: ({row}) => <SeriesRowTrophyCount series={row.original} />,
+					cell: ({row}) => <TrophyCountRow entity={row.original} />,
 					header: h => (
 						<>
 							<FilterIcon headerContext={h} />
