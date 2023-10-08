@@ -1,16 +1,15 @@
-import { Column, Table } from "@tanstack/react-table";
-import { JSX } from "preact";
-import { useState, useEffect } from "preact/hooks";
-import { JSXInternal } from "preact/src/jsx";
-import { DbSeries } from "../../models/dbSeries";
-
+import {Column, Table} from '@tanstack/react-table';
+import {JSX} from 'preact';
+import {useState, useEffect} from 'preact/hooks';
+import {JSXInternal} from 'preact/src/jsx';
+import {DbSeries} from '../../models/dbSeries';
+import {DbGame} from '../../models/dbGame';
 
 const inputDebouncedCSS = {
 	fontWeight: 'normal',
 	fontSize: '14px',
 	marginTop: '10px',
 } as const satisfies JSXInternal.CSSProperties;
-
 
 interface DebouncedInputProps extends Omit<JSX.IntrinsicElements['input'], 'onChange'> {
 	value: string | number;
@@ -40,7 +39,13 @@ const DebouncedInput: preact.FunctionComponent<DebouncedInputProps> = ({
 	return <input {...props} value={value} onInput={(e: any) => setValue(e.target.value)} />;
 };
 
-export function ColumnFilter({column, table}: {column: Column<DbSeries>; table: Table<DbSeries>}) {
+export function ColumnFilter({
+	column,
+	table,
+}: {
+	column: Column<DbSeries> | Column<DbGame>;
+	table: Table<DbSeries> | Table<DbGame>;
+}) {
 	const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
 	const columnFilterValue = column.getFilterValue();
 

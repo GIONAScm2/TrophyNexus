@@ -11,6 +11,8 @@ import {faFilter} from '@fortawesome/free-solid-svg-icons/faFilter';
 import {TrophyCountRow} from '../../TrophyCount';
 import {SeriesRowName, SeriesRowStages, SeriesRowGames} from './SeriesRow';
 import {useState, useMemo, StateUpdater} from 'preact/hooks';
+import { DbGame } from '../../../models/dbGame';
+import { SortingIcon } from '../SortingIcon';
 
 type StagesCellSortKey = keyof Pick<
 	DbSeries,
@@ -29,22 +31,7 @@ type TrophyCellSortKey<K extends KeyType = KeyType> = K extends 'trophyCount' | 
 	: [K, null];
 export type MiscSortKey = 'userLatestTrophy' | 'bestCompleted';
 
-interface SortingIconProps {
-	column: Column<DbSeries, unknown> | undefined;
-	css?: JSXInternal.CSSProperties;
-}
-export const SortingIcon: preact.FunctionComponent<SortingIconProps> = ({column, css = {}}) => {
-	if (!column) return null;
 
-	const sortDir = column.getIsSorted();
-	const icon = !sortDir ? faSort : sortDir === 'asc' ? faSortUp : faSortDown;
-
-	return (
-		<span onClick={column.getToggleSortingHandler()}>
-			<FontAwesomeIcon icon={icon} style={{color: sortDir ? 'cornflowerblue' : '', ...css}} />
-		</span>
-	);
-};
 const FilterIcon: preact.FunctionComponent<{headerContext: HeaderContext<DbSeries, unknown>}> = ({headerContext}) => {
 	const isFiltered = headerContext.column.getIsFiltered();
 	return isFiltered ? <span>{<FontAwesomeIcon icon={faFilter} />}</span> : null;
@@ -120,8 +107,8 @@ export function useSeriesTableColumns({sorting, setColumnFilters, numRowsToShow}
 				},
 			}),
 			col.accessor('_id', {
-				size: 80,
-				maxSize: 100,
+				size: 100,
+				maxSize: 150,
 				enableColumnFilter: false,
 				header: h => {
 					return (
