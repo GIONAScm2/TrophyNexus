@@ -1,5 +1,5 @@
 import {useMemo, useState} from 'preact/hooks';
-import {DbGame} from '../../models/dbGame';
+import {DbGame} from '../../../models/dbGame';
 import {
 	ColumnFiltersState,
 	SortingState,
@@ -10,9 +10,9 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-import * as css from '../css/SeriesTable';
+import * as css from '../../css/SeriesTable';
 import { GameRowMain} from './GameRow';
-import {TrophyCountRow} from '../TrophyCount';
+import {TrophyCountRow} from '../../TrophyCount';
 
 interface GamesTableProps {
 	allGames: DbGame[];

@@ -3297,7 +3297,101 @@ const tooltipHoverStyle = {
 
 /***/ }),
 
-/***/ "./src/sites/PSNP/components/games_table/GameRow.tsx":
+/***/ "./src/sites/PSNP/components/tables/ColumnFilter.tsx":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ColumnFilter: () => (/* binding */ ColumnFilter)
+/* harmony export */ });
+/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
+/* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
+
+
+const inputDebouncedCSS = {
+    fontWeight: 'normal',
+    fontSize: '14px',
+    marginTop: '10px',
+};
+const DebouncedInput = ({ value: initialValue, onChange, debounce = 300, ...props }) => {
+    const [value, setValue] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(initialValue);
+    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+        setValue(initialValue);
+    }, [initialValue]);
+    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+        const timeout = setTimeout(() => {
+            onChange(value);
+        }, debounce);
+        return () => clearTimeout(timeout);
+    }, [value]);
+    return (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { ...props, value: value, onInput: (e) => setValue(e.target.value) });
+};
+function ColumnFilter({ column, table, }) {
+    const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
+    const columnFilterValue = column.getFilterValue();
+    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ...inputDebouncedCSS, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: inputDebouncedCSS })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} rows`, className: "w-36 border shadow rounded", list: column.id + 'list', style: inputDebouncedCSS }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
+}
+
+
+/***/ }),
+
+/***/ "./src/sites/PSNP/components/tables/FilterIcon.tsx":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FilterIcon: () => (/* binding */ FilterIcon)
+/* harmony export */ });
+/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faFilter.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
+
+
+
+const FilterIcon = ({ headerContext }) => {
+    const isFiltered = headerContext.column.getIsFiltered();
+    return isFiltered ? (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_2__.faFilter }) }) : null;
+};
+
+
+/***/ }),
+
+/***/ "./src/sites/PSNP/components/tables/SortingIcon.tsx":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SortingIcon: () => (/* binding */ SortingIcon)
+/* harmony export */ });
+/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSort.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortUp.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortDown.js");
+
+
+
+
+
+const sortingIconCSS = (sortDir) => ({
+    color: sortDir ? 'cornflowerblue' : '',
+    cursor: 'pointer',
+});
+const SortingIcon = ({ column, css = {} }) => {
+    if (!column)
+        return null;
+    const sortDir = column.getIsSorted();
+    const icon = !sortDir ? _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_2__.faSort : sortDir === 'asc' ? _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_3__.faSortUp : _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_4__.faSortDown;
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { onClick: column.getToggleSortingHandler(), children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: icon, style: { ...sortingIconCSS(sortDir), ...css } }) }));
+};
+
+
+/***/ }),
+
+/***/ "./src/sites/PSNP/components/tables/games/GameRow.tsx":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3316,7 +3410,7 @@ const GameRowMain = ({ game: g }) => {
 
 /***/ }),
 
-/***/ "./src/sites/PSNP/components/games_table/GamesTable.tsx":
+/***/ "./src/sites/PSNP/components/tables/games/GamesTable.tsx":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3329,7 +3423,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
 /* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
 /* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
-/* harmony import */ var _GameRow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/games_table/GameRow.tsx");
+/* harmony import */ var _GameRow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/tables/games/GameRow.tsx");
 /* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
 
 
@@ -3423,100 +3517,6 @@ const GamesTable = ({ allGames }) => {
                                                 }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
                                         }) }, row.id));
                                 }) })] })] })] }));
-};
-
-
-/***/ }),
-
-/***/ "./src/sites/PSNP/components/tables/ColumnFilter.tsx":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ColumnFilter: () => (/* binding */ ColumnFilter)
-/* harmony export */ });
-/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
-/* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
-
-
-const inputDebouncedCSS = {
-    fontWeight: 'normal',
-    fontSize: '14px',
-    marginTop: '10px',
-};
-const DebouncedInput = ({ value: initialValue, onChange, debounce = 300, ...props }) => {
-    const [value, setValue] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(initialValue);
-    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-        setValue(initialValue);
-    }, [initialValue]);
-    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-        const timeout = setTimeout(() => {
-            onChange(value);
-        }, debounce);
-        return () => clearTimeout(timeout);
-    }, [value]);
-    return (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { ...props, value: value, onInput: (e) => setValue(e.target.value) });
-};
-function ColumnFilter({ column, table, }) {
-    const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
-    const columnFilterValue = column.getFilterValue();
-    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ...inputDebouncedCSS, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: inputDebouncedCSS })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} rows`, className: "w-36 border shadow rounded", list: column.id + 'list', style: inputDebouncedCSS }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
-}
-
-
-/***/ }),
-
-/***/ "./src/sites/PSNP/components/tables/FilterIcon.tsx":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   FilterIcon: () => (/* binding */ FilterIcon)
-/* harmony export */ });
-/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faFilter.js");
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
-
-
-
-const FilterIcon = ({ headerContext }) => {
-    const isFiltered = headerContext.column.getIsFiltered();
-    return isFiltered ? (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faFilter__WEBPACK_IMPORTED_MODULE_2__.faFilter }) }) : null;
-};
-
-
-/***/ }),
-
-/***/ "./src/sites/PSNP/components/tables/SortingIcon.tsx":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   SortingIcon: () => (/* binding */ SortingIcon)
-/* harmony export */ });
-/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSort.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortUp.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faSortDown.js");
-
-
-
-
-
-const sortingIconCSS = (sortDir) => ({
-    color: sortDir ? 'cornflowerblue' : '',
-    cursor: 'pointer',
-});
-const SortingIcon = ({ column, css = {} }) => {
-    if (!column)
-        return null;
-    const sortDir = column.getIsSorted();
-    const icon = !sortDir ? _fortawesome_free_solid_svg_icons_faSort__WEBPACK_IMPORTED_MODULE_2__.faSort : sortDir === 'asc' ? _fortawesome_free_solid_svg_icons_faSortUp__WEBPACK_IMPORTED_MODULE_3__.faSortUp : _fortawesome_free_solid_svg_icons_faSortDown__WEBPACK_IMPORTED_MODULE_4__.faSortDown;
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { onClick: column.getToggleSortingHandler(), children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, { icon: icon, style: { ...sortingIconCSS(sortDir), ...css } }) }));
 };
 
 
@@ -4063,7 +4063,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var preact__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/dist/preact.module.js");
-/* harmony import */ var _components_games_table_GamesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/games_table/GamesTable.tsx");
+/* harmony import */ var _components_tables_games_GamesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/tables/games/GamesTable.tsx");
 /* harmony import */ var _services_DbGamesController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/services/DbGamesController.ts");
 
 
@@ -4082,7 +4082,7 @@ async function initGamesCatalog(nexus) {
         defaultRows.forEach(tr => tr.remove());
         const root = table.closest('div.col-xs-8')?.parentElement;
         root?.replaceChildren();
-        root && (0,preact__WEBPACK_IMPORTED_MODULE_1__.render)((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_games_table_GamesTable__WEBPACK_IMPORTED_MODULE_2__.GamesTable, { allGames: allGames }), root);
+        root && (0,preact__WEBPACK_IMPORTED_MODULE_1__.render)((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_tables_games_GamesTable__WEBPACK_IMPORTED_MODULE_2__.GamesTable, { allGames: allGames }), root);
     });
 }
 

@@ -1,6 +1,6 @@
 import {render} from 'preact';
 import {TrophyNexusPsnp} from '../nexus';
-import { GamesTable } from '../components/games_table/GamesTable';
+import { GamesTable } from '../components/tables/games/GamesTable';
 import { DbGamesController } from '../services/DbGamesController';
 
 export async function initGamesCatalog(nexus: TrophyNexusPsnp) {

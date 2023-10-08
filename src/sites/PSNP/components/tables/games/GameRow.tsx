@@ -1,5 +1,5 @@
-import {DbGame} from '../../models/dbGame';
-import * as css from '../css/GameRow';
+import {DbGame} from '../../../models/dbGame';
+import * as css from '../../css/GameRow';
 
 interface GameRowProps {
 	game: DbGame;
