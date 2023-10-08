@@ -1,18 +1,12 @@
-import {Column, ColumnFiltersState, HeaderContext, SortingState, createColumnHelper} from '@tanstack/react-table';
+import {ColumnFiltersState, HeaderContext, SortingState, createColumnHelper} from '@tanstack/react-table';
 import {DbSeries} from '../../../models/dbSeries';
 import {TrophyCount} from 'trophyutil';
 import {fractionInner} from '../../css/SeriesRow';
-import {JSXInternal} from 'preact/src/jsx';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSort} from '@fortawesome/free-solid-svg-icons/faSort';
-import {faSortUp} from '@fortawesome/free-solid-svg-icons/faSortUp';
-import {faSortDown} from '@fortawesome/free-solid-svg-icons/faSortDown';
-import {faFilter} from '@fortawesome/free-solid-svg-icons/faFilter';
 import {TrophyCountRow} from '../../TrophyCount';
 import {SeriesRowName, SeriesRowStages, SeriesRowGames} from './SeriesRow';
 import {useState, useMemo, StateUpdater} from 'preact/hooks';
-import { DbGame } from '../../../models/dbGame';
-import { SortingIcon } from '../SortingIcon';
+import {SortingIcon} from '../SortingIcon';
+import {FilterIcon} from '../FilterIcon';
 
 type StagesCellSortKey = keyof Pick<
 	DbSeries,
@@ -30,12 +24,6 @@ type TrophyCellSortKey<K extends KeyType = KeyType> = K extends 'trophyCount' | 
 	? [K, keyof TrophyCount]
 	: [K, null];
 export type MiscSortKey = 'userLatestTrophy' | 'bestCompleted';
-
-
-const FilterIcon: preact.FunctionComponent<{headerContext: HeaderContext<DbSeries, unknown>}> = ({headerContext}) => {
-	const isFiltered = headerContext.column.getIsFiltered();
-	return isFiltered ? <span>{<FontAwesomeIcon icon={faFilter} />}</span> : null;
-};
 
 const col = createColumnHelper<DbSeries>();
 
@@ -121,7 +109,7 @@ export function useSeriesTableColumns({sorting, setColumnFilters, numRowsToShow}
 				},
 				cell: ({row, table, renderValue, cell}) => {
 					const sorted = table.getSortedRowModel().flatRows;
-					const index = sorted.findIndex(r => r.original._id === row.original._id)+1;
+					const index = sorted.findIndex(r => r.original._id === row.original._id) + 1;
 
 					/** This line stopped working after separating columns into this new file. Always returns index -1. */
 					// const index = table.getSortedRowModel().flatRows.indexOf(row) + 1;

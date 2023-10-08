@@ -1,9 +1,11 @@
-import {faSort, faSortUp, faSortDown} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSort} from '@fortawesome/free-solid-svg-icons/faSort';
+import {faSortUp} from '@fortawesome/free-solid-svg-icons/faSortUp';
+import {faSortDown} from '@fortawesome/free-solid-svg-icons/faSortDown';
 import {Column, SortDirection} from '@tanstack/react-table';
 import {JSXInternal} from 'preact/src/jsx';
-import {DbGame} from '../../models/dbGame';
-import {DbSeries} from '../../models/dbSeries';
+import type {DbGame} from '../../models/dbGame';
+import type {DbSeries} from '../../models/dbSeries';
 
 interface SortingIconProps {
 	column: Column<DbSeries, unknown> | Column<DbGame, unknown> | undefined;
