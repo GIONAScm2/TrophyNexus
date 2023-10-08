@@ -3128,7 +3128,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   infoPanel1: () => (/* binding */ infoPanel1),
 /* harmony export */   infoPanel2: () => (/* binding */ infoPanel2),
 /* harmony export */   infoPanel3: () => (/* binding */ infoPanel3),
-/* harmony export */   inputDebounced: () => (/* binding */ inputDebounced),
 /* harmony export */   searchName: () => (/* binding */ searchName),
 /* harmony export */   table: () => (/* binding */ table),
 /* harmony export */   td: () => (/* binding */ td),
@@ -3189,11 +3188,6 @@ const td = {
     borderBottom: '1px solid lightgray',
     borderLeft: '1px solid lightgray',
     borderRight: '1px solid lightgray',
-};
-const inputDebounced = {
-    fontWeight: 'normal',
-    fontSize: '14px',
-    marginTop: '10px',
 };
 
 
@@ -3434,6 +3428,45 @@ const GamesTable = ({ allGames }) => {
 
 /***/ }),
 
+/***/ "./src/sites/PSNP/components/tables/ColumnFilter.tsx":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ColumnFilter: () => (/* binding */ ColumnFilter)
+/* harmony export */ });
+/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
+/* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
+
+
+const inputDebouncedCSS = {
+    fontWeight: 'normal',
+    fontSize: '14px',
+    marginTop: '10px',
+};
+const DebouncedInput = ({ value: initialValue, onChange, debounce = 300, ...props }) => {
+    const [value, setValue] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(initialValue);
+    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+        setValue(initialValue);
+    }, [initialValue]);
+    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+        const timeout = setTimeout(() => {
+            onChange(value);
+        }, debounce);
+        return () => clearTimeout(timeout);
+    }, [value]);
+    return (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { ...props, value: value, onInput: (e) => setValue(e.target.value) });
+};
+function ColumnFilter({ column, table }) {
+    const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
+    const columnFilterValue = column.getFilterValue();
+    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ...inputDebouncedCSS, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: inputDebouncedCSS })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} rows`, className: "w-36 border shadow rounded", list: column.id + 'list', style: inputDebouncedCSS }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
+}
+
+
+/***/ }),
+
 /***/ "./src/sites/PSNP/components/tables/series/SeriesRow.tsx":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -3476,12 +3509,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
 /* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
 /* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
 /* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
 /* harmony import */ var _useSeriesColumns__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/sites/PSNP/components/tables/series/useSeriesColumns.tsx");
+/* harmony import */ var _ColumnFilter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/sites/PSNP/components/tables/ColumnFilter.tsx");
+
 
 
 
@@ -3496,12 +3531,12 @@ const SeriesTable = ({ allSeries, prefs }) => {
     const [radioValPlats, setRadioValPlats] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_2__.useState)(prefs.PSNP.bools.platifySeriesHideNonplats.value ? 1 : null);
     const [radioValCompletion, setRadioValCompletion] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_2__.useState)(null);
     const [columnFilters, setColumnFilters] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_2__.useState)(() => [{ id: 'bestCompleted', value: radioValPlats }]);
-    const { columns, setStagesCellSortKey, setGamesCellSortKey, setTrophyCellSortKey } = (0,_useSeriesColumns__WEBPACK_IMPORTED_MODULE_5__.useSeriesTableColumns)({
+    const { columns } = (0,_useSeriesColumns__WEBPACK_IMPORTED_MODULE_5__.useSeriesTableColumns)({
         sorting,
         setColumnFilters,
-        numRowsToShow
+        numRowsToShow,
     });
-    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.useReactTable)({
+    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.useReactTable)({
         defaultColumn: {
             minSize: 0,
             size: 0,
@@ -3519,13 +3554,13 @@ const SeriesTable = ({ allSeries, prefs }) => {
             columnFilters,
         },
         onColumnFiltersChange: setColumnFilters,
-        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFilteredRowModel)(),
-        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFacetedRowModel)(),
-        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFacetedUniqueValues)(),
-        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getFacetedMinMaxValues)(),
+        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFilteredRowModel)(),
+        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFacetedRowModel)(),
+        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFacetedUniqueValues)(),
+        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getFacetedMinMaxValues)(),
         onSortingChange: setSorting,
-        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getCoreRowModel)(),
-        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.getSortedRowModel)(),
+        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getCoreRowModel)(),
+        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.getSortedRowModel)(),
     });
     const updatePlatRadioFilter = (e) => {
         const val = JSON.parse(e.currentTarget.value);
@@ -3571,7 +3606,7 @@ const SeriesTable = ({ allSeries, prefs }) => {
                                                 gridTemplateColumns: 'repeat(6, min-content)',
                                                 columnGap: '5px',
                                                 fontSize: '16px',
-                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "completion", value: "null", checked: radioValCompletion === null, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "incomplete", name: "completion", value: "0", checked: radioValCompletion === 0, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "incomplete", children: "Incomplete" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "completed", name: "completion", value: "1", checked: radioValCompletion === 1, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "completed", children: "Completed" })] })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Filter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "completion", value: "null", checked: radioValCompletion === null, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "incomplete", name: "completion", value: "0", checked: radioValCompletion === 0, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "incomplete", children: "Incomplete" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "completed", name: "completion", value: "1", checked: radioValCompletion === 1, onChange: updateCompletionRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "completed", children: "Completed" })] })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ColumnFilter__WEBPACK_IMPORTED_MODULE_6__.ColumnFilter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
                                     .getRowModel()
                                     .rows.slice(0, numRowsToShow)
                                     .map(row => {
@@ -3579,28 +3614,10 @@ const SeriesTable = ({ allSeries, prefs }) => {
                                             return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { style: {
                                                     ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.td,
                                                     width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
-                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
+                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
                                         }) }, row.id));
                                 }) })] })] })] }));
 };
-const DebouncedInput = ({ value: initialValue, onChange, debounce = 300, ...props }) => {
-    const [value, setValue] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_2__.useState)(initialValue);
-    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-        setValue(initialValue);
-    }, [initialValue]);
-    (0,preact_hooks__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-        const timeout = setTimeout(() => {
-            onChange(value);
-        }, debounce);
-        return () => clearTimeout(timeout);
-    }, [value]);
-    return (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { ...props, value: value, onInput: (e) => setValue(e.target.value) });
-};
-function Filter({ column, table }) {
-    const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
-    const columnFilterValue = column.getFilterValue();
-    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.inputDebounced, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.inputDebounced })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} rows`, className: "w-36 border shadow rounded", list: column.id + 'list', style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_1__.inputDebounced }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
-}
 
 
 /***/ }),

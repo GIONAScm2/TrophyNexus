@@ -65,9 +65,3 @@ export const td = {
 	borderLeft: '1px solid lightgray',
 	borderRight: '1px solid lightgray',
 } as const satisfies JSXInternal.CSSProperties;
-
-export const inputDebounced = {
-	fontWeight: 'normal',
-	fontSize: '14px',
-	marginTop: '10px',
-} as const satisfies JSXInternal.CSSProperties;

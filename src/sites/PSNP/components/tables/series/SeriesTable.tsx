@@ -1,14 +1,10 @@
 import {DbSeries} from '../../../models/dbSeries';
-import {SeriesRowGames, SeriesRowName, SeriesRowStages} from './SeriesRow';
-import {TrophyCountRow} from '../../TrophyCount';
 import * as css from '../../css/SeriesTable';
 import {
 	Column,
 	ColumnFiltersState,
-	HeaderContext,
 	SortingState,
 	Table,
-	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
 	getFacetedMinMaxValues,
@@ -18,15 +14,13 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-import {StateUpdater, useEffect, useMemo, useState} from 'preact/hooks';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-
-import {TrophyCount, parseNum} from 'trophyutil';
+import {useEffect, useState} from 'preact/hooks';
+import {parseNum} from 'trophyutil';
 import {JSX} from 'preact';
-import {JSXInternal} from 'preact/src/jsx';
 import {IUserSettings} from '../../../../../shared/services/userPrefs/types';
 import {fractionInner} from '../../css/SeriesRow';
 import {MiscSortKey, SortingIcon, useSeriesTableColumns} from './useSeriesColumns';
+import { ColumnFilter } from '../ColumnFilter';
 
 interface SeriesTableProps {
 	allSeries: DbSeries[];
@@ -40,10 +34,10 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 	const [radioValPlats, setRadioValPlats] = useState<null | 0 | 1>(prefs.PSNP.bools.platifySeriesHideNonplats.value ? 1 : null);
 	const [radioValCompletion, setRadioValCompletion] = useState<null | 0 | 1>(null);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => [{id: 'bestCompleted', value: radioValPlats}]);
-	const {columns, setStagesCellSortKey, setGamesCellSortKey, setTrophyCellSortKey} = useSeriesTableColumns({
+	const {columns} = useSeriesTableColumns({
 		sorting,
 		setColumnFilters,
-		numRowsToShow
+		numRowsToShow,
 	});
 
 	const table = useReactTable({
@@ -259,7 +253,7 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 												</div>
 												{header.column.getCanFilter() ? (
 													<div>
-														<Filter column={header.column} table={table} />
+														<ColumnFilter column={header.column} table={table} />
 													</div>
 												) : null}
 											</>
@@ -299,77 +293,3 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 		</div>
 	);
 };
-
-interface DebouncedInputProps extends Omit<JSX.IntrinsicElements['input'], 'onChange'> {
-	value: string | number;
-	onChange: (value: string | number) => void;
-	debounce?: number;
-}
-const DebouncedInput: preact.FunctionComponent<DebouncedInputProps> = ({
-	value: initialValue,
-	onChange,
-	debounce = 300,
-	...props
-}) => {
-	const [value, setValue] = useState(initialValue);
-
-	useEffect(() => {
-		setValue(initialValue);
-	}, [initialValue]);
-
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			onChange(value);
-		}, debounce);
-
-		return () => clearTimeout(timeout);
-	}, [value]);
-
-	return <input {...props} value={value} onInput={(e: any) => setValue(e.target.value)} />;
-};
-
-function Filter({column, table}: {column: Column<DbSeries>; table: Table<DbSeries>}) {
-	const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
-	const columnFilterValue = column.getFilterValue();
-
-	return typeof firstValue === 'number' ? (
-		<div>
-			<div className="flex space-x-2" style={{justifyContent: 'center'}}>
-				<DebouncedInput
-					type="number"
-					min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-					max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-					value={(columnFilterValue as [number, number])?.[0] ?? ''}
-					onChange={value => column.setFilterValue((old: [number, number]) => [value, old?.[1]])}
-					placeholder={`Min`}
-					className="w-24 border shadow rounded"
-					style={{...css.inputDebounced, marginRight: '10px'}}
-				/>
-				<DebouncedInput
-					type="number"
-					min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-					max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-					value={(columnFilterValue as [number, number])?.[1] ?? ''}
-					onChange={value => column.setFilterValue((old: [number, number]) => [old?.[0], value])}
-					placeholder={`Max`}
-					className="w-24 border shadow rounded"
-					style={css.inputDebounced}
-				/>
-			</div>
-			<div className="h-1" />
-		</div>
-	) : (
-		<>
-			<DebouncedInput
-				type="text"
-				value={(columnFilterValue ?? '') as string}
-				onChange={value => column.setFilterValue(value)}
-				placeholder={`Search ${column.getFacetedUniqueValues().size} rows`}
-				className="w-36 border shadow rounded"
-				list={column.id + 'list'}
-				style={css.inputDebounced}
-			/>
-			<div className="h-1" />
-		</>
-	);
-}
