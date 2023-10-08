@@ -52,6 +52,7 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 			columnVisibility: {
 				userLatestTrophy: false,
 				bestCompleted: false,
+				updatedAt: false,
 			},
 		},
 		state: {
@@ -143,6 +144,9 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 								>
 									<option key={miscSortKey} value={'userLatestTrophy' satisfies MiscSortKey}>
 										Date Played
+									</option>
+									<option key={miscSortKey} value={'updatedAt' satisfies MiscSortKey}>
+										Date Updated
 									</option>
 									<option key={miscSortKey} value={'bestCompleted' satisfies MiscSortKey}>
 										Best Completions

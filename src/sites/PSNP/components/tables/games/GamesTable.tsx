@@ -75,7 +75,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 		initialState: {
 			columnVisibility: {
 				createdAt: false,
-				updatedAt: false
+				updatedAt: false,
 			},
 		},
 		state: {

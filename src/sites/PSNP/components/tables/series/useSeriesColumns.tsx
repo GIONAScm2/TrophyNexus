@@ -24,7 +24,7 @@ type KeyType = keyof Pick<
 type TrophyCellSortKey<K extends KeyType = KeyType> = K extends 'trophyCount' | 'userTrophyCount'
 	? [K, keyof TrophyCount]
 	: [K, null];
-export type MiscSortKey = 'userLatestTrophy' | 'bestCompleted';
+export type MiscSortKey = 'userLatestTrophy' | 'bestCompleted' | 'updatedAt';
 
 const col = createColumnHelper<DbSeries>();
 
@@ -71,6 +71,13 @@ export function useSeriesTableColumns({sorting, setColumnFilters, numRowsToShow}
 					const hasPlat = !!row.original.trophyCount.platinum;
 					if (value === 1) return hasPlat;
 					else return !hasPlat;
+				},
+			}),
+			col.accessor('updatedAt', {
+				enableHiding: true,
+				header: h => 'Date Updated',
+				sortingFn: (rowA, rowB, columnId) => {
+					return sortColumnByDate(sorting, rowA, rowB, columnId, x => Date.parse(x.original.updatedAt));
 				},
 			}),
 			col.accessor('userLatestTrophy' satisfies MiscSortKey, {
