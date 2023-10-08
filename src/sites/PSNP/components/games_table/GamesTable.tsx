@@ -1,9 +1,17 @@
 import {useMemo, useState} from 'preact/hooks';
 import {DbGame} from '../../models/dbGame';
-import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table';
-import {SeriesRowName} from '../series_table/SeriesRow';
+import {
+	ColumnFiltersState,
+	SortingState,
+	createColumnHelper,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getSortedRowModel,
+	useReactTable,
+} from '@tanstack/react-table';
 import * as css from '../css/SeriesTable';
-import {GameRowImage, GameRowName, GameRowPlatform} from './GameRow';
+import { GameRowMain} from './GameRow';
 import {TrophyCountRow} from '../TrophyCount';
 
 interface GamesTableProps {
@@ -14,41 +22,53 @@ const col = createColumnHelper<DbGame>();
 
 export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}) => {
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
+	const [sorting, setSorting] = useState<SortingState>([{id: 'updatedAt', desc: true}]);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => []);
 
 	const columns = useMemo(() => {
 		return [
-			col.accessor('_id', {
-				size: 80,
-				maxSize: 100,
-				cell: ({row}) => <GameRowImage game={row.original} />,
-				header: h => (
-					<>
-						{/* <FilterIcon headerContext={h} /> */}
-						<span style={{margin: '0px 5px'}}>Name</span>
-						{/* <SortingIcon column={h.column} /> */}
-					</>
-				),
-				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
+			col.accessor('createdAt', {
+				enableHiding: true,
+				header: h => 'Date Created',
+				sortingFn: (rowA, rowB, columnId) => {
+					const dateA = Date.parse(rowA.original.createdAt);
+					const dateB = Date.parse(rowB.original.createdAt);
+					const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
+
+					if (dateA === 0) return isDesc ? -1 : 1;
+					if (dateB === 0) return isDesc ? 1 : -1;
+					return dateA - dateB;
+				},
+			}),
+			col.accessor('updatedAt', {
+				enableHiding: true,
+				header: h => 'Date Updated',
+				sortingFn: (rowA, rowB, columnId) => {
+					const dateA = Date.parse(rowA.original.updatedAt);
+					const dateB = Date.parse(rowB.original.updatedAt);
+					const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
+
+					if (dateA === 0) return isDesc ? -1 : 1;
+					if (dateB === 0) return isDesc ? 1 : -1;
+					return dateA - dateB;
+				},
 			}),
 			col.accessor('name', {
-				size: 350,
-				maxSize: 400,
-				cell: ({row}) => <GameRowName game={row.original} />,
+				id: 'game',
+				size: 500,
+				maxSize: 500,
+				cell: ({row}) => <GameRowMain game={row.original} />,
 				header: h => (
 					<>
 						{/* <FilterIcon headerContext={h} /> */}
-						<span style={{margin: '0px 5px'}}>Name</span>
+						<span style={{margin: '0px 5px'}}>Game</span>
 						{/* <SortingIcon column={h.column} /> */}
 					</>
 				),
 				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
 			}),
-			col.accessor('platforms', {
-				size: 30,
-				maxSize: 50,
-				cell: ({row}) => <GameRowPlatform game={row.original} />,
-			}),
-			col.accessor('trophyCount', {
+			col.accessor(x=> 'Trophies', {
+				id: 'Trophies',
 				size: 100,
 				maxSize: 150,
 				cell: ({row}) => <TrophyCountRow entity={row.original} />,
@@ -63,11 +83,21 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 		},
 		data: allGames,
 		columns,
-		// state: {
-		// 	sorting,
-		// 	columnFilters,
-		// },
+		initialState: {
+			columnVisibility: {
+				createdAt: false,
+				updatedAt: false
+			},
+		},
+		state: {
+			sorting,
+			columnFilters,
+		},
+		onColumnFiltersChange: setColumnFilters,
+		getFilteredRowModel: getFilteredRowModel(),
+		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
+		getSortedRowModel: getSortedRowModel(),
 	});
 
 	return (
@@ -126,6 +156,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 													key={cell.id}
 													style={{
 														...css.td,
+														padding: 0,
 														width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
 													}}
 												>

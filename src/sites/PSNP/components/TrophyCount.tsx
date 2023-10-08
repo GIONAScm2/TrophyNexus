@@ -1,4 +1,3 @@
-import type {JSXInternal} from 'preact/src/jsx';
 import type {TrophyCount, TrophyGrade} from 'trophyutil';
 import type {DbSeries} from '../models/dbSeries';
 import type {DbGame} from '../models/dbGame';
@@ -6,7 +5,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTrophy} from '@fortawesome/free-solid-svg-icons/faTrophy';
 import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
 import * as css from './css/TrophyCount';
-import {JSX} from 'preact';
 
 interface RowProps {
 	entity: DbGame | DbSeries;
@@ -42,7 +40,7 @@ export const TrophyCountRow: preact.FunctionComponent<RowProps> = ({entity}) => 
 		platinum: 0,
 	};
 	return (
-		<div class="tc-cell" style={css.tcCell}>
+		<div class="tc-cell" style={css.tcCell(!!entity.userNumTrophies)}>
 			<GradeIconGroup tcAll={entity.trophyCount ?? fallback} tcUser={entity.userTrophyCount} />
 			<MetricIconGroup
 				numTrophies={entity.numTrophies ?? 0}

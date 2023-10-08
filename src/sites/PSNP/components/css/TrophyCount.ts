@@ -1,6 +1,6 @@
 import type {JSXInternal} from 'preact/src/jsx';
-import {TrophyGrade} from 'trophyutil';
-import {IconType} from '../TrophyCount';
+import type {TrophyGrade} from 'trophyutil';
+import type {IconType} from '../TrophyCount';
 
 type TrophyGradeCSS = {
 	color: string;
@@ -18,13 +18,17 @@ export function getTrophyGradeCSS(grade: Lowercase<TrophyGrade>): TrophyGradeCSS
 	return trophyGradeCSS[grade];
 }
 
-/** 1x2 grid */
-export const tcCell = {
-	display: 'grid',
-	gridTemplateRows: '1fr 1fr',
-	justifyItems: 'center',
-	rowGap: '1rem',
-} as const satisfies JSXInternal.CSSProperties;
+/** 1x2 grid.
+ * 
+ * When trophies are earned, they are displayed as fractions which may stretch the row height.
+ * To prevent this height inconsistency, `rowGap` is removed for rows with earned trophies. */
+export const tcCell = (earnedTrophies: boolean) =>
+	({
+		display: 'grid',
+		gridTemplateRows: '1fr 1fr',
+		justifyItems: 'center',
+		rowGap: earnedTrophies ? '0' : '1rem',
+	} as const satisfies JSXInternal.CSSProperties);
 
 /** 4x1 grid */
 export const tcGradeIconGroup = {

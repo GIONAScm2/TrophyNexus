@@ -2910,7 +2910,7 @@ const TrophyCountRow = ({ entity }) => {
         gold: 0,
         platinum: 0,
     };
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-cell", style: _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.tcCell, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(GradeIconGroup, { tcAll: entity.trophyCount ?? fallback, tcUser: entity.userTrophyCount }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(MetricIconGroup, { numTrophies: entity.numTrophies ?? 0, numPoints: entity.points ?? 0, userNumTrophies: entity.userNumTrophies, userNumPoints: entity.userPoints })] }));
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tc-cell", style: _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.tcCell(!!entity.userNumTrophies), children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(GradeIconGroup, { tcAll: entity.trophyCount ?? fallback, tcUser: entity.userTrophyCount }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(MetricIconGroup, { numTrophies: entity.numTrophies ?? 0, numPoints: entity.points ?? 0, userNumTrophies: entity.userNumTrophies, userNumPoints: entity.userPoints })] }));
 };
 const GradeIconGroup = ({ tcAll, tcUser }) => {
     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tcGradeIconGroup", style: _css_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.tcGradeIconGroup, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "platinum", total: tcAll.platinum, earned: tcUser?.platinum }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "gold", total: tcAll.gold, earned: tcUser?.gold }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "silver", total: tcAll.silver, earned: tcUser?.silver }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(IconCount, { iconType: "grade", grade: "bronze", total: tcAll.bronze, earned: tcUser?.bronze })] }));
@@ -3000,6 +3000,23 @@ const contextMenuBtnContextual = (hovered) => ({
     borderRadius: '3px',
     paddingRight: hovered ? '5px' : '0',
 });
+
+
+/***/ }),
+
+/***/ "./src/sites/PSNP/components/css/GameRow.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   outerGrid: () => (/* binding */ outerGrid)
+/* harmony export */ });
+const outerGrid = {
+    display: 'grid',
+    gridTemplateColumns: 'min-content auto',
+    columnGap: '1rem',
+};
 
 
 /***/ }),
@@ -3204,12 +3221,12 @@ function getTrophyGradeCSS(grade) {
     };
     return trophyGradeCSS[grade];
 }
-const tcCell = {
+const tcCell = (earnedTrophies) => ({
     display: 'grid',
     gridTemplateRows: '1fr 1fr',
     justifyItems: 'center',
-    rowGap: '1rem',
-};
+    rowGap: earnedTrophies ? '0' : '1rem',
+});
 const tcGradeIconGroup = {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, auto)',
@@ -3292,20 +3309,14 @@ const tooltipHoverStyle = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   GameRowImage: () => (/* binding */ GameRowImage),
-/* harmony export */   GameRowName: () => (/* binding */ GameRowName),
-/* harmony export */   GameRowPlatform: () => (/* binding */ GameRowPlatform)
+/* harmony export */   GameRowMain: () => (/* binding */ GameRowMain)
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
+/* harmony import */ var _css_GameRow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/components/css/GameRow.ts");
 
-const GameRowImage = ({ game: g }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { href: `/trophies/${g._idAndName}`, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("picture", { class: "game", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", { src: g.src }) }) }));
-};
-const GameRowName = ({ game: g }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("td", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "ellipsis", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { class: "title", href: `/trophies/${g._idAndName}`, children: g.name }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "small-info", style: "margin-top: 4px;", children: g.numOwners && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("b", { children: g.numOwners.toLocaleString() }), " Owners"] })) })] }));
-};
-const GameRowPlatform = ({ game: g }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "separator right", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "platforms", style: "width:100%", children: g.platforms.map(platform => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: `tag platform ${platform.toLowerCase()}`, children: platform }))) }) }));
+
+const GameRowMain = ({ game: g }) => {
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "outerGrid", style: _css_GameRow__WEBPACK_IMPORTED_MODULE_1__.outerGrid, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { href: `/trophies/${g._idAndName}`, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("picture", { class: "game", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", { src: g.src }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "ellipsis", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { class: "title", href: `/trophies/${g._idAndName}`, children: g.name }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "platforms", style: "width:100%; text-align: left", children: g.platforms.map(platform => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: `tag platform ${platform.toLowerCase()}`, style: "text-align: center", children: platform }))) })] })] }));
 };
 
 
@@ -3335,28 +3346,48 @@ __webpack_require__.r(__webpack_exports__);
 const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.createColumnHelper)();
 const GamesTable = ({ allGames }) => {
     const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(50);
+    const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([{ id: 'updatedAt', desc: true }]);
+    const [columnFilters, setColumnFilters] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(() => []);
     const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
         return [
-            col.accessor('_id', {
-                size: 80,
-                maxSize: 100,
-                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_3__.GameRowImage, { game: row.original }),
-                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Name" }) })),
-                sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
+            col.accessor('createdAt', {
+                enableHiding: true,
+                header: h => 'Date Created',
+                sortingFn: (rowA, rowB, columnId) => {
+                    const dateA = Date.parse(rowA.original.createdAt);
+                    const dateB = Date.parse(rowB.original.createdAt);
+                    const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
+                    if (dateA === 0)
+                        return isDesc ? -1 : 1;
+                    if (dateB === 0)
+                        return isDesc ? 1 : -1;
+                    return dateA - dateB;
+                },
+            }),
+            col.accessor('updatedAt', {
+                enableHiding: true,
+                header: h => 'Date Updated',
+                sortingFn: (rowA, rowB, columnId) => {
+                    const dateA = Date.parse(rowA.original.updatedAt);
+                    const dateB = Date.parse(rowB.original.updatedAt);
+                    const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
+                    if (dateA === 0)
+                        return isDesc ? -1 : 1;
+                    if (dateB === 0)
+                        return isDesc ? 1 : -1;
+                    return dateA - dateB;
+                },
             }),
             col.accessor('name', {
-                size: 350,
-                maxSize: 400,
-                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_3__.GameRowName, { game: row.original }),
-                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Name" }) })),
+                id: 'game',
+                size: 500,
+                maxSize: 500,
+                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_3__.GameRowMain, { game: row.original }),
+                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Game" }) })),
                 sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
             }),
-            col.accessor('platforms', {
-                size: 30,
-                maxSize: 50,
-                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_3__.GameRowPlatform, { game: row.original }),
-            }),
-            col.accessor('trophyCount', {
+            col.accessor(x => 'Trophies', {
+                id: 'Trophies',
                 size: 100,
                 maxSize: 150,
                 cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_4__.TrophyCountRow, { entity: row.original }),
@@ -3370,7 +3401,21 @@ const GamesTable = ({ allGames }) => {
         },
         data: allGames,
         columns,
+        initialState: {
+            columnVisibility: {
+                createdAt: false,
+                updatedAt: false
+            },
+        },
+        state: {
+            sorting,
+            columnFilters,
+        },
+        onColumnFiltersChange: setColumnFilters,
+        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.getFilteredRowModel)(),
+        onSortingChange: setSorting,
         getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.getCoreRowModel)(),
+        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_5__.getSortedRowModel)(),
     });
     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {})) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
                                     .getRowModel()
@@ -3379,6 +3424,7 @@ const GamesTable = ({ allGames }) => {
                                     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: row.getVisibleCells().map(cell => {
                                             return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { style: {
                                                     ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.td,
+                                                    padding: 0,
                                                     width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
                                                 }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_6__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
                                         }) }, row.id));
@@ -3388,7 +3434,7 @@ const GamesTable = ({ allGames }) => {
 
 /***/ }),
 
-/***/ "./src/sites/PSNP/components/series_table/SeriesRow.tsx":
+/***/ "./src/sites/PSNP/components/tables/series/SeriesRow.tsx":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3420,7 +3466,7 @@ const SeriesRowGames = ({ series: s }) => {
 
 /***/ }),
 
-/***/ "./src/sites/PSNP/components/series_table/SeriesTable.tsx":
+/***/ "./src/sites/PSNP/components/tables/series/SeriesTable.tsx":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3429,7 +3475,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SeriesTable: () => (/* binding */ SeriesTable)
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
-/* harmony import */ var _SeriesRow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/components/series_table/SeriesRow.tsx");
+/* harmony import */ var _SeriesRow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/components/tables/series/SeriesRow.tsx");
 /* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
 /* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
 /* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
@@ -4007,8 +4053,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var preact__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/dist/preact.module.js");
-/* harmony import */ var _components_series_table_SeriesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/series_table/SeriesTable.tsx");
-/* harmony import */ var _services_DbSeriesController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/services/DbSeriesController.ts");
+/* harmony import */ var _services_DbSeriesController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/services/DbSeriesController.ts");
+/* harmony import */ var _components_tables_series_SeriesTable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/tables/series/SeriesTable.tsx");
 
 
 
@@ -4016,7 +4062,7 @@ __webpack_require__.r(__webpack_exports__);
 async function initSeriesCatalog(nexus) {
     if (!nexus.userPrefs.PSNP.bools.renderSeriesTable.value)
         return;
-    const seriesController = new _services_DbSeriesController__WEBPACK_IMPORTED_MODULE_3__.DbSeriesController(nexus);
+    const seriesController = new _services_DbSeriesController__WEBPACK_IMPORTED_MODULE_2__.DbSeriesController(nexus);
     const allSeriesPromise = seriesController.retrieveAllSeriesWithProgress();
     const tablePromise = nexus.elements.Common.table;
     Promise.all([allSeriesPromise, tablePromise]).then(([allSeries, table]) => {
@@ -4026,7 +4072,7 @@ async function initSeriesCatalog(nexus) {
         defaultRows.forEach(tr => tr.remove());
         const root = table.closest('div.col-xs-8')?.parentElement;
         root?.replaceChildren();
-        root && (0,preact__WEBPACK_IMPORTED_MODULE_1__.render)((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_series_table_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.SeriesTable, { allSeries: allSeries, prefs: nexus.userPrefs }), root);
+        root && (0,preact__WEBPACK_IMPORTED_MODULE_1__.render)((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_tables_series_SeriesTable__WEBPACK_IMPORTED_MODULE_3__.SeriesTable, { allSeries: allSeries, prefs: nexus.userPrefs }), root);
     });
 }
 
@@ -8381,7 +8427,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 //
-
+/**
+ * If rendering headers, cells, or footers with custom markup, use flexRender instead of `cell.getValue()` or `cell.renderValue()`.
+ */
 function flexRender(Comp, props) {
   return !Comp ? null : isReactComponent(Comp) ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Comp, props) : Comp;
 }
@@ -8429,7 +8477,7 @@ function useReactTable(options) {
     // state.
     onStateChange: updater => {
       setState(updater);
-      options.onStateChange == null ? void 0 : options.onStateChange(updater);
+      options.onStateChange == null || options.onStateChange(updater);
     }
   }));
   return tableRef.current;
@@ -8560,7 +8608,7 @@ function memo(getDeps, fn, opts) {
     let resultTime;
     if (opts.key && opts.debug) resultTime = Date.now();
     result = fn(...newDeps);
-    opts == null ? void 0 : opts.onChange == null ? void 0 : opts.onChange(result);
+    opts == null || opts.onChange == null || opts.onChange(result);
     if (opts.key && opts.debug) {
       if (opts != null && opts.debug()) {
         const depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
@@ -8651,9 +8699,9 @@ function createColumn(table, columnDef, depth, parent) {
       }
     })
   };
-  column = table._features.reduce((obj, feature) => {
-    return Object.assign(obj, feature.createColumn == null ? void 0 : feature.createColumn(column, table));
-  }, column);
+  for (const feature of table._features) {
+    feature.createColumn == null || feature.createColumn(column, table);
+  }
 
   // Yes, we have to convert table to uknown, because we know more than the compiler here.
   return column;
@@ -8693,196 +8741,197 @@ function createHeader(table, column, options) {
     })
   };
   table._features.forEach(feature => {
-    Object.assign(header, feature.createHeader == null ? void 0 : feature.createHeader(header, table));
+    feature.createHeader == null || feature.createHeader(header, table);
   });
   return header;
 }
 const Headers = {
   createTable: table => {
-    return {
-      // Header Groups
+    // Header Groups
 
-      getHeaderGroups: memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
-        var _left$map$filter, _right$map$filter;
-        const leftColumns = (_left$map$filter = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter : [];
-        const rightColumns = (_right$map$filter = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter : [];
-        const centerColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
-        const headerGroups = buildHeaderGroups(allColumns, [...leftColumns, ...centerColumns, ...rightColumns], table);
-        return headerGroups;
-      }, {
-        key:  true && 'getHeaderGroups',
-        debug: () => {
-          var _table$options$debugA;
-          return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugHeaders;
-        }
-      }),
-      getCenterHeaderGroups: memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
-        leafColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
-        return buildHeaderGroups(allColumns, leafColumns, table, 'center');
-      }, {
-        key:  true && 'getCenterHeaderGroups',
-        debug: () => {
-          var _table$options$debugA2;
-          return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugHeaders;
-        }
-      }),
-      getLeftHeaderGroups: memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left], (allColumns, leafColumns, left) => {
-        var _left$map$filter2;
-        const orderedLeafColumns = (_left$map$filter2 = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter2 : [];
-        return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'left');
-      }, {
-        key:  true && 'getLeftHeaderGroups',
-        debug: () => {
-          var _table$options$debugA3;
-          return (_table$options$debugA3 = table.options.debugAll) != null ? _table$options$debugA3 : table.options.debugHeaders;
-        }
-      }),
-      getRightHeaderGroups: memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.right], (allColumns, leafColumns, right) => {
-        var _right$map$filter2;
-        const orderedLeafColumns = (_right$map$filter2 = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter2 : [];
-        return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'right');
-      }, {
-        key:  true && 'getRightHeaderGroups',
-        debug: () => {
-          var _table$options$debugA4;
-          return (_table$options$debugA4 = table.options.debugAll) != null ? _table$options$debugA4 : table.options.debugHeaders;
-        }
-      }),
-      // Footer Groups
+    table.getHeaderGroups = memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
+      var _left$map$filter, _right$map$filter;
+      const leftColumns = (_left$map$filter = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter : [];
+      const rightColumns = (_right$map$filter = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter : [];
+      const centerColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
+      const headerGroups = buildHeaderGroups(allColumns, [...leftColumns, ...centerColumns, ...rightColumns], table);
+      return headerGroups;
+    }, {
+      key:  true && 'getHeaderGroups',
+      debug: () => {
+        var _table$options$debugA;
+        return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugHeaders;
+      }
+    });
+    table.getCenterHeaderGroups = memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, leafColumns, left, right) => {
+      leafColumns = leafColumns.filter(column => !(left != null && left.includes(column.id)) && !(right != null && right.includes(column.id)));
+      return buildHeaderGroups(allColumns, leafColumns, table, 'center');
+    }, {
+      key:  true && 'getCenterHeaderGroups',
+      debug: () => {
+        var _table$options$debugA2;
+        return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugHeaders;
+      }
+    });
+    table.getLeftHeaderGroups = memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.left], (allColumns, leafColumns, left) => {
+      var _left$map$filter2;
+      const orderedLeafColumns = (_left$map$filter2 = left == null ? void 0 : left.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _left$map$filter2 : [];
+      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'left');
+    }, {
+      key:  true && 'getLeftHeaderGroups',
+      debug: () => {
+        var _table$options$debugA3;
+        return (_table$options$debugA3 = table.options.debugAll) != null ? _table$options$debugA3 : table.options.debugHeaders;
+      }
+    });
+    table.getRightHeaderGroups = memo(() => [table.getAllColumns(), table.getVisibleLeafColumns(), table.getState().columnPinning.right], (allColumns, leafColumns, right) => {
+      var _right$map$filter2;
+      const orderedLeafColumns = (_right$map$filter2 = right == null ? void 0 : right.map(columnId => leafColumns.find(d => d.id === columnId)).filter(Boolean)) != null ? _right$map$filter2 : [];
+      return buildHeaderGroups(allColumns, orderedLeafColumns, table, 'right');
+    }, {
+      key:  true && 'getRightHeaderGroups',
+      debug: () => {
+        var _table$options$debugA4;
+        return (_table$options$debugA4 = table.options.debugAll) != null ? _table$options$debugA4 : table.options.debugHeaders;
+      }
+    });
 
-      getFooterGroups: memo(() => [table.getHeaderGroups()], headerGroups => {
-        return [...headerGroups].reverse();
-      }, {
-        key:  true && 'getFooterGroups',
-        debug: () => {
-          var _table$options$debugA5;
-          return (_table$options$debugA5 = table.options.debugAll) != null ? _table$options$debugA5 : table.options.debugHeaders;
-        }
-      }),
-      getLeftFooterGroups: memo(() => [table.getLeftHeaderGroups()], headerGroups => {
-        return [...headerGroups].reverse();
-      }, {
-        key:  true && 'getLeftFooterGroups',
-        debug: () => {
-          var _table$options$debugA6;
-          return (_table$options$debugA6 = table.options.debugAll) != null ? _table$options$debugA6 : table.options.debugHeaders;
-        }
-      }),
-      getCenterFooterGroups: memo(() => [table.getCenterHeaderGroups()], headerGroups => {
-        return [...headerGroups].reverse();
-      }, {
-        key:  true && 'getCenterFooterGroups',
-        debug: () => {
-          var _table$options$debugA7;
-          return (_table$options$debugA7 = table.options.debugAll) != null ? _table$options$debugA7 : table.options.debugHeaders;
-        }
-      }),
-      getRightFooterGroups: memo(() => [table.getRightHeaderGroups()], headerGroups => {
-        return [...headerGroups].reverse();
-      }, {
-        key:  true && 'getRightFooterGroups',
-        debug: () => {
-          var _table$options$debugA8;
-          return (_table$options$debugA8 = table.options.debugAll) != null ? _table$options$debugA8 : table.options.debugHeaders;
-        }
-      }),
-      // Flat Headers
+    // Footer Groups
 
-      getFlatHeaders: memo(() => [table.getHeaderGroups()], headerGroups => {
-        return headerGroups.map(headerGroup => {
-          return headerGroup.headers;
-        }).flat();
-      }, {
-        key:  true && 'getFlatHeaders',
-        debug: () => {
-          var _table$options$debugA9;
-          return (_table$options$debugA9 = table.options.debugAll) != null ? _table$options$debugA9 : table.options.debugHeaders;
-        }
-      }),
-      getLeftFlatHeaders: memo(() => [table.getLeftHeaderGroups()], left => {
-        return left.map(headerGroup => {
-          return headerGroup.headers;
-        }).flat();
-      }, {
-        key:  true && 'getLeftFlatHeaders',
-        debug: () => {
-          var _table$options$debugA10;
-          return (_table$options$debugA10 = table.options.debugAll) != null ? _table$options$debugA10 : table.options.debugHeaders;
-        }
-      }),
-      getCenterFlatHeaders: memo(() => [table.getCenterHeaderGroups()], left => {
-        return left.map(headerGroup => {
-          return headerGroup.headers;
-        }).flat();
-      }, {
-        key:  true && 'getCenterFlatHeaders',
-        debug: () => {
-          var _table$options$debugA11;
-          return (_table$options$debugA11 = table.options.debugAll) != null ? _table$options$debugA11 : table.options.debugHeaders;
-        }
-      }),
-      getRightFlatHeaders: memo(() => [table.getRightHeaderGroups()], left => {
-        return left.map(headerGroup => {
-          return headerGroup.headers;
-        }).flat();
-      }, {
-        key:  true && 'getRightFlatHeaders',
-        debug: () => {
-          var _table$options$debugA12;
-          return (_table$options$debugA12 = table.options.debugAll) != null ? _table$options$debugA12 : table.options.debugHeaders;
-        }
-      }),
-      // Leaf Headers
+    table.getFooterGroups = memo(() => [table.getHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, {
+      key:  true && 'getFooterGroups',
+      debug: () => {
+        var _table$options$debugA5;
+        return (_table$options$debugA5 = table.options.debugAll) != null ? _table$options$debugA5 : table.options.debugHeaders;
+      }
+    });
+    table.getLeftFooterGroups = memo(() => [table.getLeftHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, {
+      key:  true && 'getLeftFooterGroups',
+      debug: () => {
+        var _table$options$debugA6;
+        return (_table$options$debugA6 = table.options.debugAll) != null ? _table$options$debugA6 : table.options.debugHeaders;
+      }
+    });
+    table.getCenterFooterGroups = memo(() => [table.getCenterHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, {
+      key:  true && 'getCenterFooterGroups',
+      debug: () => {
+        var _table$options$debugA7;
+        return (_table$options$debugA7 = table.options.debugAll) != null ? _table$options$debugA7 : table.options.debugHeaders;
+      }
+    });
+    table.getRightFooterGroups = memo(() => [table.getRightHeaderGroups()], headerGroups => {
+      return [...headerGroups].reverse();
+    }, {
+      key:  true && 'getRightFooterGroups',
+      debug: () => {
+        var _table$options$debugA8;
+        return (_table$options$debugA8 = table.options.debugAll) != null ? _table$options$debugA8 : table.options.debugHeaders;
+      }
+    });
 
-      getCenterLeafHeaders: memo(() => [table.getCenterFlatHeaders()], flatHeaders => {
-        return flatHeaders.filter(header => {
-          var _header$subHeaders;
-          return !((_header$subHeaders = header.subHeaders) != null && _header$subHeaders.length);
-        });
-      }, {
-        key:  true && 'getCenterLeafHeaders',
-        debug: () => {
-          var _table$options$debugA13;
-          return (_table$options$debugA13 = table.options.debugAll) != null ? _table$options$debugA13 : table.options.debugHeaders;
-        }
-      }),
-      getLeftLeafHeaders: memo(() => [table.getLeftFlatHeaders()], flatHeaders => {
-        return flatHeaders.filter(header => {
-          var _header$subHeaders2;
-          return !((_header$subHeaders2 = header.subHeaders) != null && _header$subHeaders2.length);
-        });
-      }, {
-        key:  true && 'getLeftLeafHeaders',
-        debug: () => {
-          var _table$options$debugA14;
-          return (_table$options$debugA14 = table.options.debugAll) != null ? _table$options$debugA14 : table.options.debugHeaders;
-        }
-      }),
-      getRightLeafHeaders: memo(() => [table.getRightFlatHeaders()], flatHeaders => {
-        return flatHeaders.filter(header => {
-          var _header$subHeaders3;
-          return !((_header$subHeaders3 = header.subHeaders) != null && _header$subHeaders3.length);
-        });
-      }, {
-        key:  true && 'getRightLeafHeaders',
-        debug: () => {
-          var _table$options$debugA15;
-          return (_table$options$debugA15 = table.options.debugAll) != null ? _table$options$debugA15 : table.options.debugHeaders;
-        }
-      }),
-      getLeafHeaders: memo(() => [table.getLeftHeaderGroups(), table.getCenterHeaderGroups(), table.getRightHeaderGroups()], (left, center, right) => {
-        var _left$0$headers, _left$, _center$0$headers, _center$, _right$0$headers, _right$;
-        return [...((_left$0$headers = (_left$ = left[0]) == null ? void 0 : _left$.headers) != null ? _left$0$headers : []), ...((_center$0$headers = (_center$ = center[0]) == null ? void 0 : _center$.headers) != null ? _center$0$headers : []), ...((_right$0$headers = (_right$ = right[0]) == null ? void 0 : _right$.headers) != null ? _right$0$headers : [])].map(header => {
-          return header.getLeafHeaders();
-        }).flat();
-      }, {
-        key:  true && 'getLeafHeaders',
-        debug: () => {
-          var _table$options$debugA16;
-          return (_table$options$debugA16 = table.options.debugAll) != null ? _table$options$debugA16 : table.options.debugHeaders;
-        }
-      })
-    };
+    // Flat Headers
+
+    table.getFlatHeaders = memo(() => [table.getHeaderGroups()], headerGroups => {
+      return headerGroups.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, {
+      key:  true && 'getFlatHeaders',
+      debug: () => {
+        var _table$options$debugA9;
+        return (_table$options$debugA9 = table.options.debugAll) != null ? _table$options$debugA9 : table.options.debugHeaders;
+      }
+    });
+    table.getLeftFlatHeaders = memo(() => [table.getLeftHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, {
+      key:  true && 'getLeftFlatHeaders',
+      debug: () => {
+        var _table$options$debugA10;
+        return (_table$options$debugA10 = table.options.debugAll) != null ? _table$options$debugA10 : table.options.debugHeaders;
+      }
+    });
+    table.getCenterFlatHeaders = memo(() => [table.getCenterHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, {
+      key:  true && 'getCenterFlatHeaders',
+      debug: () => {
+        var _table$options$debugA11;
+        return (_table$options$debugA11 = table.options.debugAll) != null ? _table$options$debugA11 : table.options.debugHeaders;
+      }
+    });
+    table.getRightFlatHeaders = memo(() => [table.getRightHeaderGroups()], left => {
+      return left.map(headerGroup => {
+        return headerGroup.headers;
+      }).flat();
+    }, {
+      key:  true && 'getRightFlatHeaders',
+      debug: () => {
+        var _table$options$debugA12;
+        return (_table$options$debugA12 = table.options.debugAll) != null ? _table$options$debugA12 : table.options.debugHeaders;
+      }
+    });
+
+    // Leaf Headers
+
+    table.getCenterLeafHeaders = memo(() => [table.getCenterFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders;
+        return !((_header$subHeaders = header.subHeaders) != null && _header$subHeaders.length);
+      });
+    }, {
+      key:  true && 'getCenterLeafHeaders',
+      debug: () => {
+        var _table$options$debugA13;
+        return (_table$options$debugA13 = table.options.debugAll) != null ? _table$options$debugA13 : table.options.debugHeaders;
+      }
+    });
+    table.getLeftLeafHeaders = memo(() => [table.getLeftFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders2;
+        return !((_header$subHeaders2 = header.subHeaders) != null && _header$subHeaders2.length);
+      });
+    }, {
+      key:  true && 'getLeftLeafHeaders',
+      debug: () => {
+        var _table$options$debugA14;
+        return (_table$options$debugA14 = table.options.debugAll) != null ? _table$options$debugA14 : table.options.debugHeaders;
+      }
+    });
+    table.getRightLeafHeaders = memo(() => [table.getRightFlatHeaders()], flatHeaders => {
+      return flatHeaders.filter(header => {
+        var _header$subHeaders3;
+        return !((_header$subHeaders3 = header.subHeaders) != null && _header$subHeaders3.length);
+      });
+    }, {
+      key:  true && 'getRightLeafHeaders',
+      debug: () => {
+        var _table$options$debugA15;
+        return (_table$options$debugA15 = table.options.debugAll) != null ? _table$options$debugA15 : table.options.debugHeaders;
+      }
+    });
+    table.getLeafHeaders = memo(() => [table.getLeftHeaderGroups(), table.getCenterHeaderGroups(), table.getRightHeaderGroups()], (left, center, right) => {
+      var _left$0$headers, _left$, _center$0$headers, _center$, _right$0$headers, _right$;
+      return [...((_left$0$headers = (_left$ = left[0]) == null ? void 0 : _left$.headers) != null ? _left$0$headers : []), ...((_center$0$headers = (_center$ = center[0]) == null ? void 0 : _center$.headers) != null ? _center$0$headers : []), ...((_right$0$headers = (_right$ = right[0]) == null ? void 0 : _right$.headers) != null ? _right$0$headers : [])].map(header => {
+        return header.getLeafHeaders();
+      }).flat();
+    }, {
+      key:  true && 'getLeafHeaders',
+      debug: () => {
+        var _table$options$debugA16;
+        return (_table$options$debugA16 = table.options.debugAll) != null ? _table$options$debugA16 : table.options.debugHeaders;
+      }
+    });
   }
 };
 function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
@@ -9042,204 +9091,198 @@ const ColumnSizing = {
     };
   },
   createColumn: (column, table) => {
-    return {
-      getSize: () => {
-        var _column$columnDef$min, _ref, _column$columnDef$max;
-        const columnSize = table.getState().columnSizing[column.id];
-        return Math.min(Math.max((_column$columnDef$min = column.columnDef.minSize) != null ? _column$columnDef$min : defaultColumnSizing.minSize, (_ref = columnSize != null ? columnSize : column.columnDef.size) != null ? _ref : defaultColumnSizing.size), (_column$columnDef$max = column.columnDef.maxSize) != null ? _column$columnDef$max : defaultColumnSizing.maxSize);
-      },
-      getStart: position => {
-        const columns = !position ? table.getVisibleLeafColumns() : position === 'left' ? table.getLeftVisibleLeafColumns() : table.getRightVisibleLeafColumns();
-        const index = columns.findIndex(d => d.id === column.id);
-        if (index > 0) {
-          const prevSiblingColumn = columns[index - 1];
-          return prevSiblingColumn.getStart(position) + prevSiblingColumn.getSize();
-        }
-        return 0;
-      },
-      resetSize: () => {
-        table.setColumnSizing(_ref2 => {
-          let {
-            [column.id]: _,
-            ...rest
-          } = _ref2;
-          return rest;
-        });
-      },
-      getCanResize: () => {
-        var _column$columnDef$ena, _table$options$enable;
-        return ((_column$columnDef$ena = column.columnDef.enableResizing) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnResizing) != null ? _table$options$enable : true);
-      },
-      getIsResizing: () => {
-        return table.getState().columnSizingInfo.isResizingColumn === column.id;
+    column.getSize = () => {
+      var _column$columnDef$min, _ref, _column$columnDef$max;
+      const columnSize = table.getState().columnSizing[column.id];
+      return Math.min(Math.max((_column$columnDef$min = column.columnDef.minSize) != null ? _column$columnDef$min : defaultColumnSizing.minSize, (_ref = columnSize != null ? columnSize : column.columnDef.size) != null ? _ref : defaultColumnSizing.size), (_column$columnDef$max = column.columnDef.maxSize) != null ? _column$columnDef$max : defaultColumnSizing.maxSize);
+    };
+    column.getStart = position => {
+      const columns = !position ? table.getVisibleLeafColumns() : position === 'left' ? table.getLeftVisibleLeafColumns() : table.getRightVisibleLeafColumns();
+      const index = columns.findIndex(d => d.id === column.id);
+      if (index > 0) {
+        const prevSiblingColumn = columns[index - 1];
+        return prevSiblingColumn.getStart(position) + prevSiblingColumn.getSize();
       }
+      return 0;
+    };
+    column.resetSize = () => {
+      table.setColumnSizing(_ref2 => {
+        let {
+          [column.id]: _,
+          ...rest
+        } = _ref2;
+        return rest;
+      });
+    };
+    column.getCanResize = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableResizing) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnResizing) != null ? _table$options$enable : true);
+    };
+    column.getIsResizing = () => {
+      return table.getState().columnSizingInfo.isResizingColumn === column.id;
     };
   },
   createHeader: (header, table) => {
-    return {
-      getSize: () => {
-        let sum = 0;
-        const recurse = header => {
-          if (header.subHeaders.length) {
-            header.subHeaders.forEach(recurse);
-          } else {
-            var _header$column$getSiz;
-            sum += (_header$column$getSiz = header.column.getSize()) != null ? _header$column$getSiz : 0;
-          }
-        };
-        recurse(header);
-        return sum;
-      },
-      getStart: () => {
-        if (header.index > 0) {
-          const prevSiblingHeader = header.headerGroup.headers[header.index - 1];
-          return prevSiblingHeader.getStart() + prevSiblingHeader.getSize();
+    header.getSize = () => {
+      let sum = 0;
+      const recurse = header => {
+        if (header.subHeaders.length) {
+          header.subHeaders.forEach(recurse);
+        } else {
+          var _header$column$getSiz;
+          sum += (_header$column$getSiz = header.column.getSize()) != null ? _header$column$getSiz : 0;
         }
-        return 0;
-      },
-      getResizeHandler: () => {
-        const column = table.getColumn(header.column.id);
-        const canResize = column == null ? void 0 : column.getCanResize();
-        return e => {
-          if (!column || !canResize) {
+      };
+      recurse(header);
+      return sum;
+    };
+    header.getStart = () => {
+      if (header.index > 0) {
+        const prevSiblingHeader = header.headerGroup.headers[header.index - 1];
+        return prevSiblingHeader.getStart() + prevSiblingHeader.getSize();
+      }
+      return 0;
+    };
+    header.getResizeHandler = () => {
+      const column = table.getColumn(header.column.id);
+      const canResize = column == null ? void 0 : column.getCanResize();
+      return e => {
+        if (!column || !canResize) {
+          return;
+        }
+        e.persist == null || e.persist();
+        if (isTouchStartEvent(e)) {
+          // lets not respond to multiple touches (e.g. 2 or 3 fingers)
+          if (e.touches && e.touches.length > 1) {
             return;
           }
-          e.persist == null ? void 0 : e.persist();
-          if (isTouchStartEvent(e)) {
-            // lets not respond to multiple touches (e.g. 2 or 3 fingers)
-            if (e.touches && e.touches.length > 1) {
-              return;
-            }
+        }
+        const startSize = header.getSize();
+        const columnSizingStart = header ? header.getLeafHeaders().map(d => [d.column.id, d.column.getSize()]) : [[column.id, column.getSize()]];
+        const clientX = isTouchStartEvent(e) ? Math.round(e.touches[0].clientX) : e.clientX;
+        const newColumnSizing = {};
+        const updateOffset = (eventType, clientXPos) => {
+          if (typeof clientXPos !== 'number') {
+            return;
           }
-          const startSize = header.getSize();
-          const columnSizingStart = header ? header.getLeafHeaders().map(d => [d.column.id, d.column.getSize()]) : [[column.id, column.getSize()]];
-          const clientX = isTouchStartEvent(e) ? Math.round(e.touches[0].clientX) : e.clientX;
-          const newColumnSizing = {};
-          const updateOffset = (eventType, clientXPos) => {
-            if (typeof clientXPos !== 'number') {
-              return;
-            }
-            table.setColumnSizingInfo(old => {
-              var _old$startOffset, _old$startSize;
-              const deltaOffset = clientXPos - ((_old$startOffset = old == null ? void 0 : old.startOffset) != null ? _old$startOffset : 0);
-              const deltaPercentage = Math.max(deltaOffset / ((_old$startSize = old == null ? void 0 : old.startSize) != null ? _old$startSize : 0), -0.999999);
-              old.columnSizingStart.forEach(_ref3 => {
-                let [columnId, headerSize] = _ref3;
-                newColumnSizing[columnId] = Math.round(Math.max(headerSize + headerSize * deltaPercentage, 0) * 100) / 100;
-              });
-              return {
-                ...old,
-                deltaOffset,
-                deltaPercentage
-              };
+          table.setColumnSizingInfo(old => {
+            var _old$startOffset, _old$startSize;
+            const deltaOffset = clientXPos - ((_old$startOffset = old == null ? void 0 : old.startOffset) != null ? _old$startOffset : 0);
+            const deltaPercentage = Math.max(deltaOffset / ((_old$startSize = old == null ? void 0 : old.startSize) != null ? _old$startSize : 0), -0.999999);
+            old.columnSizingStart.forEach(_ref3 => {
+              let [columnId, headerSize] = _ref3;
+              newColumnSizing[columnId] = Math.round(Math.max(headerSize + headerSize * deltaPercentage, 0) * 100) / 100;
             });
-            if (table.options.columnResizeMode === 'onChange' || eventType === 'end') {
-              table.setColumnSizing(old => ({
-                ...old,
-                ...newColumnSizing
-              }));
-            }
-          };
-          const onMove = clientXPos => updateOffset('move', clientXPos);
-          const onEnd = clientXPos => {
-            updateOffset('end', clientXPos);
-            table.setColumnSizingInfo(old => ({
+            return {
               ...old,
-              isResizingColumn: false,
-              startOffset: null,
-              startSize: null,
-              deltaOffset: null,
-              deltaPercentage: null,
-              columnSizingStart: []
+              deltaOffset,
+              deltaPercentage
+            };
+          });
+          if (table.options.columnResizeMode === 'onChange' || eventType === 'end') {
+            table.setColumnSizing(old => ({
+              ...old,
+              ...newColumnSizing
             }));
-          };
-          const mouseEvents = {
-            moveHandler: e => onMove(e.clientX),
-            upHandler: e => {
-              document.removeEventListener('mousemove', mouseEvents.moveHandler);
-              document.removeEventListener('mouseup', mouseEvents.upHandler);
-              onEnd(e.clientX);
-            }
-          };
-          const touchEvents = {
-            moveHandler: e => {
-              if (e.cancelable) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-              onMove(e.touches[0].clientX);
-              return false;
-            },
-            upHandler: e => {
-              var _e$touches$;
-              document.removeEventListener('touchmove', touchEvents.moveHandler);
-              document.removeEventListener('touchend', touchEvents.upHandler);
-              if (e.cancelable) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-              onEnd((_e$touches$ = e.touches[0]) == null ? void 0 : _e$touches$.clientX);
-            }
-          };
-          const passiveIfSupported = passiveEventSupported() ? {
-            passive: false
-          } : false;
-          if (isTouchStartEvent(e)) {
-            document.addEventListener('touchmove', touchEvents.moveHandler, passiveIfSupported);
-            document.addEventListener('touchend', touchEvents.upHandler, passiveIfSupported);
-          } else {
-            document.addEventListener('mousemove', mouseEvents.moveHandler, passiveIfSupported);
-            document.addEventListener('mouseup', mouseEvents.upHandler, passiveIfSupported);
           }
+        };
+        const onMove = clientXPos => updateOffset('move', clientXPos);
+        const onEnd = clientXPos => {
+          updateOffset('end', clientXPos);
           table.setColumnSizingInfo(old => ({
             ...old,
-            startOffset: clientX,
-            startSize,
-            deltaOffset: 0,
-            deltaPercentage: 0,
-            columnSizingStart,
-            isResizingColumn: column.id
+            isResizingColumn: false,
+            startOffset: null,
+            startSize: null,
+            deltaOffset: null,
+            deltaPercentage: null,
+            columnSizingStart: []
           }));
         };
-      }
+        const mouseEvents = {
+          moveHandler: e => onMove(e.clientX),
+          upHandler: e => {
+            document.removeEventListener('mousemove', mouseEvents.moveHandler);
+            document.removeEventListener('mouseup', mouseEvents.upHandler);
+            onEnd(e.clientX);
+          }
+        };
+        const touchEvents = {
+          moveHandler: e => {
+            if (e.cancelable) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            onMove(e.touches[0].clientX);
+            return false;
+          },
+          upHandler: e => {
+            var _e$touches$;
+            document.removeEventListener('touchmove', touchEvents.moveHandler);
+            document.removeEventListener('touchend', touchEvents.upHandler);
+            if (e.cancelable) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            onEnd((_e$touches$ = e.touches[0]) == null ? void 0 : _e$touches$.clientX);
+          }
+        };
+        const passiveIfSupported = passiveEventSupported() ? {
+          passive: false
+        } : false;
+        if (isTouchStartEvent(e)) {
+          document.addEventListener('touchmove', touchEvents.moveHandler, passiveIfSupported);
+          document.addEventListener('touchend', touchEvents.upHandler, passiveIfSupported);
+        } else {
+          document.addEventListener('mousemove', mouseEvents.moveHandler, passiveIfSupported);
+          document.addEventListener('mouseup', mouseEvents.upHandler, passiveIfSupported);
+        }
+        table.setColumnSizingInfo(old => ({
+          ...old,
+          startOffset: clientX,
+          startSize,
+          deltaOffset: 0,
+          deltaPercentage: 0,
+          columnSizingStart,
+          isResizingColumn: column.id
+        }));
+      };
     };
   },
   createTable: table => {
-    return {
-      setColumnSizing: updater => table.options.onColumnSizingChange == null ? void 0 : table.options.onColumnSizingChange(updater),
-      setColumnSizingInfo: updater => table.options.onColumnSizingInfoChange == null ? void 0 : table.options.onColumnSizingInfoChange(updater),
-      resetColumnSizing: defaultState => {
-        var _table$initialState$c;
-        table.setColumnSizing(defaultState ? {} : (_table$initialState$c = table.initialState.columnSizing) != null ? _table$initialState$c : {});
-      },
-      resetHeaderSizeInfo: defaultState => {
-        var _table$initialState$c2;
-        table.setColumnSizingInfo(defaultState ? getDefaultColumnSizingInfoState() : (_table$initialState$c2 = table.initialState.columnSizingInfo) != null ? _table$initialState$c2 : getDefaultColumnSizingInfoState());
-      },
-      getTotalSize: () => {
-        var _table$getHeaderGroup, _table$getHeaderGroup2;
-        return (_table$getHeaderGroup = (_table$getHeaderGroup2 = table.getHeaderGroups()[0]) == null ? void 0 : _table$getHeaderGroup2.headers.reduce((sum, header) => {
-          return sum + header.getSize();
-        }, 0)) != null ? _table$getHeaderGroup : 0;
-      },
-      getLeftTotalSize: () => {
-        var _table$getLeftHeaderG, _table$getLeftHeaderG2;
-        return (_table$getLeftHeaderG = (_table$getLeftHeaderG2 = table.getLeftHeaderGroups()[0]) == null ? void 0 : _table$getLeftHeaderG2.headers.reduce((sum, header) => {
-          return sum + header.getSize();
-        }, 0)) != null ? _table$getLeftHeaderG : 0;
-      },
-      getCenterTotalSize: () => {
-        var _table$getCenterHeade, _table$getCenterHeade2;
-        return (_table$getCenterHeade = (_table$getCenterHeade2 = table.getCenterHeaderGroups()[0]) == null ? void 0 : _table$getCenterHeade2.headers.reduce((sum, header) => {
-          return sum + header.getSize();
-        }, 0)) != null ? _table$getCenterHeade : 0;
-      },
-      getRightTotalSize: () => {
-        var _table$getRightHeader, _table$getRightHeader2;
-        return (_table$getRightHeader = (_table$getRightHeader2 = table.getRightHeaderGroups()[0]) == null ? void 0 : _table$getRightHeader2.headers.reduce((sum, header) => {
-          return sum + header.getSize();
-        }, 0)) != null ? _table$getRightHeader : 0;
-      }
+    table.setColumnSizing = updater => table.options.onColumnSizingChange == null ? void 0 : table.options.onColumnSizingChange(updater);
+    table.setColumnSizingInfo = updater => table.options.onColumnSizingInfoChange == null ? void 0 : table.options.onColumnSizingInfoChange(updater);
+    table.resetColumnSizing = defaultState => {
+      var _table$initialState$c;
+      table.setColumnSizing(defaultState ? {} : (_table$initialState$c = table.initialState.columnSizing) != null ? _table$initialState$c : {});
+    };
+    table.resetHeaderSizeInfo = defaultState => {
+      var _table$initialState$c2;
+      table.setColumnSizingInfo(defaultState ? getDefaultColumnSizingInfoState() : (_table$initialState$c2 = table.initialState.columnSizingInfo) != null ? _table$initialState$c2 : getDefaultColumnSizingInfoState());
+    };
+    table.getTotalSize = () => {
+      var _table$getHeaderGroup, _table$getHeaderGroup2;
+      return (_table$getHeaderGroup = (_table$getHeaderGroup2 = table.getHeaderGroups()[0]) == null ? void 0 : _table$getHeaderGroup2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getHeaderGroup : 0;
+    };
+    table.getLeftTotalSize = () => {
+      var _table$getLeftHeaderG, _table$getLeftHeaderG2;
+      return (_table$getLeftHeaderG = (_table$getLeftHeaderG2 = table.getLeftHeaderGroups()[0]) == null ? void 0 : _table$getLeftHeaderG2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getLeftHeaderG : 0;
+    };
+    table.getCenterTotalSize = () => {
+      var _table$getCenterHeade, _table$getCenterHeade2;
+      return (_table$getCenterHeade = (_table$getCenterHeade2 = table.getCenterHeaderGroups()[0]) == null ? void 0 : _table$getCenterHeade2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getCenterHeade : 0;
+    };
+    table.getRightTotalSize = () => {
+      var _table$getRightHeader, _table$getRightHeader2;
+      return (_table$getRightHeader = (_table$getRightHeader2 = table.getRightHeaderGroups()[0]) == null ? void 0 : _table$getRightHeader2.headers.reduce((sum, header) => {
+        return sum + header.getSize();
+      }, 0)) != null ? _table$getRightHeader : 0;
     };
   }
 };
@@ -9285,154 +9328,159 @@ const Expanding = {
   createTable: table => {
     let registered = false;
     let queued = false;
-    return {
-      _autoResetExpanded: () => {
-        var _ref, _table$options$autoRe;
-        if (!registered) {
-          table._queue(() => {
-            registered = true;
-          });
-          return;
-        }
-        if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetExpanded) != null ? _ref : !table.options.manualExpanding) {
-          if (queued) return;
-          queued = true;
-          table._queue(() => {
-            table.resetExpanded();
-            queued = false;
-          });
-        }
-      },
-      setExpanded: updater => table.options.onExpandedChange == null ? void 0 : table.options.onExpandedChange(updater),
-      toggleAllRowsExpanded: expanded => {
-        if (expanded != null ? expanded : !table.getIsAllRowsExpanded()) {
-          table.setExpanded(true);
-        } else {
-          table.setExpanded({});
-        }
-      },
-      resetExpanded: defaultState => {
-        var _table$initialState$e, _table$initialState;
-        table.setExpanded(defaultState ? {} : (_table$initialState$e = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.expanded) != null ? _table$initialState$e : {});
-      },
-      getCanSomeRowsExpand: () => {
-        return table.getPrePaginationRowModel().flatRows.some(row => row.getCanExpand());
-      },
-      getToggleAllRowsExpandedHandler: () => {
-        return e => {
-          e.persist == null ? void 0 : e.persist();
-          table.toggleAllRowsExpanded();
-        };
-      },
-      getIsSomeRowsExpanded: () => {
-        const expanded = table.getState().expanded;
-        return expanded === true || Object.values(expanded).some(Boolean);
-      },
-      getIsAllRowsExpanded: () => {
-        const expanded = table.getState().expanded;
-
-        // If expanded is true, save some cycles and return true
-        if (typeof expanded === 'boolean') {
-          return expanded === true;
-        }
-        if (!Object.keys(expanded).length) {
-          return false;
-        }
-
-        // If any row is not expanded, return false
-        if (table.getRowModel().flatRows.some(row => !row.getIsExpanded())) {
-          return false;
-        }
-
-        // They must all be expanded :shrug:
-        return true;
-      },
-      getExpandedDepth: () => {
-        let maxDepth = 0;
-        const rowIds = table.getState().expanded === true ? Object.keys(table.getRowModel().rowsById) : Object.keys(table.getState().expanded);
-        rowIds.forEach(id => {
-          const splitId = id.split('.');
-          maxDepth = Math.max(maxDepth, splitId.length);
+    table._autoResetExpanded = () => {
+      var _ref, _table$options$autoRe;
+      if (!registered) {
+        table._queue(() => {
+          registered = true;
         });
-        return maxDepth;
-      },
-      getPreExpandedRowModel: () => table.getSortedRowModel(),
-      getExpandedRowModel: () => {
-        if (!table._getExpandedRowModel && table.options.getExpandedRowModel) {
-          table._getExpandedRowModel = table.options.getExpandedRowModel(table);
-        }
-        if (table.options.manualExpanding || !table._getExpandedRowModel) {
-          return table.getPreExpandedRowModel();
-        }
-        return table._getExpandedRowModel();
+        return;
       }
+      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetExpanded) != null ? _ref : !table.options.manualExpanding) {
+        if (queued) return;
+        queued = true;
+        table._queue(() => {
+          table.resetExpanded();
+          queued = false;
+        });
+      }
+    };
+    table.setExpanded = updater => table.options.onExpandedChange == null ? void 0 : table.options.onExpandedChange(updater);
+    table.toggleAllRowsExpanded = expanded => {
+      if (expanded != null ? expanded : !table.getIsAllRowsExpanded()) {
+        table.setExpanded(true);
+      } else {
+        table.setExpanded({});
+      }
+    };
+    table.resetExpanded = defaultState => {
+      var _table$initialState$e, _table$initialState;
+      table.setExpanded(defaultState ? {} : (_table$initialState$e = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.expanded) != null ? _table$initialState$e : {});
+    };
+    table.getCanSomeRowsExpand = () => {
+      return table.getPrePaginationRowModel().flatRows.some(row => row.getCanExpand());
+    };
+    table.getToggleAllRowsExpandedHandler = () => {
+      return e => {
+        e.persist == null || e.persist();
+        table.toggleAllRowsExpanded();
+      };
+    };
+    table.getIsSomeRowsExpanded = () => {
+      const expanded = table.getState().expanded;
+      return expanded === true || Object.values(expanded).some(Boolean);
+    };
+    table.getIsAllRowsExpanded = () => {
+      const expanded = table.getState().expanded;
+
+      // If expanded is true, save some cycles and return true
+      if (typeof expanded === 'boolean') {
+        return expanded === true;
+      }
+      if (!Object.keys(expanded).length) {
+        return false;
+      }
+
+      // If any row is not expanded, return false
+      if (table.getRowModel().flatRows.some(row => !row.getIsExpanded())) {
+        return false;
+      }
+
+      // They must all be expanded :shrug:
+      return true;
+    };
+    table.getExpandedDepth = () => {
+      let maxDepth = 0;
+      const rowIds = table.getState().expanded === true ? Object.keys(table.getRowModel().rowsById) : Object.keys(table.getState().expanded);
+      rowIds.forEach(id => {
+        const splitId = id.split('.');
+        maxDepth = Math.max(maxDepth, splitId.length);
+      });
+      return maxDepth;
+    };
+    table.getPreExpandedRowModel = () => table.getSortedRowModel();
+    table.getExpandedRowModel = () => {
+      if (!table._getExpandedRowModel && table.options.getExpandedRowModel) {
+        table._getExpandedRowModel = table.options.getExpandedRowModel(table);
+      }
+      if (table.options.manualExpanding || !table._getExpandedRowModel) {
+        return table.getPreExpandedRowModel();
+      }
+      return table._getExpandedRowModel();
     };
   },
   createRow: (row, table) => {
-    return {
-      toggleExpanded: expanded => {
-        table.setExpanded(old => {
-          var _expanded;
-          const exists = old === true ? true : !!(old != null && old[row.id]);
-          let oldExpanded = {};
-          if (old === true) {
-            Object.keys(table.getRowModel().rowsById).forEach(rowId => {
-              oldExpanded[rowId] = true;
-            });
-          } else {
-            oldExpanded = old;
-          }
-          expanded = (_expanded = expanded) != null ? _expanded : !exists;
-          if (!exists && expanded) {
-            return {
-              ...oldExpanded,
-              [row.id]: true
-            };
-          }
-          if (exists && !expanded) {
-            const {
-              [row.id]: _,
-              ...rest
-            } = oldExpanded;
-            return rest;
-          }
-          return old;
-        });
-      },
-      getIsExpanded: () => {
-        var _table$options$getIsR;
-        const expanded = table.getState().expanded;
-        return !!((_table$options$getIsR = table.options.getIsRowExpanded == null ? void 0 : table.options.getIsRowExpanded(row)) != null ? _table$options$getIsR : expanded === true || (expanded == null ? void 0 : expanded[row.id]));
-      },
-      getCanExpand: () => {
-        var _table$options$getRow, _table$options$enable, _row$subRows;
-        return (_table$options$getRow = table.options.getRowCanExpand == null ? void 0 : table.options.getRowCanExpand(row)) != null ? _table$options$getRow : ((_table$options$enable = table.options.enableExpanding) != null ? _table$options$enable : true) && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
-      },
-      getToggleExpandedHandler: () => {
-        const canExpand = row.getCanExpand();
-        return () => {
-          if (!canExpand) return;
-          row.toggleExpanded();
-        };
+    row.toggleExpanded = expanded => {
+      table.setExpanded(old => {
+        var _expanded;
+        const exists = old === true ? true : !!(old != null && old[row.id]);
+        let oldExpanded = {};
+        if (old === true) {
+          Object.keys(table.getRowModel().rowsById).forEach(rowId => {
+            oldExpanded[rowId] = true;
+          });
+        } else {
+          oldExpanded = old;
+        }
+        expanded = (_expanded = expanded) != null ? _expanded : !exists;
+        if (!exists && expanded) {
+          return {
+            ...oldExpanded,
+            [row.id]: true
+          };
+        }
+        if (exists && !expanded) {
+          const {
+            [row.id]: _,
+            ...rest
+          } = oldExpanded;
+          return rest;
+        }
+        return old;
+      });
+    };
+    row.getIsExpanded = () => {
+      var _table$options$getIsR;
+      const expanded = table.getState().expanded;
+      return !!((_table$options$getIsR = table.options.getIsRowExpanded == null ? void 0 : table.options.getIsRowExpanded(row)) != null ? _table$options$getIsR : expanded === true || (expanded == null ? void 0 : expanded[row.id]));
+    };
+    row.getCanExpand = () => {
+      var _table$options$getRow, _table$options$enable, _row$subRows;
+      return (_table$options$getRow = table.options.getRowCanExpand == null ? void 0 : table.options.getRowCanExpand(row)) != null ? _table$options$getRow : ((_table$options$enable = table.options.enableExpanding) != null ? _table$options$enable : true) && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
+    };
+    row.getIsAllParentsExpanded = () => {
+      let isFullyExpanded = true;
+      let currentRow = row;
+      while (isFullyExpanded && currentRow.parentId) {
+        currentRow = table.getRow(currentRow.parentId, true);
+        isFullyExpanded = currentRow.getIsExpanded();
       }
+      return isFullyExpanded;
+    };
+    row.getToggleExpandedHandler = () => {
+      const canExpand = row.getCanExpand();
+      return () => {
+        if (!canExpand) return;
+        row.toggleExpanded();
+      };
     };
   }
 };
 
 const includesString = (row, columnId, filterValue) => {
-  var _row$getValue, _row$getValue$toStrin, _row$getValue$toStrin2;
+  var _row$getValue;
   const search = filterValue.toLowerCase();
-  return Boolean((_row$getValue = row.getValue(columnId)) == null ? void 0 : (_row$getValue$toStrin = _row$getValue.toString()) == null ? void 0 : (_row$getValue$toStrin2 = _row$getValue$toStrin.toLowerCase()) == null ? void 0 : _row$getValue$toStrin2.includes(search));
+  return Boolean((_row$getValue = row.getValue(columnId)) == null || (_row$getValue = _row$getValue.toString()) == null || (_row$getValue = _row$getValue.toLowerCase()) == null ? void 0 : _row$getValue.includes(search));
 };
 includesString.autoRemove = val => testFalsey(val);
 const includesStringSensitive = (row, columnId, filterValue) => {
-  var _row$getValue2, _row$getValue2$toStri;
-  return Boolean((_row$getValue2 = row.getValue(columnId)) == null ? void 0 : (_row$getValue2$toStri = _row$getValue2.toString()) == null ? void 0 : _row$getValue2$toStri.includes(filterValue));
+  var _row$getValue2;
+  return Boolean((_row$getValue2 = row.getValue(columnId)) == null || (_row$getValue2 = _row$getValue2.toString()) == null ? void 0 : _row$getValue2.includes(filterValue));
 };
 includesStringSensitive.autoRemove = val => testFalsey(val);
 const equalsString = (row, columnId, filterValue) => {
-  var _row$getValue3, _row$getValue3$toStri;
-  return ((_row$getValue3 = row.getValue(columnId)) == null ? void 0 : (_row$getValue3$toStri = _row$getValue3.toString()) == null ? void 0 : _row$getValue3$toStri.toLowerCase()) === (filterValue == null ? void 0 : filterValue.toLowerCase());
+  var _row$getValue3;
+  return ((_row$getValue3 = row.getValue(columnId)) == null || (_row$getValue3 = _row$getValue3.toString()) == null ? void 0 : _row$getValue3.toLowerCase()) === (filterValue == null ? void 0 : filterValue.toLowerCase());
 };
 equalsString.autoRemove = val => testFalsey(val);
 const arrIncludes = (row, columnId, filterValue) => {
@@ -9526,191 +9574,183 @@ const Filters = {
       maxLeafRowFilterDepth: 100,
       globalFilterFn: 'auto',
       getColumnCanGlobalFilter: column => {
-        var _table$getCoreRowMode, _table$getCoreRowMode2;
-        const value = (_table$getCoreRowMode = table.getCoreRowModel().flatRows[0]) == null ? void 0 : (_table$getCoreRowMode2 = _table$getCoreRowMode._getAllCellsByColumnId()[column.id]) == null ? void 0 : _table$getCoreRowMode2.getValue();
+        var _table$getCoreRowMode;
+        const value = (_table$getCoreRowMode = table.getCoreRowModel().flatRows[0]) == null || (_table$getCoreRowMode = _table$getCoreRowMode._getAllCellsByColumnId()[column.id]) == null ? void 0 : _table$getCoreRowMode.getValue();
         return typeof value === 'string' || typeof value === 'number';
       }
     };
   },
   createColumn: (column, table) => {
-    return {
-      getAutoFilterFn: () => {
-        const firstRow = table.getCoreRowModel().flatRows[0];
-        const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
-        if (typeof value === 'string') {
-          return filterFns.includesString;
-        }
-        if (typeof value === 'number') {
-          return filterFns.inNumberRange;
-        }
-        if (typeof value === 'boolean') {
-          return filterFns.equals;
-        }
-        if (value !== null && typeof value === 'object') {
-          return filterFns.equals;
-        }
-        if (Array.isArray(value)) {
-          return filterFns.arrIncludes;
-        }
-        return filterFns.weakEquals;
-      },
-      getFilterFn: () => {
-        var _table$options$filter, _table$options$filter2;
-        return isFunction(column.columnDef.filterFn) ? column.columnDef.filterFn : column.columnDef.filterFn === 'auto' ? column.getAutoFilterFn()
-        // @ts-ignore 
-        : (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[column.columnDef.filterFn]) != null ? _table$options$filter : filterFns[column.columnDef.filterFn];
-      },
-      getCanFilter: () => {
-        var _column$columnDef$ena, _table$options$enable, _table$options$enable2;
-        return ((_column$columnDef$ena = column.columnDef.enableColumnFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnFilters) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && !!column.accessorFn;
-      },
-      getCanGlobalFilter: () => {
-        var _column$columnDef$ena2, _table$options$enable3, _table$options$enable4, _table$options$getCol;
-        return ((_column$columnDef$ena2 = column.columnDef.enableGlobalFilter) != null ? _column$columnDef$ena2 : true) && ((_table$options$enable3 = table.options.enableGlobalFilter) != null ? _table$options$enable3 : true) && ((_table$options$enable4 = table.options.enableFilters) != null ? _table$options$enable4 : true) && ((_table$options$getCol = table.options.getColumnCanGlobalFilter == null ? void 0 : table.options.getColumnCanGlobalFilter(column)) != null ? _table$options$getCol : true) && !!column.accessorFn;
-      },
-      getIsFiltered: () => column.getFilterIndex() > -1,
-      getFilterValue: () => {
-        var _table$getState$colum, _table$getState$colum2;
-        return (_table$getState$colum = table.getState().columnFilters) == null ? void 0 : (_table$getState$colum2 = _table$getState$colum.find(d => d.id === column.id)) == null ? void 0 : _table$getState$colum2.value;
-      },
-      getFilterIndex: () => {
-        var _table$getState$colum3, _table$getState$colum4;
-        return (_table$getState$colum3 = (_table$getState$colum4 = table.getState().columnFilters) == null ? void 0 : _table$getState$colum4.findIndex(d => d.id === column.id)) != null ? _table$getState$colum3 : -1;
-      },
-      setFilterValue: value => {
-        table.setColumnFilters(old => {
-          const filterFn = column.getFilterFn();
-          const previousfilter = old == null ? void 0 : old.find(d => d.id === column.id);
-          const newFilter = functionalUpdate(value, previousfilter ? previousfilter.value : undefined);
-
-          //
-          if (shouldAutoRemoveFilter(filterFn, newFilter, column)) {
-            var _old$filter;
-            return (_old$filter = old == null ? void 0 : old.filter(d => d.id !== column.id)) != null ? _old$filter : [];
-          }
-          const newFilterObj = {
-            id: column.id,
-            value: newFilter
-          };
-          if (previousfilter) {
-            var _old$map;
-            return (_old$map = old == null ? void 0 : old.map(d => {
-              if (d.id === column.id) {
-                return newFilterObj;
-              }
-              return d;
-            })) != null ? _old$map : [];
-          }
-          if (old != null && old.length) {
-            return [...old, newFilterObj];
-          }
-          return [newFilterObj];
-        });
-      },
-      _getFacetedRowModel: table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, column.id),
-      getFacetedRowModel: () => {
-        if (!column._getFacetedRowModel) {
-          return table.getPreFilteredRowModel();
-        }
-        return column._getFacetedRowModel();
-      },
-      _getFacetedUniqueValues: table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, column.id),
-      getFacetedUniqueValues: () => {
-        if (!column._getFacetedUniqueValues) {
-          return new Map();
-        }
-        return column._getFacetedUniqueValues();
-      },
-      _getFacetedMinMaxValues: table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, column.id),
-      getFacetedMinMaxValues: () => {
-        if (!column._getFacetedMinMaxValues) {
-          return undefined;
-        }
-        return column._getFacetedMinMaxValues();
+    column.getAutoFilterFn = () => {
+      const firstRow = table.getCoreRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'string') {
+        return filterFns.includesString;
       }
-      // () => [column.getFacetedRowModel()],
-      // facetedRowModel => getRowModelMinMaxValues(facetedRowModel, column.id),
+      if (typeof value === 'number') {
+        return filterFns.inNumberRange;
+      }
+      if (typeof value === 'boolean') {
+        return filterFns.equals;
+      }
+      if (value !== null && typeof value === 'object') {
+        return filterFns.equals;
+      }
+      if (Array.isArray(value)) {
+        return filterFns.arrIncludes;
+      }
+      return filterFns.weakEquals;
     };
+    column.getFilterFn = () => {
+      var _table$options$filter, _table$options$filter2;
+      return isFunction(column.columnDef.filterFn) ? column.columnDef.filterFn : column.columnDef.filterFn === 'auto' ? column.getAutoFilterFn() : // @ts-ignore
+      (_table$options$filter = (_table$options$filter2 = table.options.filterFns) == null ? void 0 : _table$options$filter2[column.columnDef.filterFn]) != null ? _table$options$filter : filterFns[column.columnDef.filterFn];
+    };
+    column.getCanFilter = () => {
+      var _column$columnDef$ena, _table$options$enable, _table$options$enable2;
+      return ((_column$columnDef$ena = column.columnDef.enableColumnFilter) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableColumnFilters) != null ? _table$options$enable : true) && ((_table$options$enable2 = table.options.enableFilters) != null ? _table$options$enable2 : true) && !!column.accessorFn;
+    };
+    column.getCanGlobalFilter = () => {
+      var _column$columnDef$ena2, _table$options$enable3, _table$options$enable4, _table$options$getCol;
+      return ((_column$columnDef$ena2 = column.columnDef.enableGlobalFilter) != null ? _column$columnDef$ena2 : true) && ((_table$options$enable3 = table.options.enableGlobalFilter) != null ? _table$options$enable3 : true) && ((_table$options$enable4 = table.options.enableFilters) != null ? _table$options$enable4 : true) && ((_table$options$getCol = table.options.getColumnCanGlobalFilter == null ? void 0 : table.options.getColumnCanGlobalFilter(column)) != null ? _table$options$getCol : true) && !!column.accessorFn;
+    };
+    column.getIsFiltered = () => column.getFilterIndex() > -1;
+    column.getFilterValue = () => {
+      var _table$getState$colum;
+      return (_table$getState$colum = table.getState().columnFilters) == null || (_table$getState$colum = _table$getState$colum.find(d => d.id === column.id)) == null ? void 0 : _table$getState$colum.value;
+    };
+    column.getFilterIndex = () => {
+      var _table$getState$colum2, _table$getState$colum3;
+      return (_table$getState$colum2 = (_table$getState$colum3 = table.getState().columnFilters) == null ? void 0 : _table$getState$colum3.findIndex(d => d.id === column.id)) != null ? _table$getState$colum2 : -1;
+    };
+    column.setFilterValue = value => {
+      table.setColumnFilters(old => {
+        const filterFn = column.getFilterFn();
+        const previousfilter = old == null ? void 0 : old.find(d => d.id === column.id);
+        const newFilter = functionalUpdate(value, previousfilter ? previousfilter.value : undefined);
+
+        //
+        if (shouldAutoRemoveFilter(filterFn, newFilter, column)) {
+          var _old$filter;
+          return (_old$filter = old == null ? void 0 : old.filter(d => d.id !== column.id)) != null ? _old$filter : [];
+        }
+        const newFilterObj = {
+          id: column.id,
+          value: newFilter
+        };
+        if (previousfilter) {
+          var _old$map;
+          return (_old$map = old == null ? void 0 : old.map(d => {
+            if (d.id === column.id) {
+              return newFilterObj;
+            }
+            return d;
+          })) != null ? _old$map : [];
+        }
+        if (old != null && old.length) {
+          return [...old, newFilterObj];
+        }
+        return [newFilterObj];
+      });
+    };
+    column._getFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, column.id);
+    column.getFacetedRowModel = () => {
+      if (!column._getFacetedRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return column._getFacetedRowModel();
+    };
+    column._getFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, column.id);
+    column.getFacetedUniqueValues = () => {
+      if (!column._getFacetedUniqueValues) {
+        return new Map();
+      }
+      return column._getFacetedUniqueValues();
+    };
+    column._getFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, column.id);
+    column.getFacetedMinMaxValues = () => {
+      if (!column._getFacetedMinMaxValues) {
+        return undefined;
+      }
+      return column._getFacetedMinMaxValues();
+    };
+    // () => [column.getFacetedRowModel()],
+    // facetedRowModel => getRowModelMinMaxValues(facetedRowModel, column.id),
   },
 
   createRow: (row, table) => {
-    return {
-      columnFilters: {},
-      columnFiltersMeta: {}
-    };
+    row.columnFilters = {};
+    row.columnFiltersMeta = {};
   },
   createTable: table => {
-    return {
-      getGlobalAutoFilterFn: () => {
-        return filterFns.includesString;
-      },
-      getGlobalFilterFn: () => {
-        var _table$options$filter3, _table$options$filter4;
-        const {
-          globalFilterFn: globalFilterFn
-        } = table.options;
-        return isFunction(globalFilterFn) ? globalFilterFn : globalFilterFn === 'auto' ? table.getGlobalAutoFilterFn()
-        // @ts-ignore
-        : (_table$options$filter3 = (_table$options$filter4 = table.options.filterFns) == null ? void 0 : _table$options$filter4[globalFilterFn]) != null ? _table$options$filter3 : filterFns[globalFilterFn];
-      },
-      setColumnFilters: updater => {
-        const leafColumns = table.getAllLeafColumns();
-        const updateFn = old => {
-          var _functionalUpdate;
-          return (_functionalUpdate = functionalUpdate(updater, old)) == null ? void 0 : _functionalUpdate.filter(filter => {
-            const column = leafColumns.find(d => d.id === filter.id);
-            if (column) {
-              const filterFn = column.getFilterFn();
-              if (shouldAutoRemoveFilter(filterFn, filter.value, column)) {
-                return false;
-              }
+    table.getGlobalAutoFilterFn = () => {
+      return filterFns.includesString;
+    };
+    table.getGlobalFilterFn = () => {
+      var _table$options$filter3, _table$options$filter4;
+      const {
+        globalFilterFn: globalFilterFn
+      } = table.options;
+      return isFunction(globalFilterFn) ? globalFilterFn : globalFilterFn === 'auto' ? table.getGlobalAutoFilterFn() : // @ts-ignore
+      (_table$options$filter3 = (_table$options$filter4 = table.options.filterFns) == null ? void 0 : _table$options$filter4[globalFilterFn]) != null ? _table$options$filter3 : filterFns[globalFilterFn];
+    };
+    table.setColumnFilters = updater => {
+      const leafColumns = table.getAllLeafColumns();
+      const updateFn = old => {
+        var _functionalUpdate;
+        return (_functionalUpdate = functionalUpdate(updater, old)) == null ? void 0 : _functionalUpdate.filter(filter => {
+          const column = leafColumns.find(d => d.id === filter.id);
+          if (column) {
+            const filterFn = column.getFilterFn();
+            if (shouldAutoRemoveFilter(filterFn, filter.value, column)) {
+              return false;
             }
-            return true;
-          });
-        };
-        table.options.onColumnFiltersChange == null ? void 0 : table.options.onColumnFiltersChange(updateFn);
-      },
-      setGlobalFilter: updater => {
-        table.options.onGlobalFilterChange == null ? void 0 : table.options.onGlobalFilterChange(updater);
-      },
-      resetGlobalFilter: defaultState => {
-        table.setGlobalFilter(defaultState ? undefined : table.initialState.globalFilter);
-      },
-      resetColumnFilters: defaultState => {
-        var _table$initialState$c, _table$initialState;
-        table.setColumnFilters(defaultState ? [] : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnFilters) != null ? _table$initialState$c : []);
-      },
-      getPreFilteredRowModel: () => table.getCoreRowModel(),
-      getFilteredRowModel: () => {
-        if (!table._getFilteredRowModel && table.options.getFilteredRowModel) {
-          table._getFilteredRowModel = table.options.getFilteredRowModel(table);
-        }
-        if (table.options.manualFiltering || !table._getFilteredRowModel) {
-          return table.getPreFilteredRowModel();
-        }
-        return table._getFilteredRowModel();
-      },
-      _getGlobalFacetedRowModel: table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, '__global__'),
-      getGlobalFacetedRowModel: () => {
-        if (table.options.manualFiltering || !table._getGlobalFacetedRowModel) {
-          return table.getPreFilteredRowModel();
-        }
-        return table._getGlobalFacetedRowModel();
-      },
-      _getGlobalFacetedUniqueValues: table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, '__global__'),
-      getGlobalFacetedUniqueValues: () => {
-        if (!table._getGlobalFacetedUniqueValues) {
-          return new Map();
-        }
-        return table._getGlobalFacetedUniqueValues();
-      },
-      _getGlobalFacetedMinMaxValues: table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, '__global__'),
-      getGlobalFacetedMinMaxValues: () => {
-        if (!table._getGlobalFacetedMinMaxValues) {
-          return;
-        }
-        return table._getGlobalFacetedMinMaxValues();
+          }
+          return true;
+        });
+      };
+      table.options.onColumnFiltersChange == null || table.options.onColumnFiltersChange(updateFn);
+    };
+    table.setGlobalFilter = updater => {
+      table.options.onGlobalFilterChange == null || table.options.onGlobalFilterChange(updater);
+    };
+    table.resetGlobalFilter = defaultState => {
+      table.setGlobalFilter(defaultState ? undefined : table.initialState.globalFilter);
+    };
+    table.resetColumnFilters = defaultState => {
+      var _table$initialState$c, _table$initialState;
+      table.setColumnFilters(defaultState ? [] : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnFilters) != null ? _table$initialState$c : []);
+    };
+    table.getPreFilteredRowModel = () => table.getCoreRowModel();
+    table.getFilteredRowModel = () => {
+      if (!table._getFilteredRowModel && table.options.getFilteredRowModel) {
+        table._getFilteredRowModel = table.options.getFilteredRowModel(table);
       }
+      if (table.options.manualFiltering || !table._getFilteredRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return table._getFilteredRowModel();
+    };
+    table._getGlobalFacetedRowModel = table.options.getFacetedRowModel && table.options.getFacetedRowModel(table, '__global__');
+    table.getGlobalFacetedRowModel = () => {
+      if (table.options.manualFiltering || !table._getGlobalFacetedRowModel) {
+        return table.getPreFilteredRowModel();
+      }
+      return table._getGlobalFacetedRowModel();
+    };
+    table._getGlobalFacetedUniqueValues = table.options.getFacetedUniqueValues && table.options.getFacetedUniqueValues(table, '__global__');
+    table.getGlobalFacetedUniqueValues = () => {
+      if (!table._getGlobalFacetedUniqueValues) {
+        return new Map();
+      }
+      return table._getGlobalFacetedUniqueValues();
+    };
+    table._getGlobalFacetedMinMaxValues = table.options.getFacetedMinMaxValues && table.options.getFacetedMinMaxValues(table, '__global__');
+    table.getGlobalFacetedMinMaxValues = () => {
+      if (!table._getGlobalFacetedMinMaxValues) {
+        return;
+      }
+      return table._getGlobalFacetedMinMaxValues();
     };
   }
 };
@@ -9817,7 +9857,7 @@ const Grouping = {
     return {
       aggregatedCell: props => {
         var _toString, _props$getValue;
-        return (_toString = (_props$getValue = props.getValue()) == null ? void 0 : _props$getValue.toString == null ? void 0 : _props$getValue.toString()) != null ? _toString : null;
+        return (_toString = (_props$getValue = props.getValue()) == null || _props$getValue.toString == null ? void 0 : _props$getValue.toString()) != null ? _toString : null;
       },
       aggregationFn: 'auto'
     };
@@ -9835,98 +9875,90 @@ const Grouping = {
     };
   },
   createColumn: (column, table) => {
-    return {
-      toggleGrouping: () => {
-        table.setGrouping(old => {
-          // Find any existing grouping for this column
-          if (old != null && old.includes(column.id)) {
-            return old.filter(d => d !== column.id);
-          }
-          return [...(old != null ? old : []), column.id];
-        });
-      },
-      getCanGroup: () => {
-        var _ref, _ref2, _ref3, _column$columnDef$ena;
-        return (_ref = (_ref2 = (_ref3 = (_column$columnDef$ena = column.columnDef.enableGrouping) != null ? _column$columnDef$ena : true) != null ? _ref3 : table.options.enableGrouping) != null ? _ref2 : true) != null ? _ref : !!column.accessorFn;
-      },
-      getIsGrouped: () => {
-        var _table$getState$group;
-        return (_table$getState$group = table.getState().grouping) == null ? void 0 : _table$getState$group.includes(column.id);
-      },
-      getGroupedIndex: () => {
-        var _table$getState$group2;
-        return (_table$getState$group2 = table.getState().grouping) == null ? void 0 : _table$getState$group2.indexOf(column.id);
-      },
-      getToggleGroupingHandler: () => {
-        const canGroup = column.getCanGroup();
-        return () => {
-          if (!canGroup) return;
-          column.toggleGrouping();
-        };
-      },
-      getAutoAggregationFn: () => {
-        const firstRow = table.getCoreRowModel().flatRows[0];
-        const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
-        if (typeof value === 'number') {
-          return aggregationFns.sum;
+    column.toggleGrouping = () => {
+      table.setGrouping(old => {
+        // Find any existing grouping for this column
+        if (old != null && old.includes(column.id)) {
+          return old.filter(d => d !== column.id);
         }
-        if (Object.prototype.toString.call(value) === '[object Date]') {
-          return aggregationFns.extent;
-        }
-      },
-      getAggregationFn: () => {
-        var _table$options$aggreg, _table$options$aggreg2;
-        if (!column) {
-          throw new Error();
-        }
-        return isFunction(column.columnDef.aggregationFn) ? column.columnDef.aggregationFn : column.columnDef.aggregationFn === 'auto' ? column.getAutoAggregationFn() : (_table$options$aggreg = (_table$options$aggreg2 = table.options.aggregationFns) == null ? void 0 : _table$options$aggreg2[column.columnDef.aggregationFn]) != null ? _table$options$aggreg : aggregationFns[column.columnDef.aggregationFn];
+        return [...(old != null ? old : []), column.id];
+      });
+    };
+    column.getCanGroup = () => {
+      var _ref, _ref2, _ref3, _column$columnDef$ena;
+      return (_ref = (_ref2 = (_ref3 = (_column$columnDef$ena = column.columnDef.enableGrouping) != null ? _column$columnDef$ena : true) != null ? _ref3 : table.options.enableGrouping) != null ? _ref2 : true) != null ? _ref : !!column.accessorFn;
+    };
+    column.getIsGrouped = () => {
+      var _table$getState$group;
+      return (_table$getState$group = table.getState().grouping) == null ? void 0 : _table$getState$group.includes(column.id);
+    };
+    column.getGroupedIndex = () => {
+      var _table$getState$group2;
+      return (_table$getState$group2 = table.getState().grouping) == null ? void 0 : _table$getState$group2.indexOf(column.id);
+    };
+    column.getToggleGroupingHandler = () => {
+      const canGroup = column.getCanGroup();
+      return () => {
+        if (!canGroup) return;
+        column.toggleGrouping();
+      };
+    };
+    column.getAutoAggregationFn = () => {
+      const firstRow = table.getCoreRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'number') {
+        return aggregationFns.sum;
       }
+      if (Object.prototype.toString.call(value) === '[object Date]') {
+        return aggregationFns.extent;
+      }
+    };
+    column.getAggregationFn = () => {
+      var _table$options$aggreg, _table$options$aggreg2;
+      if (!column) {
+        throw new Error();
+      }
+      return isFunction(column.columnDef.aggregationFn) ? column.columnDef.aggregationFn : column.columnDef.aggregationFn === 'auto' ? column.getAutoAggregationFn() : (_table$options$aggreg = (_table$options$aggreg2 = table.options.aggregationFns) == null ? void 0 : _table$options$aggreg2[column.columnDef.aggregationFn]) != null ? _table$options$aggreg : aggregationFns[column.columnDef.aggregationFn];
     };
   },
   createTable: table => {
-    return {
-      setGrouping: updater => table.options.onGroupingChange == null ? void 0 : table.options.onGroupingChange(updater),
-      resetGrouping: defaultState => {
-        var _table$initialState$g, _table$initialState;
-        table.setGrouping(defaultState ? [] : (_table$initialState$g = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.grouping) != null ? _table$initialState$g : []);
-      },
-      getPreGroupedRowModel: () => table.getFilteredRowModel(),
-      getGroupedRowModel: () => {
-        if (!table._getGroupedRowModel && table.options.getGroupedRowModel) {
-          table._getGroupedRowModel = table.options.getGroupedRowModel(table);
-        }
-        if (table.options.manualGrouping || !table._getGroupedRowModel) {
-          return table.getPreGroupedRowModel();
-        }
-        return table._getGroupedRowModel();
+    table.setGrouping = updater => table.options.onGroupingChange == null ? void 0 : table.options.onGroupingChange(updater);
+    table.resetGrouping = defaultState => {
+      var _table$initialState$g, _table$initialState;
+      table.setGrouping(defaultState ? [] : (_table$initialState$g = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.grouping) != null ? _table$initialState$g : []);
+    };
+    table.getPreGroupedRowModel = () => table.getFilteredRowModel();
+    table.getGroupedRowModel = () => {
+      if (!table._getGroupedRowModel && table.options.getGroupedRowModel) {
+        table._getGroupedRowModel = table.options.getGroupedRowModel(table);
       }
+      if (table.options.manualGrouping || !table._getGroupedRowModel) {
+        return table.getPreGroupedRowModel();
+      }
+      return table._getGroupedRowModel();
     };
   },
   createRow: (row, table) => {
-    return {
-      getIsGrouped: () => !!row.groupingColumnId,
-      getGroupingValue: columnId => {
-        if (row._groupingValuesCache.hasOwnProperty(columnId)) {
-          return row._groupingValuesCache[columnId];
-        }
-        const column = table.getColumn(columnId);
-        if (!(column != null && column.columnDef.getGroupingValue)) {
-          return row.getValue(columnId);
-        }
-        row._groupingValuesCache[columnId] = column.columnDef.getGroupingValue(row.original);
+    row.getIsGrouped = () => !!row.groupingColumnId;
+    row.getGroupingValue = columnId => {
+      if (row._groupingValuesCache.hasOwnProperty(columnId)) {
         return row._groupingValuesCache[columnId];
-      },
-      _groupingValuesCache: {}
+      }
+      const column = table.getColumn(columnId);
+      if (!(column != null && column.columnDef.getGroupingValue)) {
+        return row.getValue(columnId);
+      }
+      row._groupingValuesCache[columnId] = column.columnDef.getGroupingValue(row.original);
+      return row._groupingValuesCache[columnId];
     };
+    row._groupingValuesCache = {};
   },
   createCell: (cell, column, row, table) => {
-    return {
-      getIsGrouped: () => column.getIsGrouped() && column.id === row.groupingColumnId,
-      getIsPlaceholder: () => !cell.getIsGrouped() && column.getIsGrouped(),
-      getIsAggregated: () => {
-        var _row$subRows;
-        return !cell.getIsGrouped() && !cell.getIsPlaceholder() && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
-      }
+    cell.getIsGrouped = () => column.getIsGrouped() && column.id === row.groupingColumnId;
+    cell.getIsPlaceholder = () => !cell.getIsGrouped() && column.getIsGrouped();
+    cell.getIsAggregated = () => {
+      var _row$subRows;
+      return !cell.getIsGrouped() && !cell.getIsPlaceholder() && !!((_row$subRows = row.subRows) != null && _row$subRows.length);
     };
   }
 };
@@ -9957,46 +9989,44 @@ const Ordering = {
     };
   },
   createTable: table => {
-    return {
-      setColumnOrder: updater => table.options.onColumnOrderChange == null ? void 0 : table.options.onColumnOrderChange(updater),
-      resetColumnOrder: defaultState => {
-        var _table$initialState$c;
-        table.setColumnOrder(defaultState ? [] : (_table$initialState$c = table.initialState.columnOrder) != null ? _table$initialState$c : []);
-      },
-      _getOrderColumnsFn: memo(() => [table.getState().columnOrder, table.getState().grouping, table.options.groupedColumnMode], (columnOrder, grouping, groupedColumnMode) => columns => {
-        // Sort grouped columns to the start of the column list
-        // before the headers are built
-        let orderedColumns = [];
-
-        // If there is no order, return the normal columns
-        if (!(columnOrder != null && columnOrder.length)) {
-          orderedColumns = columns;
-        } else {
-          const columnOrderCopy = [...columnOrder];
-
-          // If there is an order, make a copy of the columns
-          const columnsCopy = [...columns];
-
-          // And make a new ordered array of the columns
-
-          // Loop over the columns and place them in order into the new array
-          while (columnsCopy.length && columnOrderCopy.length) {
-            const targetColumnId = columnOrderCopy.shift();
-            const foundIndex = columnsCopy.findIndex(d => d.id === targetColumnId);
-            if (foundIndex > -1) {
-              orderedColumns.push(columnsCopy.splice(foundIndex, 1)[0]);
-            }
-          }
-
-          // If there are any columns left, add them to the end
-          orderedColumns = [...orderedColumns, ...columnsCopy];
-        }
-        return orderColumns(orderedColumns, grouping, groupedColumnMode);
-      }, {
-        key:  true && 'getOrderColumnsFn'
-        // debug: () => table.options.debugAll ?? table.options.debugTable,
-      })
+    table.setColumnOrder = updater => table.options.onColumnOrderChange == null ? void 0 : table.options.onColumnOrderChange(updater);
+    table.resetColumnOrder = defaultState => {
+      var _table$initialState$c;
+      table.setColumnOrder(defaultState ? [] : (_table$initialState$c = table.initialState.columnOrder) != null ? _table$initialState$c : []);
     };
+    table._getOrderColumnsFn = memo(() => [table.getState().columnOrder, table.getState().grouping, table.options.groupedColumnMode], (columnOrder, grouping, groupedColumnMode) => columns => {
+      // Sort grouped columns to the start of the column list
+      // before the headers are built
+      let orderedColumns = [];
+
+      // If there is no order, return the normal columns
+      if (!(columnOrder != null && columnOrder.length)) {
+        orderedColumns = columns;
+      } else {
+        const columnOrderCopy = [...columnOrder];
+
+        // If there is an order, make a copy of the columns
+        const columnsCopy = [...columns];
+
+        // And make a new ordered array of the columns
+
+        // Loop over the columns and place them in order into the new array
+        while (columnsCopy.length && columnOrderCopy.length) {
+          const targetColumnId = columnOrderCopy.shift();
+          const foundIndex = columnsCopy.findIndex(d => d.id === targetColumnId);
+          if (foundIndex > -1) {
+            orderedColumns.push(columnsCopy.splice(foundIndex, 1)[0]);
+          }
+        }
+
+        // If there are any columns left, add them to the end
+        orderedColumns = [...orderedColumns, ...columnsCopy];
+      }
+      return orderColumns(orderedColumns, grouping, groupedColumnMode);
+    }, {
+      key:  true && 'getOrderColumnsFn'
+      // debug: () => table.options.debugAll ?? table.options.debugTable,
+    });
   }
 };
 
@@ -10026,283 +10056,398 @@ const Pagination = {
   createTable: table => {
     let registered = false;
     let queued = false;
-    return {
-      _autoResetPageIndex: () => {
-        var _ref, _table$options$autoRe;
-        if (!registered) {
-          table._queue(() => {
-            registered = true;
-          });
-          return;
-        }
-        if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetPageIndex) != null ? _ref : !table.options.manualPagination) {
-          if (queued) return;
-          queued = true;
-          table._queue(() => {
-            table.resetPageIndex();
-            queued = false;
-          });
-        }
-      },
-      setPagination: updater => {
-        const safeUpdater = old => {
-          let newState = functionalUpdate(updater, old);
-          return newState;
-        };
-        return table.options.onPaginationChange == null ? void 0 : table.options.onPaginationChange(safeUpdater);
-      },
-      resetPagination: defaultState => {
-        var _table$initialState$p;
-        table.setPagination(defaultState ? getDefaultPaginationState() : (_table$initialState$p = table.initialState.pagination) != null ? _table$initialState$p : getDefaultPaginationState());
-      },
-      setPageIndex: updater => {
-        table.setPagination(old => {
-          let pageIndex = functionalUpdate(updater, old.pageIndex);
-          const maxPageIndex = typeof table.options.pageCount === 'undefined' || table.options.pageCount === -1 ? Number.MAX_SAFE_INTEGER : table.options.pageCount - 1;
-          pageIndex = Math.max(0, Math.min(pageIndex, maxPageIndex));
-          return {
-            ...old,
-            pageIndex
-          };
+    table._autoResetPageIndex = () => {
+      var _ref, _table$options$autoRe;
+      if (!registered) {
+        table._queue(() => {
+          registered = true;
         });
-      },
-      resetPageIndex: defaultState => {
-        var _table$initialState$p2, _table$initialState, _table$initialState$p3;
-        table.setPageIndex(defaultState ? defaultPageIndex : (_table$initialState$p2 = (_table$initialState = table.initialState) == null ? void 0 : (_table$initialState$p3 = _table$initialState.pagination) == null ? void 0 : _table$initialState$p3.pageIndex) != null ? _table$initialState$p2 : defaultPageIndex);
-      },
-      resetPageSize: defaultState => {
-        var _table$initialState$p4, _table$initialState2, _table$initialState2$;
-        table.setPageSize(defaultState ? defaultPageSize : (_table$initialState$p4 = (_table$initialState2 = table.initialState) == null ? void 0 : (_table$initialState2$ = _table$initialState2.pagination) == null ? void 0 : _table$initialState2$.pageSize) != null ? _table$initialState$p4 : defaultPageSize);
-      },
-      setPageSize: updater => {
-        table.setPagination(old => {
-          const pageSize = Math.max(1, functionalUpdate(updater, old.pageSize));
-          const topRowIndex = old.pageSize * old.pageIndex;
-          const pageIndex = Math.floor(topRowIndex / pageSize);
-          return {
-            ...old,
-            pageIndex,
-            pageSize
-          };
+        return;
+      }
+      if ((_ref = (_table$options$autoRe = table.options.autoResetAll) != null ? _table$options$autoRe : table.options.autoResetPageIndex) != null ? _ref : !table.options.manualPagination) {
+        if (queued) return;
+        queued = true;
+        table._queue(() => {
+          table.resetPageIndex();
+          queued = false;
         });
-      },
-      setPageCount: updater => table.setPagination(old => {
-        var _table$options$pageCo;
-        let newPageCount = functionalUpdate(updater, (_table$options$pageCo = table.options.pageCount) != null ? _table$options$pageCo : -1);
-        if (typeof newPageCount === 'number') {
-          newPageCount = Math.max(-1, newPageCount);
-        }
+      }
+    };
+    table.setPagination = updater => {
+      const safeUpdater = old => {
+        let newState = functionalUpdate(updater, old);
+        return newState;
+      };
+      return table.options.onPaginationChange == null ? void 0 : table.options.onPaginationChange(safeUpdater);
+    };
+    table.resetPagination = defaultState => {
+      var _table$initialState$p;
+      table.setPagination(defaultState ? getDefaultPaginationState() : (_table$initialState$p = table.initialState.pagination) != null ? _table$initialState$p : getDefaultPaginationState());
+    };
+    table.setPageIndex = updater => {
+      table.setPagination(old => {
+        let pageIndex = functionalUpdate(updater, old.pageIndex);
+        const maxPageIndex = typeof table.options.pageCount === 'undefined' || table.options.pageCount === -1 ? Number.MAX_SAFE_INTEGER : table.options.pageCount - 1;
+        pageIndex = Math.max(0, Math.min(pageIndex, maxPageIndex));
         return {
           ...old,
-          pageCount: newPageCount
-        };
-      }),
-      getPageOptions: memo(() => [table.getPageCount()], pageCount => {
-        let pageOptions = [];
-        if (pageCount && pageCount > 0) {
-          pageOptions = [...new Array(pageCount)].fill(null).map((_, i) => i);
-        }
-        return pageOptions;
-      }, {
-        key:  true && 'getPageOptions',
-        debug: () => {
-          var _table$options$debugA;
-          return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugTable;
-        }
-      }),
-      getCanPreviousPage: () => table.getState().pagination.pageIndex > 0,
-      getCanNextPage: () => {
-        const {
           pageIndex
-        } = table.getState().pagination;
-        const pageCount = table.getPageCount();
-        if (pageCount === -1) {
-          return true;
-        }
-        if (pageCount === 0) {
-          return false;
-        }
-        return pageIndex < pageCount - 1;
-      },
-      previousPage: () => {
-        return table.setPageIndex(old => old - 1);
-      },
-      nextPage: () => {
-        return table.setPageIndex(old => {
-          return old + 1;
-        });
-      },
-      getPrePaginationRowModel: () => table.getExpandedRowModel(),
-      getPaginationRowModel: () => {
-        if (!table._getPaginationRowModel && table.options.getPaginationRowModel) {
-          table._getPaginationRowModel = table.options.getPaginationRowModel(table);
-        }
-        if (table.options.manualPagination || !table._getPaginationRowModel) {
-          return table.getPrePaginationRowModel();
-        }
-        return table._getPaginationRowModel();
-      },
-      getPageCount: () => {
-        var _table$options$pageCo2;
-        return (_table$options$pageCo2 = table.options.pageCount) != null ? _table$options$pageCo2 : Math.ceil(table.getPrePaginationRowModel().rows.length / table.getState().pagination.pageSize);
+        };
+      });
+    };
+    table.resetPageIndex = defaultState => {
+      var _table$initialState$p2, _table$initialState;
+      table.setPageIndex(defaultState ? defaultPageIndex : (_table$initialState$p2 = (_table$initialState = table.initialState) == null || (_table$initialState = _table$initialState.pagination) == null ? void 0 : _table$initialState.pageIndex) != null ? _table$initialState$p2 : defaultPageIndex);
+    };
+    table.resetPageSize = defaultState => {
+      var _table$initialState$p3, _table$initialState2;
+      table.setPageSize(defaultState ? defaultPageSize : (_table$initialState$p3 = (_table$initialState2 = table.initialState) == null || (_table$initialState2 = _table$initialState2.pagination) == null ? void 0 : _table$initialState2.pageSize) != null ? _table$initialState$p3 : defaultPageSize);
+    };
+    table.setPageSize = updater => {
+      table.setPagination(old => {
+        const pageSize = Math.max(1, functionalUpdate(updater, old.pageSize));
+        const topRowIndex = old.pageSize * old.pageIndex;
+        const pageIndex = Math.floor(topRowIndex / pageSize);
+        return {
+          ...old,
+          pageIndex,
+          pageSize
+        };
+      });
+    };
+    table.setPageCount = updater => table.setPagination(old => {
+      var _table$options$pageCo;
+      let newPageCount = functionalUpdate(updater, (_table$options$pageCo = table.options.pageCount) != null ? _table$options$pageCo : -1);
+      if (typeof newPageCount === 'number') {
+        newPageCount = Math.max(-1, newPageCount);
       }
+      return {
+        ...old,
+        pageCount: newPageCount
+      };
+    });
+    table.getPageOptions = memo(() => [table.getPageCount()], pageCount => {
+      let pageOptions = [];
+      if (pageCount && pageCount > 0) {
+        pageOptions = [...new Array(pageCount)].fill(null).map((_, i) => i);
+      }
+      return pageOptions;
+    }, {
+      key:  true && 'getPageOptions',
+      debug: () => {
+        var _table$options$debugA;
+        return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugTable;
+      }
+    });
+    table.getCanPreviousPage = () => table.getState().pagination.pageIndex > 0;
+    table.getCanNextPage = () => {
+      const {
+        pageIndex
+      } = table.getState().pagination;
+      const pageCount = table.getPageCount();
+      if (pageCount === -1) {
+        return true;
+      }
+      if (pageCount === 0) {
+        return false;
+      }
+      return pageIndex < pageCount - 1;
+    };
+    table.previousPage = () => {
+      return table.setPageIndex(old => old - 1);
+    };
+    table.nextPage = () => {
+      return table.setPageIndex(old => {
+        return old + 1;
+      });
+    };
+    table.getPrePaginationRowModel = () => table.getExpandedRowModel();
+    table.getPaginationRowModel = () => {
+      if (!table._getPaginationRowModel && table.options.getPaginationRowModel) {
+        table._getPaginationRowModel = table.options.getPaginationRowModel(table);
+      }
+      if (table.options.manualPagination || !table._getPaginationRowModel) {
+        return table.getPrePaginationRowModel();
+      }
+      return table._getPaginationRowModel();
+    };
+    table.getPageCount = () => {
+      var _table$options$pageCo2;
+      return (_table$options$pageCo2 = table.options.pageCount) != null ? _table$options$pageCo2 : Math.ceil(table.getPrePaginationRowModel().rows.length / table.getState().pagination.pageSize);
     };
   }
 };
 
 //
 
-const getDefaultPinningState = () => ({
+const getDefaultColumnPinningState = () => ({
   left: [],
   right: []
+});
+const getDefaultRowPinningState = () => ({
+  top: [],
+  bottom: []
 });
 const Pinning = {
   getInitialState: state => {
     return {
-      columnPinning: getDefaultPinningState(),
+      columnPinning: getDefaultColumnPinningState(),
+      rowPinning: getDefaultRowPinningState(),
       ...state
     };
   },
   getDefaultOptions: table => {
     return {
-      onColumnPinningChange: makeStateUpdater('columnPinning', table)
+      onColumnPinningChange: makeStateUpdater('columnPinning', table),
+      onRowPinningChange: makeStateUpdater('rowPinning', table)
     };
   },
   createColumn: (column, table) => {
-    return {
-      pin: position => {
-        const columnIds = column.getLeafColumns().map(d => d.id).filter(Boolean);
-        table.setColumnPinning(old => {
-          var _old$left3, _old$right3;
-          if (position === 'right') {
-            var _old$left, _old$right;
-            return {
-              left: ((_old$left = old == null ? void 0 : old.left) != null ? _old$left : []).filter(d => !(columnIds != null && columnIds.includes(d))),
-              right: [...((_old$right = old == null ? void 0 : old.right) != null ? _old$right : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds]
-            };
-          }
-          if (position === 'left') {
-            var _old$left2, _old$right2;
-            return {
-              left: [...((_old$left2 = old == null ? void 0 : old.left) != null ? _old$left2 : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds],
-              right: ((_old$right2 = old == null ? void 0 : old.right) != null ? _old$right2 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
-            };
-          }
+    column.pin = position => {
+      const columnIds = column.getLeafColumns().map(d => d.id).filter(Boolean);
+      table.setColumnPinning(old => {
+        var _old$left3, _old$right3;
+        if (position === 'right') {
+          var _old$left, _old$right;
           return {
-            left: ((_old$left3 = old == null ? void 0 : old.left) != null ? _old$left3 : []).filter(d => !(columnIds != null && columnIds.includes(d))),
-            right: ((_old$right3 = old == null ? void 0 : old.right) != null ? _old$right3 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
+            left: ((_old$left = old == null ? void 0 : old.left) != null ? _old$left : []).filter(d => !(columnIds != null && columnIds.includes(d))),
+            right: [...((_old$right = old == null ? void 0 : old.right) != null ? _old$right : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds]
           };
-        });
-      },
-      getCanPin: () => {
-        const leafColumns = column.getLeafColumns();
-        return leafColumns.some(d => {
-          var _d$columnDef$enablePi, _table$options$enable;
-          return ((_d$columnDef$enablePi = d.columnDef.enablePinning) != null ? _d$columnDef$enablePi : true) && ((_table$options$enable = table.options.enablePinning) != null ? _table$options$enable : true);
-        });
-      },
-      getIsPinned: () => {
-        const leafColumnIds = column.getLeafColumns().map(d => d.id);
-        const {
-          left,
-          right
-        } = table.getState().columnPinning;
-        const isLeft = leafColumnIds.some(d => left == null ? void 0 : left.includes(d));
-        const isRight = leafColumnIds.some(d => right == null ? void 0 : right.includes(d));
-        return isLeft ? 'left' : isRight ? 'right' : false;
-      },
-      getPinnedIndex: () => {
-        var _table$getState$colum, _table$getState$colum2, _table$getState$colum3;
-        const position = column.getIsPinned();
-        return position ? (_table$getState$colum = (_table$getState$colum2 = table.getState().columnPinning) == null ? void 0 : (_table$getState$colum3 = _table$getState$colum2[position]) == null ? void 0 : _table$getState$colum3.indexOf(column.id)) != null ? _table$getState$colum : -1 : 0;
-      }
+        }
+        if (position === 'left') {
+          var _old$left2, _old$right2;
+          return {
+            left: [...((_old$left2 = old == null ? void 0 : old.left) != null ? _old$left2 : []).filter(d => !(columnIds != null && columnIds.includes(d))), ...columnIds],
+            right: ((_old$right2 = old == null ? void 0 : old.right) != null ? _old$right2 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
+          };
+        }
+        return {
+          left: ((_old$left3 = old == null ? void 0 : old.left) != null ? _old$left3 : []).filter(d => !(columnIds != null && columnIds.includes(d))),
+          right: ((_old$right3 = old == null ? void 0 : old.right) != null ? _old$right3 : []).filter(d => !(columnIds != null && columnIds.includes(d)))
+        };
+      });
+    };
+    column.getCanPin = () => {
+      const leafColumns = column.getLeafColumns();
+      return leafColumns.some(d => {
+        var _d$columnDef$enablePi, _ref, _table$options$enable;
+        return ((_d$columnDef$enablePi = d.columnDef.enablePinning) != null ? _d$columnDef$enablePi : true) && ((_ref = (_table$options$enable = table.options.enableColumnPinning) != null ? _table$options$enable : table.options.enablePinning) != null ? _ref : true);
+      });
+    };
+    column.getIsPinned = () => {
+      const leafColumnIds = column.getLeafColumns().map(d => d.id);
+      const {
+        left,
+        right
+      } = table.getState().columnPinning;
+      const isLeft = leafColumnIds.some(d => left == null ? void 0 : left.includes(d));
+      const isRight = leafColumnIds.some(d => right == null ? void 0 : right.includes(d));
+      return isLeft ? 'left' : isRight ? 'right' : false;
+    };
+    column.getPinnedIndex = () => {
+      var _table$getState$colum, _table$getState$colum2;
+      const position = column.getIsPinned();
+      return position ? (_table$getState$colum = (_table$getState$colum2 = table.getState().columnPinning) == null || (_table$getState$colum2 = _table$getState$colum2[position]) == null ? void 0 : _table$getState$colum2.indexOf(column.id)) != null ? _table$getState$colum : -1 : 0;
     };
   },
   createRow: (row, table) => {
-    return {
-      getCenterVisibleCells: memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allCells, left, right) => {
-        const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
-        return allCells.filter(d => !leftAndRight.includes(d.column.id));
-      }, {
-        key:  false && 0,
-        debug: () => {
-          var _table$options$debugA;
-          return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugRows;
+    row.pin = (position, includeLeafRows, includeParentRows) => {
+      const leafRowIds = includeLeafRows ? row.getLeafRows().map(_ref2 => {
+        let {
+          id
+        } = _ref2;
+        return id;
+      }) : [];
+      const parentRowIds = includeParentRows ? row.getParentRows().map(_ref3 => {
+        let {
+          id
+        } = _ref3;
+        return id;
+      }) : [];
+      const rowIds = new Set([...parentRowIds, row.id, ...leafRowIds]);
+      table.setRowPinning(old => {
+        var _old$top3, _old$bottom3;
+        if (position === 'bottom') {
+          var _old$top, _old$bottom;
+          return {
+            top: ((_old$top = old == null ? void 0 : old.top) != null ? _old$top : []).filter(d => !(rowIds != null && rowIds.has(d))),
+            bottom: [...((_old$bottom = old == null ? void 0 : old.bottom) != null ? _old$bottom : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)]
+          };
         }
-      }),
-      getLeftVisibleCells: memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left,,], (allCells, left) => {
-        const cells = (left != null ? left : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
-          ...d,
-          position: 'left'
-        }));
-        return cells;
-      }, {
-        key:  false && 0,
-        debug: () => {
-          var _table$options$debugA2;
-          return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugRows;
+        if (position === 'top') {
+          var _old$top2, _old$bottom2;
+          return {
+            top: [...((_old$top2 = old == null ? void 0 : old.top) != null ? _old$top2 : []).filter(d => !(rowIds != null && rowIds.has(d))), ...Array.from(rowIds)],
+            bottom: ((_old$bottom2 = old == null ? void 0 : old.bottom) != null ? _old$bottom2 : []).filter(d => !(rowIds != null && rowIds.has(d)))
+          };
         }
-      }),
-      getRightVisibleCells: memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.right], (allCells, right) => {
-        const cells = (right != null ? right : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
-          ...d,
-          position: 'right'
-        }));
-        return cells;
-      }, {
-        key:  false && 0,
-        debug: () => {
-          var _table$options$debugA3;
-          return (_table$options$debugA3 = table.options.debugAll) != null ? _table$options$debugA3 : table.options.debugRows;
-        }
-      })
+        return {
+          top: ((_old$top3 = old == null ? void 0 : old.top) != null ? _old$top3 : []).filter(d => !(rowIds != null && rowIds.has(d))),
+          bottom: ((_old$bottom3 = old == null ? void 0 : old.bottom) != null ? _old$bottom3 : []).filter(d => !(rowIds != null && rowIds.has(d)))
+        };
+      });
     };
+    row.getCanPin = () => {
+      var _ref4;
+      const {
+        enableRowPinning,
+        enablePinning
+      } = table.options;
+      if (typeof enableRowPinning === 'function') {
+        return enableRowPinning(row);
+      }
+      return (_ref4 = enableRowPinning != null ? enableRowPinning : enablePinning) != null ? _ref4 : true;
+    };
+    row.getIsPinned = () => {
+      const rowIds = [row.id];
+      const {
+        top,
+        bottom
+      } = table.getState().rowPinning;
+      const isTop = rowIds.some(d => top == null ? void 0 : top.includes(d));
+      const isBottom = rowIds.some(d => bottom == null ? void 0 : bottom.includes(d));
+      return isTop ? 'top' : isBottom ? 'bottom' : false;
+    };
+    row.getPinnedIndex = () => {
+      var _table$_getPinnedRows, _visiblePinnedRowIds$;
+      const position = row.getIsPinned();
+      if (!position) return -1;
+      const visiblePinnedRowIds = (_table$_getPinnedRows = table._getPinnedRows(position)) == null ? void 0 : _table$_getPinnedRows.map(_ref5 => {
+        let {
+          id
+        } = _ref5;
+        return id;
+      });
+      return (_visiblePinnedRowIds$ = visiblePinnedRowIds == null ? void 0 : visiblePinnedRowIds.indexOf(row.id)) != null ? _visiblePinnedRowIds$ : -1;
+    };
+    row.getCenterVisibleCells = memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allCells, left, right) => {
+      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
+      return allCells.filter(d => !leftAndRight.includes(d.column.id));
+    }, {
+      key:  true && 'row.getCenterVisibleCells',
+      debug: () => {
+        var _table$options$debugA;
+        return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugRows;
+      }
+    });
+    row.getLeftVisibleCells = memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.left,,], (allCells, left) => {
+      const cells = (left != null ? left : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
+        ...d,
+        position: 'left'
+      }));
+      return cells;
+    }, {
+      key:  true && 'row.getLeftVisibleCells',
+      debug: () => {
+        var _table$options$debugA2;
+        return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugRows;
+      }
+    });
+    row.getRightVisibleCells = memo(() => [row._getAllVisibleCells(), table.getState().columnPinning.right], (allCells, right) => {
+      const cells = (right != null ? right : []).map(columnId => allCells.find(cell => cell.column.id === columnId)).filter(Boolean).map(d => ({
+        ...d,
+        position: 'right'
+      }));
+      return cells;
+    }, {
+      key:  true && 'row.getRightVisibleCells',
+      debug: () => {
+        var _table$options$debugA3;
+        return (_table$options$debugA3 = table.options.debugAll) != null ? _table$options$debugA3 : table.options.debugRows;
+      }
+    });
   },
   createTable: table => {
-    return {
-      setColumnPinning: updater => table.options.onColumnPinningChange == null ? void 0 : table.options.onColumnPinningChange(updater),
-      resetColumnPinning: defaultState => {
-        var _table$initialState$c, _table$initialState;
-        return table.setColumnPinning(defaultState ? getDefaultPinningState() : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnPinning) != null ? _table$initialState$c : getDefaultPinningState());
-      },
-      getIsSomeColumnsPinned: position => {
-        var _pinningState$positio;
-        const pinningState = table.getState().columnPinning;
-        if (!position) {
-          var _pinningState$left, _pinningState$right;
-          return Boolean(((_pinningState$left = pinningState.left) == null ? void 0 : _pinningState$left.length) || ((_pinningState$right = pinningState.right) == null ? void 0 : _pinningState$right.length));
-        }
-        return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
-      },
-      getLeftLeafColumns: memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left], (allColumns, left) => {
-        return (left != null ? left : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
-      }, {
-        key:  true && 'getLeftLeafColumns',
-        debug: () => {
-          var _table$options$debugA4;
-          return (_table$options$debugA4 = table.options.debugAll) != null ? _table$options$debugA4 : table.options.debugColumns;
-        }
-      }),
-      getRightLeafColumns: memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.right], (allColumns, right) => {
-        return (right != null ? right : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
-      }, {
-        key:  true && 'getRightLeafColumns',
-        debug: () => {
-          var _table$options$debugA5;
-          return (_table$options$debugA5 = table.options.debugAll) != null ? _table$options$debugA5 : table.options.debugColumns;
-        }
-      }),
-      getCenterLeafColumns: memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, left, right) => {
-        const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
-        return allColumns.filter(d => !leftAndRight.includes(d.id));
-      }, {
-        key:  true && 'getCenterLeafColumns',
-        debug: () => {
-          var _table$options$debugA6;
-          return (_table$options$debugA6 = table.options.debugAll) != null ? _table$options$debugA6 : table.options.debugColumns;
-        }
-      })
+    table.setColumnPinning = updater => table.options.onColumnPinningChange == null ? void 0 : table.options.onColumnPinningChange(updater);
+    table.resetColumnPinning = defaultState => {
+      var _table$initialState$c, _table$initialState;
+      return table.setColumnPinning(defaultState ? getDefaultColumnPinningState() : (_table$initialState$c = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.columnPinning) != null ? _table$initialState$c : getDefaultColumnPinningState());
     };
+    table.getIsSomeColumnsPinned = position => {
+      var _pinningState$positio;
+      const pinningState = table.getState().columnPinning;
+      if (!position) {
+        var _pinningState$left, _pinningState$right;
+        return Boolean(((_pinningState$left = pinningState.left) == null ? void 0 : _pinningState$left.length) || ((_pinningState$right = pinningState.right) == null ? void 0 : _pinningState$right.length));
+      }
+      return Boolean((_pinningState$positio = pinningState[position]) == null ? void 0 : _pinningState$positio.length);
+    };
+    table.getLeftLeafColumns = memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left], (allColumns, left) => {
+      return (left != null ? left : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
+    }, {
+      key:  true && 'getLeftLeafColumns',
+      debug: () => {
+        var _table$options$debugA4;
+        return (_table$options$debugA4 = table.options.debugAll) != null ? _table$options$debugA4 : table.options.debugColumns;
+      }
+    });
+    table.getRightLeafColumns = memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.right], (allColumns, right) => {
+      return (right != null ? right : []).map(columnId => allColumns.find(column => column.id === columnId)).filter(Boolean);
+    }, {
+      key:  true && 'getRightLeafColumns',
+      debug: () => {
+        var _table$options$debugA5;
+        return (_table$options$debugA5 = table.options.debugAll) != null ? _table$options$debugA5 : table.options.debugColumns;
+      }
+    });
+    table.getCenterLeafColumns = memo(() => [table.getAllLeafColumns(), table.getState().columnPinning.left, table.getState().columnPinning.right], (allColumns, left, right) => {
+      const leftAndRight = [...(left != null ? left : []), ...(right != null ? right : [])];
+      return allColumns.filter(d => !leftAndRight.includes(d.id));
+    }, {
+      key:  true && 'getCenterLeafColumns',
+      debug: () => {
+        var _table$options$debugA6;
+        return (_table$options$debugA6 = table.options.debugAll) != null ? _table$options$debugA6 : table.options.debugColumns;
+      }
+    });
+    table.setRowPinning = updater => table.options.onRowPinningChange == null ? void 0 : table.options.onRowPinningChange(updater);
+    table.resetRowPinning = defaultState => {
+      var _table$initialState$r, _table$initialState2;
+      return table.setRowPinning(defaultState ? getDefaultRowPinningState() : (_table$initialState$r = (_table$initialState2 = table.initialState) == null ? void 0 : _table$initialState2.rowPinning) != null ? _table$initialState$r : getDefaultRowPinningState());
+    };
+    table.getIsSomeRowsPinned = position => {
+      var _pinningState$positio2;
+      const pinningState = table.getState().rowPinning;
+      if (!position) {
+        var _pinningState$top, _pinningState$bottom;
+        return Boolean(((_pinningState$top = pinningState.top) == null ? void 0 : _pinningState$top.length) || ((_pinningState$bottom = pinningState.bottom) == null ? void 0 : _pinningState$bottom.length));
+      }
+      return Boolean((_pinningState$positio2 = pinningState[position]) == null ? void 0 : _pinningState$positio2.length);
+    };
+    table._getPinnedRows = position => memo(() => [table.getRowModel().rows, table.getState().rowPinning[position]], (visibleRows, pinnedRowIds) => {
+      var _table$options$keepPi;
+      const rows = ((_table$options$keepPi = table.options.keepPinnedRows) != null ? _table$options$keepPi : true) ?
+      //get all rows that are pinned even if they would not be otherwise visible
+      //account for expanded parent rows, but not pagination or filtering
+      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => {
+        const row = table.getRow(rowId, true);
+        return row.getIsAllParentsExpanded() ? row : null;
+      }) :
+      //else get only visible rows that are pinned
+      (pinnedRowIds != null ? pinnedRowIds : []).map(rowId => visibleRows.find(row => row.id === rowId));
+      return rows.filter(Boolean).map(d => ({
+        ...d,
+        position
+      }));
+    }, {
+      key:  true && `row.get${position === 'top' ? 'Top' : 'Bottom'}Rows`,
+      debug: () => {
+        var _table$options$debugA7;
+        return (_table$options$debugA7 = table.options.debugAll) != null ? _table$options$debugA7 : table.options.debugRows;
+      }
+    })();
+    table.getTopRows = () => table._getPinnedRows('top');
+    table.getBottomRows = () => table._getPinnedRows('bottom');
+    table.getCenterRows = memo(() => [table.getRowModel().rows, table.getState().rowPinning.top, table.getState().rowPinning.bottom], (allRows, top, bottom) => {
+      const topAndBottom = new Set([...(top != null ? top : []), ...(bottom != null ? bottom : [])]);
+      return allRows.filter(d => !topAndBottom.has(d.id));
+    }, {
+      key:  true && 'row.getCenterRows',
+      debug: () => {
+        var _table$options$debugA8;
+        return (_table$options$debugA8 = table.options.debugAll) != null ? _table$options$debugA8 : table.options.debugRows;
+      }
+    });
   }
 };
 
@@ -10328,282 +10473,281 @@ const RowSelection = {
   },
 
   createTable: table => {
-    return {
-      setRowSelection: updater => table.options.onRowSelectionChange == null ? void 0 : table.options.onRowSelectionChange(updater),
-      resetRowSelection: defaultState => {
-        var _table$initialState$r;
-        return table.setRowSelection(defaultState ? {} : (_table$initialState$r = table.initialState.rowSelection) != null ? _table$initialState$r : {});
-      },
-      toggleAllRowsSelected: value => {
-        table.setRowSelection(old => {
-          value = typeof value !== 'undefined' ? value : !table.getIsAllRowsSelected();
-          const rowSelection = {
-            ...old
-          };
-          const preGroupedFlatRows = table.getPreGroupedRowModel().flatRows;
-
-          // We don't use `mutateRowIsSelected` here for performance reasons.
-          // All of the rows are flat already, so it wouldn't be worth it
-          if (value) {
-            preGroupedFlatRows.forEach(row => {
-              if (!row.getCanSelect()) {
-                return;
-              }
-              rowSelection[row.id] = true;
-            });
-          } else {
-            preGroupedFlatRows.forEach(row => {
-              delete rowSelection[row.id];
-            });
-          }
-          return rowSelection;
-        });
-      },
-      toggleAllPageRowsSelected: value => table.setRowSelection(old => {
-        const resolvedValue = typeof value !== 'undefined' ? value : !table.getIsAllPageRowsSelected();
+    table.setRowSelection = updater => table.options.onRowSelectionChange == null ? void 0 : table.options.onRowSelectionChange(updater);
+    table.resetRowSelection = defaultState => {
+      var _table$initialState$r;
+      return table.setRowSelection(defaultState ? {} : (_table$initialState$r = table.initialState.rowSelection) != null ? _table$initialState$r : {});
+    };
+    table.toggleAllRowsSelected = value => {
+      table.setRowSelection(old => {
+        value = typeof value !== 'undefined' ? value : !table.getIsAllRowsSelected();
         const rowSelection = {
           ...old
         };
-        table.getRowModel().rows.forEach(row => {
-          mutateRowIsSelected(rowSelection, row.id, resolvedValue, table);
-        });
+        const preGroupedFlatRows = table.getPreGroupedRowModel().flatRows;
+
+        // We don't use `mutateRowIsSelected` here for performance reasons.
+        // All of the rows are flat already, so it wouldn't be worth it
+        if (value) {
+          preGroupedFlatRows.forEach(row => {
+            if (!row.getCanSelect()) {
+              return;
+            }
+            rowSelection[row.id] = true;
+          });
+        } else {
+          preGroupedFlatRows.forEach(row => {
+            delete rowSelection[row.id];
+          });
+        }
         return rowSelection;
-      }),
-      // addRowSelectionRange: rowId => {
-      //   const {
-      //     rows,
-      //     rowsById,
-      //     options: { selectGroupingRows, selectSubRows },
-      //   } = table
+      });
+    };
+    table.toggleAllPageRowsSelected = value => table.setRowSelection(old => {
+      const resolvedValue = typeof value !== 'undefined' ? value : !table.getIsAllPageRowsSelected();
+      const rowSelection = {
+        ...old
+      };
+      table.getRowModel().rows.forEach(row => {
+        mutateRowIsSelected(rowSelection, row.id, resolvedValue, true, table);
+      });
+      return rowSelection;
+    });
 
-      //   const findSelectedRow = (rows: Row[]) => {
-      //     let found
-      //     rows.find(d => {
-      //       if (d.getIsSelected()) {
-      //         found = d
-      //         return true
-      //       }
-      //       const subFound = findSelectedRow(d.subRows || [])
-      //       if (subFound) {
-      //         found = subFound
-      //         return true
-      //       }
-      //       return false
-      //     })
-      //     return found
-      //   }
+    // addRowSelectionRange: rowId => {
+    //   const {
+    //     rows,
+    //     rowsById,
+    //     options: { selectGroupingRows, selectSubRows },
+    //   } = table
 
-      //   const firstRow = findSelectedRow(rows) || rows[0]
-      //   const lastRow = rowsById[rowId]
+    //   const findSelectedRow = (rows: Row[]) => {
+    //     let found
+    //     rows.find(d => {
+    //       if (d.getIsSelected()) {
+    //         found = d
+    //         return true
+    //       }
+    //       const subFound = findSelectedRow(d.subRows || [])
+    //       if (subFound) {
+    //         found = subFound
+    //         return true
+    //       }
+    //       return false
+    //     })
+    //     return found
+    //   }
 
-      //   let include = false
-      //   const selectedRowIds = {}
+    //   const firstRow = findSelectedRow(rows) || rows[0]
+    //   const lastRow = rowsById[rowId]
 
-      //   const addRow = (row: Row) => {
-      //     mutateRowIsSelected(selectedRowIds, row.id, true, {
-      //       rowsById,
-      //       selectGroupingRows: selectGroupingRows!,
-      //       selectSubRows: selectSubRows!,
-      //     })
-      //   }
+    //   let include = false
+    //   const selectedRowIds = {}
 
-      //   table.rows.forEach(row => {
-      //     const isFirstRow = row.id === firstRow.id
-      //     const isLastRow = row.id === lastRow.id
+    //   const addRow = (row: Row) => {
+    //     mutateRowIsSelected(selectedRowIds, row.id, true, {
+    //       rowsById,
+    //       selectGroupingRows: selectGroupingRows!,
+    //       selectSubRows: selectSubRows!,
+    //     })
+    //   }
 
-      //     if (isFirstRow || isLastRow) {
-      //       if (!include) {
-      //         include = true
-      //       } else if (include) {
-      //         addRow(row)
-      //         include = false
-      //       }
-      //     }
+    //   table.rows.forEach(row => {
+    //     const isFirstRow = row.id === firstRow.id
+    //     const isLastRow = row.id === lastRow.id
 
-      //     if (include) {
-      //       addRow(row)
-      //     }
-      //   })
+    //     if (isFirstRow || isLastRow) {
+    //       if (!include) {
+    //         include = true
+    //       } else if (include) {
+    //         addRow(row)
+    //         include = false
+    //       }
+    //     }
 
-      //   table.setRowSelection(selectedRowIds)
-      // },
-      getPreSelectedRowModel: () => table.getCoreRowModel(),
-      getSelectedRowModel: memo(() => [table.getState().rowSelection, table.getCoreRowModel()], (rowSelection, rowModel) => {
-        if (!Object.keys(rowSelection).length) {
-          return {
-            rows: [],
-            flatRows: [],
-            rowsById: {}
-          };
-        }
-        return selectRowsFn(table, rowModel);
-      }, {
-        key:  true && 'getSelectedRowModel',
-        debug: () => {
-          var _table$options$debugA;
-          return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugTable;
-        }
-      }),
-      getFilteredSelectedRowModel: memo(() => [table.getState().rowSelection, table.getFilteredRowModel()], (rowSelection, rowModel) => {
-        if (!Object.keys(rowSelection).length) {
-          return {
-            rows: [],
-            flatRows: [],
-            rowsById: {}
-          };
-        }
-        return selectRowsFn(table, rowModel);
-      }, {
-        key:  false && 0,
-        debug: () => {
-          var _table$options$debugA2;
-          return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugTable;
-        }
-      }),
-      getGroupedSelectedRowModel: memo(() => [table.getState().rowSelection, table.getSortedRowModel()], (rowSelection, rowModel) => {
-        if (!Object.keys(rowSelection).length) {
-          return {
-            rows: [],
-            flatRows: [],
-            rowsById: {}
-          };
-        }
-        return selectRowsFn(table, rowModel);
-      }, {
-        key:  false && 0,
-        debug: () => {
-          var _table$options$debugA3;
-          return (_table$options$debugA3 = table.options.debugAll) != null ? _table$options$debugA3 : table.options.debugTable;
-        }
-      }),
-      ///
+    //     if (include) {
+    //       addRow(row)
+    //     }
+    //   })
 
-      // getGroupingRowCanSelect: rowId => {
-      //   const row = table.getRow(rowId)
-
-      //   if (!row) {
-      //     throw new Error()
-      //   }
-
-      //   if (typeof table.options.enableGroupingRowSelection === 'function') {
-      //     return table.options.enableGroupingRowSelection(row)
-      //   }
-
-      //   return table.options.enableGroupingRowSelection ?? false
-      // },
-
-      getIsAllRowsSelected: () => {
-        const preGroupedFlatRows = table.getFilteredRowModel().flatRows;
-        const {
-          rowSelection
-        } = table.getState();
-        let isAllRowsSelected = Boolean(preGroupedFlatRows.length && Object.keys(rowSelection).length);
-        if (isAllRowsSelected) {
-          if (preGroupedFlatRows.some(row => row.getCanSelect() && !rowSelection[row.id])) {
-            isAllRowsSelected = false;
-          }
-        }
-        return isAllRowsSelected;
-      },
-      getIsAllPageRowsSelected: () => {
-        const paginationFlatRows = table.getPaginationRowModel().flatRows.filter(row => row.getCanSelect());
-        const {
-          rowSelection
-        } = table.getState();
-        let isAllPageRowsSelected = !!paginationFlatRows.length;
-        if (isAllPageRowsSelected && paginationFlatRows.some(row => !rowSelection[row.id])) {
-          isAllPageRowsSelected = false;
-        }
-        return isAllPageRowsSelected;
-      },
-      getIsSomeRowsSelected: () => {
-        var _table$getState$rowSe;
-        const totalSelected = Object.keys((_table$getState$rowSe = table.getState().rowSelection) != null ? _table$getState$rowSe : {}).length;
-        return totalSelected > 0 && totalSelected < table.getFilteredRowModel().flatRows.length;
-      },
-      getIsSomePageRowsSelected: () => {
-        const paginationFlatRows = table.getPaginationRowModel().flatRows;
-        return table.getIsAllPageRowsSelected() ? false : paginationFlatRows.filter(row => row.getCanSelect()).some(d => d.getIsSelected() || d.getIsSomeSelected());
-      },
-      getToggleAllRowsSelectedHandler: () => {
-        return e => {
-          table.toggleAllRowsSelected(e.target.checked);
-        };
-      },
-      getToggleAllPageRowsSelectedHandler: () => {
-        return e => {
-          table.toggleAllPageRowsSelected(e.target.checked);
+    //   table.setRowSelection(selectedRowIds)
+    // },
+    table.getPreSelectedRowModel = () => table.getCoreRowModel();
+    table.getSelectedRowModel = memo(() => [table.getState().rowSelection, table.getCoreRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
         };
       }
+      return selectRowsFn(table, rowModel);
+    }, {
+      key:  true && 'getSelectedRowModel',
+      debug: () => {
+        var _table$options$debugA;
+        return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugTable;
+      }
+    });
+    table.getFilteredSelectedRowModel = memo(() => [table.getState().rowSelection, table.getFilteredRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, {
+      key:  false && 0,
+      debug: () => {
+        var _table$options$debugA2;
+        return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugTable;
+      }
+    });
+    table.getGroupedSelectedRowModel = memo(() => [table.getState().rowSelection, table.getSortedRowModel()], (rowSelection, rowModel) => {
+      if (!Object.keys(rowSelection).length) {
+        return {
+          rows: [],
+          flatRows: [],
+          rowsById: {}
+        };
+      }
+      return selectRowsFn(table, rowModel);
+    }, {
+      key:  false && 0,
+      debug: () => {
+        var _table$options$debugA3;
+        return (_table$options$debugA3 = table.options.debugAll) != null ? _table$options$debugA3 : table.options.debugTable;
+      }
+    });
+
+    ///
+
+    // getGroupingRowCanSelect: rowId => {
+    //   const row = table.getRow(rowId)
+
+    //   if (!row) {
+    //     throw new Error()
+    //   }
+
+    //   if (typeof table.options.enableGroupingRowSelection === 'function') {
+    //     return table.options.enableGroupingRowSelection(row)
+    //   }
+
+    //   return table.options.enableGroupingRowSelection ?? false
+    // },
+
+    table.getIsAllRowsSelected = () => {
+      const preGroupedFlatRows = table.getFilteredRowModel().flatRows;
+      const {
+        rowSelection
+      } = table.getState();
+      let isAllRowsSelected = Boolean(preGroupedFlatRows.length && Object.keys(rowSelection).length);
+      if (isAllRowsSelected) {
+        if (preGroupedFlatRows.some(row => row.getCanSelect() && !rowSelection[row.id])) {
+          isAllRowsSelected = false;
+        }
+      }
+      return isAllRowsSelected;
+    };
+    table.getIsAllPageRowsSelected = () => {
+      const paginationFlatRows = table.getPaginationRowModel().flatRows.filter(row => row.getCanSelect());
+      const {
+        rowSelection
+      } = table.getState();
+      let isAllPageRowsSelected = !!paginationFlatRows.length;
+      if (isAllPageRowsSelected && paginationFlatRows.some(row => !rowSelection[row.id])) {
+        isAllPageRowsSelected = false;
+      }
+      return isAllPageRowsSelected;
+    };
+    table.getIsSomeRowsSelected = () => {
+      var _table$getState$rowSe;
+      const totalSelected = Object.keys((_table$getState$rowSe = table.getState().rowSelection) != null ? _table$getState$rowSe : {}).length;
+      return totalSelected > 0 && totalSelected < table.getFilteredRowModel().flatRows.length;
+    };
+    table.getIsSomePageRowsSelected = () => {
+      const paginationFlatRows = table.getPaginationRowModel().flatRows;
+      return table.getIsAllPageRowsSelected() ? false : paginationFlatRows.filter(row => row.getCanSelect()).some(d => d.getIsSelected() || d.getIsSomeSelected());
+    };
+    table.getToggleAllRowsSelectedHandler = () => {
+      return e => {
+        table.toggleAllRowsSelected(e.target.checked);
+      };
+    };
+    table.getToggleAllPageRowsSelectedHandler = () => {
+      return e => {
+        table.toggleAllPageRowsSelected(e.target.checked);
+      };
     };
   },
   createRow: (row, table) => {
-    return {
-      toggleSelected: value => {
-        const isSelected = row.getIsSelected();
-        table.setRowSelection(old => {
-          value = typeof value !== 'undefined' ? value : !isSelected;
-          if (isSelected === value) {
-            return old;
-          }
-          const selectedRowIds = {
-            ...old
-          };
-          mutateRowIsSelected(selectedRowIds, row.id, value, table);
-          return selectedRowIds;
-        });
-      },
-      getIsSelected: () => {
-        const {
-          rowSelection
-        } = table.getState();
-        return isRowSelected(row, rowSelection);
-      },
-      getIsSomeSelected: () => {
-        const {
-          rowSelection
-        } = table.getState();
-        return isSubRowSelected(row, rowSelection) === 'some';
-      },
-      getIsAllSubRowsSelected: () => {
-        const {
-          rowSelection
-        } = table.getState();
-        return isSubRowSelected(row, rowSelection) === 'all';
-      },
-      getCanSelect: () => {
-        var _table$options$enable;
-        if (typeof table.options.enableRowSelection === 'function') {
-          return table.options.enableRowSelection(row);
+    row.toggleSelected = (value, opts) => {
+      const isSelected = row.getIsSelected();
+      table.setRowSelection(old => {
+        var _opts$selectChildren;
+        value = typeof value !== 'undefined' ? value : !isSelected;
+        if (row.getCanSelect() && isSelected === value) {
+          return old;
         }
-        return (_table$options$enable = table.options.enableRowSelection) != null ? _table$options$enable : true;
-      },
-      getCanSelectSubRows: () => {
-        var _table$options$enable2;
-        if (typeof table.options.enableSubRowSelection === 'function') {
-          return table.options.enableSubRowSelection(row);
-        }
-        return (_table$options$enable2 = table.options.enableSubRowSelection) != null ? _table$options$enable2 : true;
-      },
-      getCanMultiSelect: () => {
-        var _table$options$enable3;
-        if (typeof table.options.enableMultiRowSelection === 'function') {
-          return table.options.enableMultiRowSelection(row);
-        }
-        return (_table$options$enable3 = table.options.enableMultiRowSelection) != null ? _table$options$enable3 : true;
-      },
-      getToggleSelectedHandler: () => {
-        const canSelect = row.getCanSelect();
-        return e => {
-          var _target;
-          if (!canSelect) return;
-          row.toggleSelected((_target = e.target) == null ? void 0 : _target.checked);
+        const selectedRowIds = {
+          ...old
         };
+        mutateRowIsSelected(selectedRowIds, row.id, value, (_opts$selectChildren = opts == null ? void 0 : opts.selectChildren) != null ? _opts$selectChildren : true, table);
+        return selectedRowIds;
+      });
+    };
+    row.getIsSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isRowSelected(row, rowSelection);
+    };
+    row.getIsSomeSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isSubRowSelected(row, rowSelection) === 'some';
+    };
+    row.getIsAllSubRowsSelected = () => {
+      const {
+        rowSelection
+      } = table.getState();
+      return isSubRowSelected(row, rowSelection) === 'all';
+    };
+    row.getCanSelect = () => {
+      var _table$options$enable;
+      if (typeof table.options.enableRowSelection === 'function') {
+        return table.options.enableRowSelection(row);
       }
+      return (_table$options$enable = table.options.enableRowSelection) != null ? _table$options$enable : true;
+    };
+    row.getCanSelectSubRows = () => {
+      var _table$options$enable2;
+      if (typeof table.options.enableSubRowSelection === 'function') {
+        return table.options.enableSubRowSelection(row);
+      }
+      return (_table$options$enable2 = table.options.enableSubRowSelection) != null ? _table$options$enable2 : true;
+    };
+    row.getCanMultiSelect = () => {
+      var _table$options$enable3;
+      if (typeof table.options.enableMultiRowSelection === 'function') {
+        return table.options.enableMultiRowSelection(row);
+      }
+      return (_table$options$enable3 = table.options.enableMultiRowSelection) != null ? _table$options$enable3 : true;
+    };
+    row.getToggleSelectedHandler = () => {
+      const canSelect = row.getCanSelect();
+      return e => {
+        var _target;
+        if (!canSelect) return;
+        row.toggleSelected((_target = e.target) == null ? void 0 : _target.checked);
+      };
     };
   }
 };
-const mutateRowIsSelected = (selectedRowIds, id, value, table) => {
+const mutateRowIsSelected = (selectedRowIds, id, value, includeChildren, table) => {
   var _row$subRows;
   const row = table.getRow(id);
 
@@ -10625,8 +10769,8 @@ const mutateRowIsSelected = (selectedRowIds, id, value, table) => {
   }
   // }
 
-  if ((_row$subRows = row.subRows) != null && _row$subRows.length && row.getCanSelectSubRows()) {
-    row.subRows.forEach(row => mutateRowIsSelected(selectedRowIds, row.id, value, table));
+  if (includeChildren && (_row$subRows = row.subRows) != null && _row$subRows.length && row.getCanSelectSubRows()) {
+    row.subRows.forEach(row => mutateRowIsSelected(selectedRowIds, row.id, value, includeChildren, table));
   }
 };
 function selectRowsFn(table, rowModel) {
@@ -10665,23 +10809,37 @@ function isRowSelected(row, selection) {
   return (_selection$row$id = selection[row.id]) != null ? _selection$row$id : false;
 }
 function isSubRowSelected(row, selection, table) {
-  if (row.subRows && row.subRows.length) {
-    let allChildrenSelected = true;
-    let someSelected = false;
-    row.subRows.forEach(subRow => {
-      // Bail out early if we know both of these
-      if (someSelected && !allChildrenSelected) {
-        return;
-      }
+  var _row$subRows3;
+  if (!((_row$subRows3 = row.subRows) != null && _row$subRows3.length)) return false;
+  let allChildrenSelected = true;
+  let someSelected = false;
+  row.subRows.forEach(subRow => {
+    // Bail out early if we know both of these
+    if (someSelected && !allChildrenSelected) {
+      return;
+    }
+    if (subRow.getCanSelect()) {
       if (isRowSelected(subRow, selection)) {
         someSelected = true;
       } else {
         allChildrenSelected = false;
       }
-    });
-    return allChildrenSelected ? 'all' : someSelected ? 'some' : false;
-  }
-  return false;
+    }
+
+    // Check row selection of nested subrows
+    if (subRow.subRows && subRow.subRows.length) {
+      const subRowChildrenSelected = isSubRowSelected(subRow, selection);
+      if (subRowChildrenSelected === 'all') {
+        someSelected = true;
+      } else if (subRowChildrenSelected === 'some') {
+        someSelected = true;
+        allChildrenSelected = false;
+      } else {
+        allChildrenSelected = false;
+      }
+    }
+  });
+  return allChildrenSelected ? 'all' : someSelected ? 'some' : false;
 }
 
 const reSplitAlphaNumeric = /([0-9]+)/gm;
@@ -10722,6 +10880,9 @@ function compareBasic(a, b) {
   return a === b ? 0 : a > b ? 1 : -1;
 }
 function toString(a) {
+  if (typeof a === 'boolean') {
+    return String(a);
+  }
   if (typeof a === 'number') {
     if (isNaN(a) || a === Infinity || a === -Infinity) {
       return '';
@@ -10738,6 +10899,13 @@ function toString(a) {
 // It handles numbers, mixed alphanumeric combinations, and even
 // null, undefined, and Infinity
 function compareAlphanumeric(aStr, bStr) {
+  // Check if the string contains only a number
+  const aFloat = parseFloat(aStr);
+  const bFloat = parseFloat(bStr);
+  if (!isNaN(aFloat) && !isNaN(bFloat)) {
+    return compareBasic(aFloat, bFloat);
+  }
+
   // Split on number groups, but keep the delimiter
   // Then remove falsey split values
   const a = aStr.split(reSplitAlphaNumeric).filter(Boolean);
@@ -10813,191 +10981,187 @@ const Sorting = {
     };
   },
   createColumn: (column, table) => {
-    return {
-      getAutoSortingFn: () => {
-        const firstRows = table.getFilteredRowModel().flatRows.slice(10);
-        let isString = false;
-        for (const row of firstRows) {
-          const value = row == null ? void 0 : row.getValue(column.id);
-          if (Object.prototype.toString.call(value) === '[object Date]') {
-            return sortingFns.datetime;
-          }
-          if (typeof value === 'string') {
-            isString = true;
-            if (value.split(reSplitAlphaNumeric).length > 1) {
-              return sortingFns.alphanumeric;
-            }
-          }
+    column.getAutoSortingFn = () => {
+      const firstRows = table.getFilteredRowModel().flatRows.slice(10);
+      let isString = false;
+      for (const row of firstRows) {
+        const value = row == null ? void 0 : row.getValue(column.id);
+        if (Object.prototype.toString.call(value) === '[object Date]') {
+          return sortingFns.datetime;
         }
-        if (isString) {
-          return sortingFns.text;
-        }
-        return sortingFns.basic;
-      },
-      getAutoSortDir: () => {
-        const firstRow = table.getFilteredRowModel().flatRows[0];
-        const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
         if (typeof value === 'string') {
-          return 'asc';
-        }
-        return 'desc';
-      },
-      getSortingFn: () => {
-        var _table$options$sortin, _table$options$sortin2;
-        if (!column) {
-          throw new Error();
-        }
-        return isFunction(column.columnDef.sortingFn) ? column.columnDef.sortingFn : column.columnDef.sortingFn === 'auto' ? column.getAutoSortingFn() : (_table$options$sortin = (_table$options$sortin2 = table.options.sortingFns) == null ? void 0 : _table$options$sortin2[column.columnDef.sortingFn]) != null ? _table$options$sortin : sortingFns[column.columnDef.sortingFn];
-      },
-      toggleSorting: (desc, multi) => {
-        // if (column.columns.length) {
-        //   column.columns.forEach((c, i) => {
-        //     if (c.id) {
-        //       table.toggleColumnSorting(c.id, undefined, multi || !!i)
-        //     }
-        //   })
-        //   return
-        // }
-
-        // this needs to be outside of table.setSorting to be in sync with rerender
-        const nextSortingOrder = column.getNextSortingOrder();
-        const hasManualValue = typeof desc !== 'undefined' && desc !== null;
-        table.setSorting(old => {
-          // Find any existing sorting for this column
-          const existingSorting = old == null ? void 0 : old.find(d => d.id === column.id);
-          const existingIndex = old == null ? void 0 : old.findIndex(d => d.id === column.id);
-          let newSorting = [];
-
-          // What should we do with this sort action?
-          let sortAction;
-          let nextDesc = hasManualValue ? desc : nextSortingOrder === 'desc';
-
-          // Multi-mode
-          if (old != null && old.length && column.getCanMultiSort() && multi) {
-            if (existingSorting) {
-              sortAction = 'toggle';
-            } else {
-              sortAction = 'add';
-            }
-          } else {
-            // Normal mode
-            if (old != null && old.length && existingIndex !== old.length - 1) {
-              sortAction = 'replace';
-            } else if (existingSorting) {
-              sortAction = 'toggle';
-            } else {
-              sortAction = 'replace';
-            }
+          isString = true;
+          if (value.split(reSplitAlphaNumeric).length > 1) {
+            return sortingFns.alphanumeric;
           }
-
-          // Handle toggle states that will remove the sorting
-          if (sortAction === 'toggle') {
-            // If we are "actually" toggling (not a manual set value), should we remove the sorting?
-            if (!hasManualValue) {
-              // Is our intention to remove?
-              if (!nextSortingOrder) {
-                sortAction = 'remove';
-              }
-            }
-          }
-          if (sortAction === 'add') {
-            var _table$options$maxMul;
-            newSorting = [...old, {
-              id: column.id,
-              desc: nextDesc
-            }];
-            // Take latest n columns
-            newSorting.splice(0, newSorting.length - ((_table$options$maxMul = table.options.maxMultiSortColCount) != null ? _table$options$maxMul : Number.MAX_SAFE_INTEGER));
-          } else if (sortAction === 'toggle') {
-            // This flips (or sets) the
-            newSorting = old.map(d => {
-              if (d.id === column.id) {
-                return {
-                  ...d,
-                  desc: nextDesc
-                };
-              }
-              return d;
-            });
-          } else if (sortAction === 'remove') {
-            newSorting = old.filter(d => d.id !== column.id);
-          } else {
-            newSorting = [{
-              id: column.id,
-              desc: nextDesc
-            }];
-          }
-          return newSorting;
-        });
-      },
-      getFirstSortDir: () => {
-        var _ref, _column$columnDef$sor;
-        const sortDescFirst = (_ref = (_column$columnDef$sor = column.columnDef.sortDescFirst) != null ? _column$columnDef$sor : table.options.sortDescFirst) != null ? _ref : column.getAutoSortDir() === 'desc';
-        return sortDescFirst ? 'desc' : 'asc';
-      },
-      getNextSortingOrder: multi => {
-        var _table$options$enable, _table$options$enable2;
-        const firstSortDirection = column.getFirstSortDir();
-        const isSorted = column.getIsSorted();
-        if (!isSorted) {
-          return firstSortDirection;
         }
-        if (isSorted !== firstSortDirection && ((_table$options$enable = table.options.enableSortingRemoval) != null ? _table$options$enable : true) && (
-        // If enableSortRemove, enable in general
-        multi ? (_table$options$enable2 = table.options.enableMultiRemove) != null ? _table$options$enable2 : true : true) // If multi, don't allow if enableMultiRemove))
-        ) {
-          return false;
-        }
-        return isSorted === 'desc' ? 'asc' : 'desc';
-      },
-      getCanSort: () => {
-        var _column$columnDef$ena, _table$options$enable3;
-        return ((_column$columnDef$ena = column.columnDef.enableSorting) != null ? _column$columnDef$ena : true) && ((_table$options$enable3 = table.options.enableSorting) != null ? _table$options$enable3 : true) && !!column.accessorFn;
-      },
-      getCanMultiSort: () => {
-        var _ref2, _column$columnDef$ena2;
-        return (_ref2 = (_column$columnDef$ena2 = column.columnDef.enableMultiSort) != null ? _column$columnDef$ena2 : table.options.enableMultiSort) != null ? _ref2 : !!column.accessorFn;
-      },
-      getIsSorted: () => {
-        var _table$getState$sorti;
-        const columnSort = (_table$getState$sorti = table.getState().sorting) == null ? void 0 : _table$getState$sorti.find(d => d.id === column.id);
-        return !columnSort ? false : columnSort.desc ? 'desc' : 'asc';
-      },
-      getSortIndex: () => {
-        var _table$getState$sorti2, _table$getState$sorti3;
-        return (_table$getState$sorti2 = (_table$getState$sorti3 = table.getState().sorting) == null ? void 0 : _table$getState$sorti3.findIndex(d => d.id === column.id)) != null ? _table$getState$sorti2 : -1;
-      },
-      clearSorting: () => {
-        //clear sorting for just 1 column
-        table.setSorting(old => old != null && old.length ? old.filter(d => d.id !== column.id) : []);
-      },
-      getToggleSortingHandler: () => {
-        const canSort = column.getCanSort();
-        return e => {
-          if (!canSort) return;
-          e.persist == null ? void 0 : e.persist();
-          column.toggleSorting == null ? void 0 : column.toggleSorting(undefined, column.getCanMultiSort() ? table.options.isMultiSortEvent == null ? void 0 : table.options.isMultiSortEvent(e) : false);
-        };
       }
+      if (isString) {
+        return sortingFns.text;
+      }
+      return sortingFns.basic;
+    };
+    column.getAutoSortDir = () => {
+      const firstRow = table.getFilteredRowModel().flatRows[0];
+      const value = firstRow == null ? void 0 : firstRow.getValue(column.id);
+      if (typeof value === 'string') {
+        return 'asc';
+      }
+      return 'desc';
+    };
+    column.getSortingFn = () => {
+      var _table$options$sortin, _table$options$sortin2;
+      if (!column) {
+        throw new Error();
+      }
+      return isFunction(column.columnDef.sortingFn) ? column.columnDef.sortingFn : column.columnDef.sortingFn === 'auto' ? column.getAutoSortingFn() : (_table$options$sortin = (_table$options$sortin2 = table.options.sortingFns) == null ? void 0 : _table$options$sortin2[column.columnDef.sortingFn]) != null ? _table$options$sortin : sortingFns[column.columnDef.sortingFn];
+    };
+    column.toggleSorting = (desc, multi) => {
+      // if (column.columns.length) {
+      //   column.columns.forEach((c, i) => {
+      //     if (c.id) {
+      //       table.toggleColumnSorting(c.id, undefined, multi || !!i)
+      //     }
+      //   })
+      //   return
+      // }
+
+      // this needs to be outside of table.setSorting to be in sync with rerender
+      const nextSortingOrder = column.getNextSortingOrder();
+      const hasManualValue = typeof desc !== 'undefined' && desc !== null;
+      table.setSorting(old => {
+        // Find any existing sorting for this column
+        const existingSorting = old == null ? void 0 : old.find(d => d.id === column.id);
+        const existingIndex = old == null ? void 0 : old.findIndex(d => d.id === column.id);
+        let newSorting = [];
+
+        // What should we do with this sort action?
+        let sortAction;
+        let nextDesc = hasManualValue ? desc : nextSortingOrder === 'desc';
+
+        // Multi-mode
+        if (old != null && old.length && column.getCanMultiSort() && multi) {
+          if (existingSorting) {
+            sortAction = 'toggle';
+          } else {
+            sortAction = 'add';
+          }
+        } else {
+          // Normal mode
+          if (old != null && old.length && existingIndex !== old.length - 1) {
+            sortAction = 'replace';
+          } else if (existingSorting) {
+            sortAction = 'toggle';
+          } else {
+            sortAction = 'replace';
+          }
+        }
+
+        // Handle toggle states that will remove the sorting
+        if (sortAction === 'toggle') {
+          // If we are "actually" toggling (not a manual set value), should we remove the sorting?
+          if (!hasManualValue) {
+            // Is our intention to remove?
+            if (!nextSortingOrder) {
+              sortAction = 'remove';
+            }
+          }
+        }
+        if (sortAction === 'add') {
+          var _table$options$maxMul;
+          newSorting = [...old, {
+            id: column.id,
+            desc: nextDesc
+          }];
+          // Take latest n columns
+          newSorting.splice(0, newSorting.length - ((_table$options$maxMul = table.options.maxMultiSortColCount) != null ? _table$options$maxMul : Number.MAX_SAFE_INTEGER));
+        } else if (sortAction === 'toggle') {
+          // This flips (or sets) the
+          newSorting = old.map(d => {
+            if (d.id === column.id) {
+              return {
+                ...d,
+                desc: nextDesc
+              };
+            }
+            return d;
+          });
+        } else if (sortAction === 'remove') {
+          newSorting = old.filter(d => d.id !== column.id);
+        } else {
+          newSorting = [{
+            id: column.id,
+            desc: nextDesc
+          }];
+        }
+        return newSorting;
+      });
+    };
+    column.getFirstSortDir = () => {
+      var _ref, _column$columnDef$sor;
+      const sortDescFirst = (_ref = (_column$columnDef$sor = column.columnDef.sortDescFirst) != null ? _column$columnDef$sor : table.options.sortDescFirst) != null ? _ref : column.getAutoSortDir() === 'desc';
+      return sortDescFirst ? 'desc' : 'asc';
+    };
+    column.getNextSortingOrder = multi => {
+      var _table$options$enable, _table$options$enable2;
+      const firstSortDirection = column.getFirstSortDir();
+      const isSorted = column.getIsSorted();
+      if (!isSorted) {
+        return firstSortDirection;
+      }
+      if (isSorted !== firstSortDirection && ((_table$options$enable = table.options.enableSortingRemoval) != null ? _table$options$enable : true) && (
+      // If enableSortRemove, enable in general
+      multi ? (_table$options$enable2 = table.options.enableMultiRemove) != null ? _table$options$enable2 : true : true) // If multi, don't allow if enableMultiRemove))
+      ) {
+        return false;
+      }
+      return isSorted === 'desc' ? 'asc' : 'desc';
+    };
+    column.getCanSort = () => {
+      var _column$columnDef$ena, _table$options$enable3;
+      return ((_column$columnDef$ena = column.columnDef.enableSorting) != null ? _column$columnDef$ena : true) && ((_table$options$enable3 = table.options.enableSorting) != null ? _table$options$enable3 : true) && !!column.accessorFn;
+    };
+    column.getCanMultiSort = () => {
+      var _ref2, _column$columnDef$ena2;
+      return (_ref2 = (_column$columnDef$ena2 = column.columnDef.enableMultiSort) != null ? _column$columnDef$ena2 : table.options.enableMultiSort) != null ? _ref2 : !!column.accessorFn;
+    };
+    column.getIsSorted = () => {
+      var _table$getState$sorti;
+      const columnSort = (_table$getState$sorti = table.getState().sorting) == null ? void 0 : _table$getState$sorti.find(d => d.id === column.id);
+      return !columnSort ? false : columnSort.desc ? 'desc' : 'asc';
+    };
+    column.getSortIndex = () => {
+      var _table$getState$sorti2, _table$getState$sorti3;
+      return (_table$getState$sorti2 = (_table$getState$sorti3 = table.getState().sorting) == null ? void 0 : _table$getState$sorti3.findIndex(d => d.id === column.id)) != null ? _table$getState$sorti2 : -1;
+    };
+    column.clearSorting = () => {
+      //clear sorting for just 1 column
+      table.setSorting(old => old != null && old.length ? old.filter(d => d.id !== column.id) : []);
+    };
+    column.getToggleSortingHandler = () => {
+      const canSort = column.getCanSort();
+      return e => {
+        if (!canSort) return;
+        e.persist == null || e.persist();
+        column.toggleSorting == null || column.toggleSorting(undefined, column.getCanMultiSort() ? table.options.isMultiSortEvent == null ? void 0 : table.options.isMultiSortEvent(e) : false);
+      };
     };
   },
   createTable: table => {
-    return {
-      setSorting: updater => table.options.onSortingChange == null ? void 0 : table.options.onSortingChange(updater),
-      resetSorting: defaultState => {
-        var _table$initialState$s, _table$initialState;
-        table.setSorting(defaultState ? [] : (_table$initialState$s = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.sorting) != null ? _table$initialState$s : []);
-      },
-      getPreSortedRowModel: () => table.getGroupedRowModel(),
-      getSortedRowModel: () => {
-        if (!table._getSortedRowModel && table.options.getSortedRowModel) {
-          table._getSortedRowModel = table.options.getSortedRowModel(table);
-        }
-        if (table.options.manualSorting || !table._getSortedRowModel) {
-          return table.getPreSortedRowModel();
-        }
-        return table._getSortedRowModel();
+    table.setSorting = updater => table.options.onSortingChange == null ? void 0 : table.options.onSortingChange(updater);
+    table.resetSorting = defaultState => {
+      var _table$initialState$s, _table$initialState;
+      table.setSorting(defaultState ? [] : (_table$initialState$s = (_table$initialState = table.initialState) == null ? void 0 : _table$initialState.sorting) != null ? _table$initialState$s : []);
+    };
+    table.getPreSortedRowModel = () => table.getGroupedRowModel();
+    table.getSortedRowModel = () => {
+      if (!table._getSortedRowModel && table.options.getSortedRowModel) {
+        table._getSortedRowModel = table.options.getSortedRowModel(table);
       }
+      if (table.options.manualSorting || !table._getSortedRowModel) {
+        return table.getPreSortedRowModel();
+      }
+      return table._getSortedRowModel();
     };
   }
 };
@@ -11017,49 +11181,45 @@ const Visibility = {
     };
   },
   createColumn: (column, table) => {
-    return {
-      toggleVisibility: value => {
-        if (column.getCanHide()) {
-          table.setColumnVisibility(old => ({
-            ...old,
-            [column.id]: value != null ? value : !column.getIsVisible()
-          }));
-        }
-      },
-      getIsVisible: () => {
-        var _table$getState$colum, _table$getState$colum2;
-        return (_table$getState$colum = (_table$getState$colum2 = table.getState().columnVisibility) == null ? void 0 : _table$getState$colum2[column.id]) != null ? _table$getState$colum : true;
-      },
-      getCanHide: () => {
-        var _column$columnDef$ena, _table$options$enable;
-        return ((_column$columnDef$ena = column.columnDef.enableHiding) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableHiding) != null ? _table$options$enable : true);
-      },
-      getToggleVisibilityHandler: () => {
-        return e => {
-          column.toggleVisibility == null ? void 0 : column.toggleVisibility(e.target.checked);
-        };
+    column.toggleVisibility = value => {
+      if (column.getCanHide()) {
+        table.setColumnVisibility(old => ({
+          ...old,
+          [column.id]: value != null ? value : !column.getIsVisible()
+        }));
       }
+    };
+    column.getIsVisible = () => {
+      var _table$getState$colum, _table$getState$colum2;
+      return (_table$getState$colum = (_table$getState$colum2 = table.getState().columnVisibility) == null ? void 0 : _table$getState$colum2[column.id]) != null ? _table$getState$colum : true;
+    };
+    column.getCanHide = () => {
+      var _column$columnDef$ena, _table$options$enable;
+      return ((_column$columnDef$ena = column.columnDef.enableHiding) != null ? _column$columnDef$ena : true) && ((_table$options$enable = table.options.enableHiding) != null ? _table$options$enable : true);
+    };
+    column.getToggleVisibilityHandler = () => {
+      return e => {
+        column.toggleVisibility == null || column.toggleVisibility(e.target.checked);
+      };
     };
   },
   createRow: (row, table) => {
-    return {
-      _getAllVisibleCells: memo(() => [row.getAllCells(), table.getState().columnVisibility], cells => {
-        return cells.filter(cell => cell.column.getIsVisible());
-      }, {
-        key:  false && 0,
-        debug: () => {
-          var _table$options$debugA;
-          return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugRows;
-        }
-      }),
-      getVisibleCells: memo(() => [row.getLeftVisibleCells(), row.getCenterVisibleCells(), row.getRightVisibleCells()], (left, center, right) => [...left, ...center, ...right], {
-        key:  true && 'row.getVisibleCells',
-        debug: () => {
-          var _table$options$debugA2;
-          return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugRows;
-        }
-      })
-    };
+    row._getAllVisibleCells = memo(() => [row.getAllCells(), table.getState().columnVisibility], cells => {
+      return cells.filter(cell => cell.column.getIsVisible());
+    }, {
+      key:  false && 0,
+      debug: () => {
+        var _table$options$debugA;
+        return (_table$options$debugA = table.options.debugAll) != null ? _table$options$debugA : table.options.debugRows;
+      }
+    });
+    row.getVisibleCells = memo(() => [row.getLeftVisibleCells(), row.getCenterVisibleCells(), row.getRightVisibleCells()], (left, center, right) => [...left, ...center, ...right], {
+      key:  true && 'row.getVisibleCells',
+      debug: () => {
+        var _table$options$debugA2;
+        return (_table$options$debugA2 = table.options.debugAll) != null ? _table$options$debugA2 : table.options.debugRows;
+      }
+    });
   },
   createTable: table => {
     const makeVisibleColumnsMethod = (key, getColumns) => {
@@ -11073,33 +11233,31 @@ const Visibility = {
         }
       });
     };
-    return {
-      getVisibleFlatColumns: makeVisibleColumnsMethod('getVisibleFlatColumns', () => table.getAllFlatColumns()),
-      getVisibleLeafColumns: makeVisibleColumnsMethod('getVisibleLeafColumns', () => table.getAllLeafColumns()),
-      getLeftVisibleLeafColumns: makeVisibleColumnsMethod('getLeftVisibleLeafColumns', () => table.getLeftLeafColumns()),
-      getRightVisibleLeafColumns: makeVisibleColumnsMethod('getRightVisibleLeafColumns', () => table.getRightLeafColumns()),
-      getCenterVisibleLeafColumns: makeVisibleColumnsMethod('getCenterVisibleLeafColumns', () => table.getCenterLeafColumns()),
-      setColumnVisibility: updater => table.options.onColumnVisibilityChange == null ? void 0 : table.options.onColumnVisibilityChange(updater),
-      resetColumnVisibility: defaultState => {
-        var _table$initialState$c;
-        table.setColumnVisibility(defaultState ? {} : (_table$initialState$c = table.initialState.columnVisibility) != null ? _table$initialState$c : {});
-      },
-      toggleAllColumnsVisible: value => {
-        var _value;
-        value = (_value = value) != null ? _value : !table.getIsAllColumnsVisible();
-        table.setColumnVisibility(table.getAllLeafColumns().reduce((obj, column) => ({
-          ...obj,
-          [column.id]: !value ? !(column.getCanHide != null && column.getCanHide()) : value
-        }), {}));
-      },
-      getIsAllColumnsVisible: () => !table.getAllLeafColumns().some(column => !(column.getIsVisible != null && column.getIsVisible())),
-      getIsSomeColumnsVisible: () => table.getAllLeafColumns().some(column => column.getIsVisible == null ? void 0 : column.getIsVisible()),
-      getToggleAllColumnsVisibilityHandler: () => {
-        return e => {
-          var _target;
-          table.toggleAllColumnsVisible((_target = e.target) == null ? void 0 : _target.checked);
-        };
-      }
+    table.getVisibleFlatColumns = makeVisibleColumnsMethod('getVisibleFlatColumns', () => table.getAllFlatColumns());
+    table.getVisibleLeafColumns = makeVisibleColumnsMethod('getVisibleLeafColumns', () => table.getAllLeafColumns());
+    table.getLeftVisibleLeafColumns = makeVisibleColumnsMethod('getLeftVisibleLeafColumns', () => table.getLeftLeafColumns());
+    table.getRightVisibleLeafColumns = makeVisibleColumnsMethod('getRightVisibleLeafColumns', () => table.getRightLeafColumns());
+    table.getCenterVisibleLeafColumns = makeVisibleColumnsMethod('getCenterVisibleLeafColumns', () => table.getCenterLeafColumns());
+    table.setColumnVisibility = updater => table.options.onColumnVisibilityChange == null ? void 0 : table.options.onColumnVisibilityChange(updater);
+    table.resetColumnVisibility = defaultState => {
+      var _table$initialState$c;
+      table.setColumnVisibility(defaultState ? {} : (_table$initialState$c = table.initialState.columnVisibility) != null ? _table$initialState$c : {});
+    };
+    table.toggleAllColumnsVisible = value => {
+      var _value;
+      value = (_value = value) != null ? _value : !table.getIsAllColumnsVisible();
+      table.setColumnVisibility(table.getAllLeafColumns().reduce((obj, column) => ({
+        ...obj,
+        [column.id]: !value ? !(column.getCanHide != null && column.getCanHide()) : value
+      }), {}));
+    };
+    table.getIsAllColumnsVisible = () => !table.getAllLeafColumns().some(column => !(column.getIsVisible != null && column.getIsVisible()));
+    table.getIsSomeColumnsVisible = () => table.getAllLeafColumns().some(column => column.getIsVisible == null ? void 0 : column.getIsVisible());
+    table.getToggleAllColumnsVisibilityHandler = () => {
+      return e => {
+        var _target;
+        table.toggleAllColumnsVisible((_target = e.target) == null ? void 0 : _target.checked);
+      };
     };
   }
 };
@@ -11174,7 +11332,7 @@ function createTable(options) {
       return table.options.state;
     },
     setState: updater => {
-      table.options.onStateChange == null ? void 0 : table.options.onStateChange(updater);
+      table.options.onStateChange == null || table.options.onStateChange(updater);
     },
     _getRowId: (row, index, parent) => {
       var _table$options$getRow;
@@ -11192,8 +11350,8 @@ function createTable(options) {
     getRowModel: () => {
       return table.getPaginationRowModel();
     },
-    getRow: id => {
-      const row = table.getRowModel().rowsById[id];
+    getRow: (id, searchAll) => {
+      const row = (searchAll ? table.getCoreRowModel() : table.getRowModel()).rowsById[id];
       if (!row) {
         if (true) {
           throw new Error(`getRow expected an ID, but got ${id}`);
@@ -11219,7 +11377,7 @@ function createTable(options) {
         // footer: props => props.header.column.id,
         cell: props => {
           var _props$renderValue$to, _props$renderValue;
-          return (_props$renderValue$to = (_props$renderValue = props.renderValue()) == null ? void 0 : _props$renderValue.toString == null ? void 0 : _props$renderValue.toString()) != null ? _props$renderValue$to : null;
+          return (_props$renderValue$to = (_props$renderValue = props.renderValue()) == null || _props$renderValue.toString == null ? void 0 : _props$renderValue.toString()) != null ? _props$renderValue$to : null;
         },
         ...table._features.reduce((obj, feature) => {
           return Object.assign(obj, feature.getDefaultColumnDef == null ? void 0 : feature.getDefaultColumnDef());
@@ -11296,9 +11454,10 @@ function createTable(options) {
     }
   };
   Object.assign(table, coreInstance);
-  table._features.forEach(feature => {
-    return Object.assign(table, feature.createTable == null ? void 0 : feature.createTable(table));
-  });
+  for (let index = 0; index < table._features.length; index++) {
+    const feature = table._features[index];
+    feature == null || feature.createTable == null || feature.createTable(table);
+  }
   return table;
 }
 
@@ -11326,7 +11485,7 @@ function createCell(table, row, column, columnId) {
     })
   };
   table._features.forEach(feature => {
-    Object.assign(cell, feature.createCell == null ? void 0 : feature.createCell(cell, column, row, table));
+    feature.createCell == null || feature.createCell(cell, column, row, table);
   }, {});
   return cell;
 }
@@ -11372,7 +11531,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
     },
     subRows: subRows != null ? subRows : [],
     getLeafRows: () => flattenBy(row.subRows, d => d.subRows),
-    getParentRow: () => row.parentId ? table.getRow(row.parentId) : undefined,
+    getParentRow: () => row.parentId ? table.getRow(row.parentId, true) : undefined,
     getParentRows: () => {
       let parentRows = [];
       let currentRow = row;
@@ -11410,7 +11569,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
   };
   for (let i = 0; i < table._features.length; i++) {
     const feature = table._features[i];
-    Object.assign(row, feature == null ? void 0 : feature.createRow == null ? void 0 : feature.createRow(row, table));
+    feature == null || feature.createRow == null || feature.createRow(row, table);
   }
   return row;
 };
@@ -11557,13 +11716,13 @@ function filterRowModelFromLeafs(rowsToFilter, filterRow, table) {
         if (filterRow(row) && !newRow.subRows.length) {
           rows.push(row);
           newFilteredRowsById[row.id] = row;
-          newFilteredRowsById[i] = row;
+          newFilteredFlatRows.push(row);
           continue;
         }
         if (filterRow(row) || newRow.subRows.length) {
           rows.push(row);
           newFilteredRowsById[row.id] = row;
-          newFilteredRowsById[i] = row;
+          newFilteredFlatRows.push(row);
           continue;
         }
       } else {
@@ -11571,7 +11730,7 @@ function filterRowModelFromLeafs(rowsToFilter, filterRow, table) {
         if (filterRow(row)) {
           rows.push(row);
           newFilteredRowsById[row.id] = row;
-          newFilteredRowsById[i] = row;
+          newFilteredFlatRows.push(row);
         }
       }
     }
@@ -11842,7 +12001,9 @@ function getSortedRowModel() {
     const sortData = rows => {
       // This will also perform a stable sorting using the row index
       // if needed.
-      const sortedData = [...rows];
+      const sortedData = rows.map(row => ({
+        ...row
+      }));
       sortedData.sort((rowA, rowB) => {
         for (let i = 0; i < availableSorting.length; i += 1) {
           var _sortEntry$desc;

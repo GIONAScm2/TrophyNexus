@@ -1,7 +1,7 @@
 import {render} from 'preact';
-import {SeriesTable} from '../components/series_table/SeriesTable';
 import {TrophyNexusPsnp} from '../nexus';
 import {DbSeriesController} from '../services/DbSeriesController';
+import { SeriesTable } from '../components/tables/series/SeriesTable';
 
 export async function initSeriesCatalog(nexus: TrophyNexusPsnp) {
 	if (!nexus.userPrefs.PSNP.bools.renderSeriesTable.value) return;

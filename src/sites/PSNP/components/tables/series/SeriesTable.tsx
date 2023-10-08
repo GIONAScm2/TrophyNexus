@@ -1,7 +1,7 @@
-import {DbSeries} from '../../models/dbSeries';
+import {DbSeries} from '../../../models/dbSeries';
 import {SeriesRowGames, SeriesRowName, SeriesRowStages} from './SeriesRow';
-import {TrophyCountRow} from '../TrophyCount';
-import * as css from '../css/SeriesTable';
+import {TrophyCountRow} from '../../TrophyCount';
+import * as css from '../../css/SeriesTable';
 import {
 	Column,
 	ColumnFiltersState,
@@ -25,10 +25,10 @@ import {faSortUp} from '@fortawesome/free-solid-svg-icons/faSortUp';
 import {faSortDown} from '@fortawesome/free-solid-svg-icons/faSortDown';
 import {faFilter} from '@fortawesome/free-solid-svg-icons/faFilter';
 import {TrophyCount, parseNum} from 'trophyutil';
-import {fractionInner} from '../css/SeriesRow';
 import {JSX} from 'preact';
 import {JSXInternal} from 'preact/src/jsx';
-import {IUserSettings} from '../../../../shared/services/userPrefs/types';
+import { IUserSettings } from '../../../../../shared/services/userPrefs/types';
+import { fractionInner } from '../../css/SeriesRow';
 
 interface SeriesTableProps {
 	allSeries: DbSeries[];
@@ -151,6 +151,7 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 					const dateA = rowA.original.userLatestTrophy;
 					const dateB = rowB.original.userLatestTrophy;
 					const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
+					
 
 					if (dateA === 0) return isDesc ? -1 : 1;
 					if (dateB === 0) return isDesc ? 1 : -1;

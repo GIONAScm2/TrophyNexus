@@ -1,7 +1,7 @@
-import ProgressBar from '../../../../shared/components/ProgressBar';
-import {DbSeries} from '../../models/dbSeries';
-import {msToDateString} from '../../util/dates';
-import * as _css from '../css/SeriesRow';
+import ProgressBar from '../../../../../shared/components/ProgressBar';
+import {DbSeries} from '../../../models/dbSeries';
+import {msToDateString} from '../../../util/dates';
+import * as _css from '../../css/SeriesRow';
 
 interface SeriesRowProps {
 	series: DbSeries;
