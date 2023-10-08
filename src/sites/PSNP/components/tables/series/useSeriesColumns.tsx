@@ -7,6 +7,7 @@ import {SeriesRowName, SeriesRowStages, SeriesRowGames} from './SeriesRow';
 import {useState, useMemo, StateUpdater} from 'preact/hooks';
 import {SortingIcon} from '../SortingIcon';
 import {FilterIcon} from '../FilterIcon';
+import {sortColumnByDate} from '../sorting';
 
 type StagesCellSortKey = keyof Pick<
 	DbSeries,
@@ -76,13 +77,7 @@ export function useSeriesTableColumns({sorting, setColumnFilters, numRowsToShow}
 				enableHiding: true,
 				header: h => 'Date',
 				sortingFn: (rowA, rowB, columnId) => {
-					const dateA = rowA.original.userLatestTrophy;
-					const dateB = rowB.original.userLatestTrophy;
-					const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
-
-					if (dateA === 0) return isDesc ? -1 : 1;
-					if (dateB === 0) return isDesc ? 1 : -1;
-					return dateA - dateB;
+					return sortColumnByDate(sorting, rowA, rowB, columnId, x => x.original.userLatestTrophy);
 				},
 				// Irrelevant filter; using this slot for convenience/performance
 				filterFn: (row, columnId, value, addMeta) => {

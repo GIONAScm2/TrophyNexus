@@ -11,8 +11,9 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import * as css from '../../css/SeriesTable';
-import { GameRowMain} from './GameRow';
+import {GameRowMain} from './GameRow';
 import {TrophyCountRow} from '../../TrophyCount';
+import {sortColumnByDate} from '../sorting';
 
 interface GamesTableProps {
 	allGames: DbGame[];
@@ -31,26 +32,14 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 				enableHiding: true,
 				header: h => 'Date Created',
 				sortingFn: (rowA, rowB, columnId) => {
-					const dateA = Date.parse(rowA.original.createdAt);
-					const dateB = Date.parse(rowB.original.createdAt);
-					const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
-
-					if (dateA === 0) return isDesc ? -1 : 1;
-					if (dateB === 0) return isDesc ? 1 : -1;
-					return dateA - dateB;
+					return sortColumnByDate(sorting, rowA, rowB, columnId, x => Date.parse(x.original.createdAt));
 				},
 			}),
 			col.accessor('updatedAt', {
 				enableHiding: true,
 				header: h => 'Date Updated',
 				sortingFn: (rowA, rowB, columnId) => {
-					const dateA = Date.parse(rowA.original.updatedAt);
-					const dateB = Date.parse(rowB.original.updatedAt);
-					const isDesc = sorting.find(s => s.id === columnId)?.desc || false;
-
-					if (dateA === 0) return isDesc ? -1 : 1;
-					if (dateB === 0) return isDesc ? 1 : -1;
-					return dateA - dateB;
+					return sortColumnByDate(sorting, rowA, rowB, columnId, x => Date.parse(x.original.updatedAt));
 				},
 			}),
 			col.accessor('name', {
@@ -67,7 +56,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 				),
 				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
 			}),
-			col.accessor(x=> 'Trophies', {
+			col.accessor(x => 'Trophies', {
 				id: 'Trophies',
 				size: 100,
 				maxSize: 150,

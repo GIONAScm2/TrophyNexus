@@ -20,8 +20,8 @@ import {JSX} from 'preact';
 import {IUserSettings} from '../../../../../shared/services/userPrefs/types';
 import {fractionInner} from '../../css/SeriesRow';
 import {MiscSortKey, useSeriesTableColumns} from './useSeriesColumns';
-import { ColumnFilter } from '../ColumnFilter';
-import { SortingIcon } from '../SortingIcon';
+import {ColumnFilter} from '../ColumnFilter';
+import {SortingIcon} from '../SortingIcon';
 
 interface SeriesTableProps {
 	allSeries: DbSeries[];
