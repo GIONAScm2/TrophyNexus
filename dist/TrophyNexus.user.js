@@ -2489,13 +2489,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   fetchDoc: () => (/* binding */ fetchDoc)
 /* harmony export */ });
-async function fetchDoc(url, opts) {
-    const response = await fetch(url, opts);
-    const text = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, 'text/html');
-    const responseWithDoc = { ...response, doc };
-    return responseWithDoc;
+/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
+
+async function fetchDoc(url, opts, maxRetries = 3, retryDelay = 1000) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            const response = await fetch(url, opts);
+            if (!response.ok) {
+                if (attempt < maxRetries) {
+                    console.warn(`Rate limit exceeded, retrying... Attempt ${attempt} of ${maxRetries}`);
+                    await (0,trophyutil__WEBPACK_IMPORTED_MODULE_0__.sleep)(retryDelay * Math.pow(2, attempt - 1));
+                    continue;
+                }
+                else {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            }
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            const responseWithDoc = { ...response, doc };
+            return responseWithDoc;
+        }
+        catch (error) {
+            if (attempt === maxRetries) {
+                console.error('Max retries reached. Fetch failed:', error);
+                throw error;
+            }
+        }
+    }
+    throw new Error('Failed to fetch document after retries');
 }
 
 
