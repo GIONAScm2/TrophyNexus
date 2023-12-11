@@ -6,6 +6,9 @@ import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
+	getFacetedMinMaxValues,
+	getFacetedRowModel,
+	getFacetedUniqueValues,
 	getFilteredRowModel,
 	getSortedRowModel,
 	useReactTable,
@@ -14,6 +17,10 @@ import * as css from '../../css/SeriesTable';
 import {GameRowMain} from './GameRow';
 import {TrophyCountRow} from '../../TrophyCount';
 import {sortColumnByDate} from '../sorting';
+import { TrophyCellSortKey } from '../series/useSeriesColumns';
+import { FilterIcon } from '../FilterIcon';
+import { SortingIcon } from '../SortingIcon';
+import { ColumnFilter } from '../ColumnFilter';
 
 interface GamesTableProps {
 	allGames: DbGame[];
@@ -25,6 +32,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
 	const [sorting, setSorting] = useState<SortingState>([{id: 'updatedAt', desc: true}]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => []);
+	const [trophyCellSortKey, setTrophyCellSortKey] = useState<TrophyCellSortKey>(['userNumTrophies', null]);
 
 	const columns = useMemo(() => {
 		return [
@@ -49,21 +57,73 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 				cell: ({row}) => <GameRowMain game={row.original} />,
 				header: h => (
 					<>
-						{/* <FilterIcon headerContext={h} /> */}
+						<FilterIcon headerContext={h} />
 						<span style={{margin: '0px 5px'}}>Game</span>
-						{/* <SortingIcon column={h.column} /> */}
+						<SortingIcon column={h.column} />
 					</>
 				),
 				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
 			}),
-			col.accessor(x => 'Trophies', {
-				id: 'Trophies',
-				size: 100,
-				maxSize: 150,
-				cell: ({row}) => <TrophyCountRow entity={row.original} />,
-			}),
+			col.accessor(
+				row => {
+					const val1 = row[trophyCellSortKey[0]];
+					if (typeof val1 === 'number') return val1;
+					else return val1[trophyCellSortKey[1]!];
+				},
+				{
+					id: `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`,
+					size: 250,
+					maxSize: 300,
+					cell: ({row}) => <TrophyCountRow entity={row.original} />,
+					header: h => (
+						<>
+							<FilterIcon headerContext={h} />
+							<span style={{margin: '0px 5px'}}>Trophies</span>
+							<SortingIcon column={h.column} />
+							<div style={{marginTop: '10px'}}>
+								<select
+									value={JSON.stringify(trophyCellSortKey)}
+									onChange={e => {
+										const newValue = JSON.parse(e.currentTarget.value) as TrophyCellSortKey;
+										setTrophyCellSortKey(newValue);
+										setColumnFilters(prevFilters =>
+											prevFilters.filter(
+												filter => filter.id !== `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`
+											)
+										);
+									}}
+									style={{fontWeight: 'normal', fontSize: '14px'}}
+								>
+									<option value={JSON.stringify(['userPoints', null])}>Points (Earned)</option>
+									<option value={JSON.stringify(['points', null])}>Points (All)</option>
+									<option value={JSON.stringify(['userNumTrophies', null])}>Trophies (Earned)</option>
+									<option value={JSON.stringify(['numTrophies', null])}>Trophies (All)</option>
+									<option value={JSON.stringify(['userTrophyCount', 'platinum'])}>Platinum (Earned)</option>
+									<option value={JSON.stringify(['trophyCount', 'platinum'])}>Platinum (All)</option>
+									<option value={JSON.stringify(['userTrophyCount', 'gold'])}>Gold (Earned)</option>
+									<option value={JSON.stringify(['trophyCount', 'gold'])}>Gold (All)</option>
+									<option value={JSON.stringify(['userTrophyCount', 'silver'])}>Silver (Earned)</option>
+									<option value={JSON.stringify(['trophyCount', 'silver'])}>Silver (All)</option>
+									<option value={JSON.stringify(['userTrophyCount', 'bronze'])}>Bronze (Earned)</option>
+									<option value={JSON.stringify(['trophyCount', 'bronze'])}>Bronze (All)</option>
+								</select>
+							</div>
+						</>
+					),
+					sortingFn: (rowA, rowB, columnId) => {
+						let comparisonValue = 0;
+						const key1 = trophyCellSortKey[0];
+
+						if (key1 === 'trophyCount' || key1 === 'userTrophyCount') {
+							const key2 = trophyCellSortKey[1];
+							comparisonValue = rowA.original[key1][key2] - rowB.original[key1][key2];
+						} else comparisonValue = rowA.original[key1] - rowB.original[key1];
+						return comparisonValue;
+					},
+				}
+			),
 		];
-	}, []);
+	}, [sorting, trophyCellSortKey]);
 
 	const table = useReactTable({
 		defaultColumn: {
@@ -84,6 +144,9 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 		},
 		onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
+		getFacetedRowModel: getFacetedRowModel(),
+		getFacetedUniqueValues: getFacetedUniqueValues(),
+		getFacetedMinMaxValues: getFacetedMinMaxValues(),
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -122,8 +185,9 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 													{flexRender(header.column.columnDef.header, header.getContext())}
 												</div>
 												{header.column.getCanFilter() ? (
-													<div>{/* <Filter column={header.column} table={table} /> */}</div>
-												) : null}
+													<div>
+														<ColumnFilter column={header.column} table={table} />
+													</div>												) : null}
 											</>
 										)}
 									</th>

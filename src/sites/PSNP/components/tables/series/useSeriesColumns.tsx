@@ -21,7 +21,7 @@ type KeyType = keyof Pick<
 	DbSeries,
 	'trophyCount' | 'userTrophyCount' | 'numTrophies' | 'userNumTrophies' | 'points' | 'userPoints'
 >;
-type TrophyCellSortKey<K extends KeyType = KeyType> = K extends 'trophyCount' | 'userTrophyCount'
+export type TrophyCellSortKey<K extends KeyType = KeyType> = K extends 'trophyCount' | 'userTrophyCount'
 	? [K, keyof TrophyCount]
 	: [K, null];
 export type MiscSortKey = 'userLatestTrophy' | 'bestCompleted' | 'updatedAt';
