@@ -82,7 +82,7 @@ const config = {
 			// @run-at       document-start
 			// @namespace    https://github.com/GIONAScm2/TrophyNexus
 			// @description  I love trophies, and with this script, so will you
-			// @version      1.1.0
+			// @version      1.2.0
 			// @downloadURL  https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js
 			// @updateURL    https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js	
 			// @match        https://psnprofiles.com/*
