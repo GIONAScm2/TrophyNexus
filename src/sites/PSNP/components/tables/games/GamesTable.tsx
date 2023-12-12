@@ -23,23 +23,40 @@ import {SortingIcon} from '../SortingIcon';
 import {ColumnFilter} from '../ColumnFilter';
 import {parseNum} from 'trophyutil';
 import {fractionInner} from '../../css/SeriesRow';
+import { IUserSettings } from '../../../../../shared/services/userPrefs/types';
+import { JSX } from 'preact';
 
 interface GamesTableProps {
 	allGames: DbGame[];
+	prefs: IUserSettings;
 }
 type MiscSortKey = 'latestTrophy';
 
 const col = createColumnHelper<DbGame>();
 
-export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}) => {
+export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames, prefs}) => {
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
 	const [sorting, setSorting] = useState<SortingState>([{id: 'latestTrophy', desc: false}]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => []);
 	const [trophyCellSortKey, setTrophyCellSortKey] = useState<TrophyCellSortKey>(['userNumTrophies', null]);
 	const [miscSortKey, setMiscSortKey] = useState<MiscSortKey>('latestTrophy');
+	const [radioValPlats, setRadioValPlats] = useState<null | 0 | 1>(null);
 
 	const columns = useMemo(() => {
 		return [
+			// Column to store filter function
+			col.accessor(x=> '', {
+				id: 'filterHasPlat',
+				enableHiding: true,
+				filterFn: (row, columnId, value, addMeta) => {
+					// `value` will either be `null` (all), `0` (nonplats only) or `1` (plats only)
+					if (value === null) return true;
+
+					const hasPlat = !!row.original.trophyCount?.platinum;
+					if (value === 1) return hasPlat;
+					else return !hasPlat;
+				},
+			}),
 			col.accessor('latestTrophy' satisfies MiscSortKey, {
 				enableHiding: true,
 				sortingFn: (rowA, rowB, columnId) => {
@@ -147,6 +164,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 				createdAt: false,
 				updatedAt: false,
 				latestTrophy: false,
+				filterHasPlat: false
 			},
 		},
 		state: {
@@ -162,6 +180,16 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 	});
+
+	const updatePlatRadioFilter = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => {
+		const val = JSON.parse(e.currentTarget.value) as null | 0 | 1;
+		setRadioValPlats(val);
+		setColumnFilters(prevFilters => {
+			const updated = prevFilters.filter(filter => filter.id !== 'filterHasPlat');
+			updated.push({id: 'filterHasPlat', value: val});
+			return updated;
+		});
+	};
 
 	return (
 		<div className="col-xs-8" style={{flexBasis: '100%', maxWidth: '100%'}}>
@@ -231,6 +259,84 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 							<SortingIcon column={table.getColumn(miscSortKey)} css={{height: '26px'}} />
 						</div>
 					</div>
+
+					<div class="tn-grid-col col3" id="filter-options" style={{...css.infoPanel3}}>
+							<span style={{fontSize: '20px', fontWeight: 'bold'}}>Filter Options:</span>
+							<div
+								style={{
+									display: 'grid',
+									gridTemplateRows: 'repeat(1, auto)',
+									gridTemplateColumns: 'repeat(6, min-content)',
+									columnGap: '5px',
+									fontSize: '16px',
+								}}
+							>
+								<input
+									type="radio"
+									id="all"
+									name="hasPlat"
+									value="null"
+									checked={radioValPlats === null}
+									onChange={updatePlatRadioFilter}
+								/>
+								<label for="all">All</label>
+								<input
+									type="radio"
+									id="nonplats"
+									name="hasPlat"
+									value="0"
+									checked={radioValPlats === 0}
+									onChange={updatePlatRadioFilter}
+								/>
+								<label for="nonplats">Nonplats</label>
+								<input
+									type="radio"
+									id="plats"
+									name="hasPlat"
+									value="1"
+									checked={radioValPlats === 1}
+									onChange={updatePlatRadioFilter}
+								/>
+								<label for="plats">Plats</label>
+							</div>
+							<div
+								style={{
+									display: 'grid',
+									gridTemplateRows: 'repeat(1, auto)',
+									gridTemplateColumns: 'repeat(6, min-content)',
+									columnGap: '5px',
+									fontSize: '16px',
+								}}
+							>
+								{/* <input
+									type="radio"
+									id="all"
+									name="completion"
+									value="null"
+									checked={radioValCompletion === null}
+									onChange={updateCompletionRadioFilter}
+								/>
+								<label for="all">All</label>
+								<input
+									type="radio"
+									id="incomplete"
+									name="completion"
+									value="0"
+									checked={radioValCompletion === 0}
+									onChange={updateCompletionRadioFilter}
+								/>
+								<label for="incomplete">Incomplete</label>
+								<input
+									type="radio"
+									id="completed"
+									name="completion"
+									value="1"
+									checked={radioValCompletion === 1}
+									onChange={updateCompletionRadioFilter}
+								/>
+								<label for="completed">Completed</label> */}
+							</div>
+						</div>
 				</div>
 
 				{/* END OF INFO PANEL */}

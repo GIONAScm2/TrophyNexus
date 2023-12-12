@@ -20,6 +20,6 @@ export async function initGamesCatalog(nexus: TrophyNexusPsnp) {
 
 		const root = table.closest('div.col-xs-8')?.parentElement;
 		root?.replaceChildren();
-		root && render(<GamesTable allGames={allGames} />, root);
+		root && render(<GamesTable allGames={allGames} prefs={nexus.userPrefs} />, root);
 	});
 }
