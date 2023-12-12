@@ -1,10 +1,11 @@
 import {DbGame} from '../../../models/dbGame';
+import {msToDateString} from '../../../util/dates';
 import * as css from '../../css/GameRow';
 
 interface GameRowProps {
 	game: DbGame;
 }
-
+const bullet = () => <span style={{fontSize: '1.7rem', verticalAlign: '-2px'}}> • </span>;
 export const GameRowMain: preact.FunctionComponent<GameRowProps> = ({game: g}) => {
 	return (
 		<div class="outerGrid" style={css.outerGrid}>
@@ -19,6 +20,11 @@ export const GameRowMain: preact.FunctionComponent<GameRowProps> = ({game: g}) =
 						<a class="title" href={`/trophies/${g._idAndName}`}>
 							{g.name}
 						</a>
+						{!!g.stackLabel && (
+							<>
+								{bullet()} {g.stackLabel}
+							</>
+						)}
 					</span>
 				</div>
 				<div class="platforms" style="width:100%; text-align: left">
@@ -28,6 +34,11 @@ export const GameRowMain: preact.FunctionComponent<GameRowProps> = ({game: g}) =
 						</span>
 					))}
 				</div>
+				{!!g.latestTrophy && (
+					<div class="small-info" style="margin-top: 4px">
+						{msToDateString(g.latestTrophy)}
+					</div>
+				)}
 				{/* <span class="small-info" style="margin-top: 4px;">
 					{!!g.numOwners && (
 						<>

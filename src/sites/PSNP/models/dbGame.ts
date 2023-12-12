@@ -113,7 +113,7 @@ export class DbGame extends PsnpEntity implements GameDocIDB {
 		this.userPoints = game.userPoints ?? 0;
 		this.userNumTrophies = game.userNumTrophies ?? 0;
 		this.percent = game.percent ?? 0;
-		this.latestTrophy = game.latestTrophy;
+		this.latestTrophy = game.latestTrophy ?? 0;
 		this.completionStatus = game.completionStatus;
 		this.completionSpeed = game.completionSpeed;
 		this.completionRank = game.completionRank;

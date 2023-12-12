@@ -17,25 +17,35 @@ import * as css from '../../css/SeriesTable';
 import {GameRowMain} from './GameRow';
 import {TrophyCountRow} from '../../TrophyCount';
 import {sortColumnByDate} from '../sorting';
-import { TrophyCellSortKey } from '../series/useSeriesColumns';
-import { FilterIcon } from '../FilterIcon';
-import { SortingIcon } from '../SortingIcon';
-import { ColumnFilter } from '../ColumnFilter';
+import {TrophyCellSortKey} from '../series/useSeriesColumns';
+import {FilterIcon} from '../FilterIcon';
+import {SortingIcon} from '../SortingIcon';
+import {ColumnFilter} from '../ColumnFilter';
+import {parseNum} from 'trophyutil';
+import {fractionInner} from '../../css/SeriesRow';
 
 interface GamesTableProps {
 	allGames: DbGame[];
 }
+type MiscSortKey = 'latestTrophy';
 
 const col = createColumnHelper<DbGame>();
 
 export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}) => {
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
-	const [sorting, setSorting] = useState<SortingState>([{id: 'updatedAt', desc: true}]);
+	const [sorting, setSorting] = useState<SortingState>([{id: 'latestTrophy', desc: false}]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => []);
 	const [trophyCellSortKey, setTrophyCellSortKey] = useState<TrophyCellSortKey>(['userNumTrophies', null]);
+	const [miscSortKey, setMiscSortKey] = useState<MiscSortKey>('latestTrophy');
 
 	const columns = useMemo(() => {
 		return [
+			col.accessor('latestTrophy' satisfies MiscSortKey, {
+				enableHiding: true,
+				sortingFn: (rowA, rowB, columnId) => {
+					return sortColumnByDate(sorting, rowA, rowB, columnId, x => x.original.latestTrophy ?? 0);
+				},
+			}),
 			col.accessor('createdAt', {
 				enableHiding: true,
 				header: h => 'Date Created',
@@ -123,7 +133,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 				}
 			),
 		];
-	}, [sorting, trophyCellSortKey]);
+	}, [sorting, trophyCellSortKey, miscSortKey]);
 
 	const table = useReactTable({
 		defaultColumn: {
@@ -136,6 +146,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 			columnVisibility: {
 				createdAt: false,
 				updatedAt: false,
+				latestTrophy: false,
 			},
 		},
 		state: {
@@ -162,6 +173,65 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 			<div className="p-2">
 				{/* START OF INFO PANEL */}
 				<div style={{display: 'flex'}}></div>
+				<div className="h-2 tn-grid" id="tn-info-panel" style={css.infoPanel}>
+					<div class="tn-grid-col col1" style={{...css.infoPanel1}}>
+						<div id="num-rows">
+							<select
+								name="num-rows"
+								id="num-rows-select"
+								value={numRowsToShow.toString()}
+								onChange={e => {
+									const val = e.currentTarget.value;
+									const num = parseNum(val);
+									const numRows = Number.isNaN(num) ? allGames.length : num;
+									setNumRowsToShow(numRows);
+								}}
+							>
+								{['50', '100', '250', '500', '1000', `${allGames.length}`].map(num => (
+									<option value={num}>{num}</option>
+								))}
+							</select>
+							<label for="num-rows-select"> Rows</label>
+						</div>
+						<div id="games-count">
+							<span style={{...fractionInner, marginRight: '20px'}}>
+								{table.getFilteredRowModel().rows.length}/{allGames.length}
+							</span>
+						</div>
+					</div>
+
+					<div class="tn-grid-col col2" id="sorting-presets" style={{...css.infoPanel2}}>
+						<span style={{fontSize: '20px', fontWeight: 'bold'}}>Sorting Presets:</span>
+						<div
+							style={{
+								display: 'grid',
+								gridTemplateRows: 'auto',
+								gridTemplateColumns: 'min-content auto',
+								columnGap: '3px',
+								fontSize: '16px',
+							}}
+						>
+							<select
+								value={miscSortKey}
+								onChange={e => {
+									setMiscSortKey(e.currentTarget.value as MiscSortKey);
+									setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
+								}}
+							>
+								<option key={miscSortKey} value={'latestTrophy' satisfies MiscSortKey}>
+									Date Played
+								</option>
+								{/* <option key={miscSortKey} value={'updatedAt' satisfies MiscSortKey}>
+										Date Updated
+									</option>
+									<option key={miscSortKey} value={'bestCompleted' satisfies MiscSortKey}>
+										Best Completions
+									</option> */}
+							</select>
+							<SortingIcon column={table.getColumn(miscSortKey)} css={{height: '26px'}} />
+						</div>
+					</div>
+				</div>
 
 				{/* END OF INFO PANEL */}
 
@@ -187,7 +257,8 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 												{header.column.getCanFilter() ? (
 													<div>
 														<ColumnFilter column={header.column} table={table} />
-													</div>												) : null}
+													</div>
+												) : null}
 											</>
 										)}
 									</th>
