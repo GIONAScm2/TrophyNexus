@@ -3447,9 +3447,10 @@ const dropdownLinkStyle = {
     color: 'black',
     padding: '8px 12px',
     textDecoration: 'none',
-    display: 'block',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, auto)',
 };
-function DropdownFilter({ optionsWithCounts, onOptionClick, }) {
+function DropdownFilter({ optionsWithCounts, onOptionClick, name }) {
     const [isVisible, setIsVisible] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [linkHoverIndex, setLinkHoverIndex] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
     const [selectedOptions, setSelectedOptions] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
@@ -3463,14 +3464,15 @@ function DropdownFilter({ optionsWithCounts, onOptionClick, }) {
             }
         });
     };
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "filter-control", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "dropdown", onMouseOver: () => setIsVisible(true), onMouseLeave: () => setIsVisible(false), style: dropdownStyle, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", { style: dropbtnStyle, children: ["Platforms ", selectedOptions.length > 0 && `(${selectedOptions.length})`] }), isVisible && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: dropdownContentStyle, children: optionsWithCounts.map(([option, count], index) => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("a", { href: "javascript:void(0);", onClick: () => {
-                            toggleOption(option);
-                            onOptionClick(option);
-                        }, style: {
-                            ...dropdownLinkStyle,
-                            backgroundColor: linkHoverIndex === index || selectedOptions.includes(option) ? '#ddd' : 'inherit',
-                            fontWeight: selectedOptions.includes(option) ? 'bold' : 'inherit',
-                        }, onMouseEnter: () => setLinkHoverIndex(index), onMouseLeave: () => setLinkHoverIndex(null), children: [option, (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { children: [" (", count.toLocaleString(), ")"] })] }, option))) }))] }) }));
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "filter-control", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "dropdown", onMouseOver: () => setIsVisible(true), onMouseLeave: () => setIsVisible(false), style: dropdownStyle, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", { style: dropbtnStyle, children: [name, " ", selectedOptions.length > 0 && `(${selectedOptions.length})`] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: dropdownContentStyle, children: isVisible &&
+                        optionsWithCounts.map(([option, count], index) => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("a", { href: "javascript:void(0);", onClick: () => {
+                                    toggleOption(option);
+                                    onOptionClick(option);
+                                }, style: {
+                                    ...dropdownLinkStyle,
+                                    backgroundColor: linkHoverIndex === index || selectedOptions.includes(option) ? '#ddd' : 'inherit',
+                                    fontWeight: selectedOptions.includes(option) ? 'bold' : 'inherit',
+                                }, onMouseEnter: () => setLinkHoverIndex(index), onMouseLeave: () => setLinkHoverIndex(null), children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: option }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { justifySelf: 'end' }, children: count.toLocaleString() })] }, option) }))) })] }) }));
 }
 
 
@@ -3577,9 +3579,28 @@ const GamesTable = ({ allGames, prefs }) => {
             }, platformCountMap);
         }
         return [...platformCountMap];
-    }, [includeSharedLists]);
+    }, [includeSharedLists, columnFilters]);
+    const stackCounts = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+        const map = new Map();
+        allGames.forEach(game => {
+            const key = game.stackLabel ? game.stackLabel : 'N/A';
+            const count = map.get(key) ?? 0;
+            map.set(key, count + 1);
+        });
+        return [...map].sort((a, b) => b[1] - a[1]);
+    }, [columnFilters]);
     const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
         return [
+            col.accessor(x => x.stackLabel, {
+                id: 'filterStack',
+                enableHiding: true,
+                filterFn: (row, columnId, value, addMeta) => {
+                    if (!value.length)
+                        return true;
+                    const stackLabel = row.original.stackLabel || 'N/A';
+                    return value.some(stackFilter => stackFilter === stackLabel);
+                },
+            }),
             col.accessor(x => x.platformString, {
                 id: 'filterPlatform',
                 enableHiding: true,
@@ -3683,6 +3704,7 @@ const GamesTable = ({ allGames, prefs }) => {
                 latestTrophy: false,
                 filterHasPlat: false,
                 filterPlatform: false,
+                filterStack: false,
             },
         },
         state: {
@@ -3707,6 +3729,17 @@ const GamesTable = ({ allGames, prefs }) => {
             return updated;
         });
     };
+    const updateStackFilter = (stack) => {
+        setColumnFilters(prevFilters => {
+            const prevFilteredStacks = prevFilters.find(filter => filter.id === 'filterStack')?.value ?? [];
+            const newFilteredStacks = prevFilteredStacks.includes(stack)
+                ? prevFilteredStacks.filter(p => p !== stack)
+                : [...prevFilteredStacks, stack];
+            const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterStack');
+            const platformFilter = { id: 'filterStack', value: newFilteredStacks };
+            return [...cleanFilters, platformFilter];
+        });
+    };
     const updatePlatformFilter = (platform) => {
         setColumnFilters(prevFilters => {
             const prevFilteredPlatforms = prevFilters.find(filter => filter.id === 'filterPlatform')?.value ?? [];
@@ -3718,7 +3751,7 @@ const GamesTable = ({ allGames, prefs }) => {
             return [...cleanFilters, platformFilter];
         });
     };
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, gridTemplateColumns: 'repeat(4, auto)' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
                                                         const val = e.currentTarget.value;
                                                         const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_9__.parseNum)(val);
                                                         const numRows = Number.isNaN(num) ? allGames.length : num;
@@ -3738,13 +3771,13 @@ const GamesTable = ({ allGames, prefs }) => {
                                                 gridTemplateColumns: 'repeat(6, min-content)',
                                                 columnGap: '5px',
                                                 fontSize: '16px',
-                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "hasPlat", value: "null", checked: radioValPlats === null, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "nonplats", name: "hasPlat", value: "0", checked: radioValPlats === 0, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "nonplats", children: "Nonplats" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "plats", name: "hasPlat", value: "1", checked: radioValPlats === 1, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "plats", children: "Plats" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_11__.DropdownFilter, { optionsWithCounts: platformCounts, onOptionClick: updatePlatformFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { cursor: 'pointer' }, onClick: () => setIncludeSharedLists(prev => !prev), children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "checkbox", checked: includeSharedLists, style: { cursor: 'pointer' } }), " Include shared lists"] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: {
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "hasPlat", value: "null", checked: radioValPlats === null, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "nonplats", name: "hasPlat", value: "0", checked: radioValPlats === 0, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "nonplats", children: "Nonplats" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "plats", name: "hasPlat", value: "1", checked: radioValPlats === 1, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "plats", children: "Plats" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: {
                                                 display: 'grid',
                                                 gridTemplateRows: 'repeat(1, auto)',
                                                 gridTemplateColumns: 'repeat(6, min-content)',
                                                 columnGap: '5px',
                                                 fontSize: '16px',
-                                            } })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ColumnFilter__WEBPACK_IMPORTED_MODULE_8__.ColumnFilter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
+                                            } })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col4", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2, ...{ display: 'grid', gridTemplateRows: '1fr', gridTemplateColumns: '150px auto', gap: '1rem' } }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_11__.DropdownFilter, { optionsWithCounts: platformCounts, onOptionClick: updatePlatformFilter, name: "Platforms" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { cursor: 'pointer', marginTop: '1rem' }, onClick: () => setIncludeSharedLists(prev => !prev), children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "checkbox", checked: includeSharedLists, style: { cursor: 'pointer' } }), " Include shared lists"] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_11__.DropdownFilter, { optionsWithCounts: stackCounts, onOptionClick: updateStackFilter, name: "Stack" })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ColumnFilter__WEBPACK_IMPORTED_MODULE_8__.ColumnFilter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
                                     .getRowModel()
                                     .rows.slice(0, numRowsToShow)
                                     .map(row => {

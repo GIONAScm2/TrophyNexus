@@ -21,7 +21,7 @@ import {TrophyCellSortKey} from '../series/useSeriesColumns';
 import {FilterIcon} from '../FilterIcon';
 import {SortingIcon} from '../SortingIcon';
 import {ColumnFilter} from '../ColumnFilter';
-import {PlatformTag, parseNum, sleep} from 'trophyutil';
+import {PlatformTag, StackAbbr, parseNum, sleep} from 'trophyutil';
 import {fractionInner} from '../../css/SeriesRow';
 import {IUserSettings} from '../../../../../shared/services/userPrefs/types';
 import {JSX} from 'preact';
@@ -79,10 +79,30 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 			}, platformCountMap);
 		}
 		return [...platformCountMap];
-	}, [includeSharedLists]);
+	}, [includeSharedLists, columnFilters]);
+	const stackCounts = useMemo(() => {
+		const map = new Map<string, number>();
+		allGames.forEach(game => {
+			const key = game.stackLabel ? game.stackLabel : 'N/A';
+			const count = map.get(key) ?? 0;
+			map.set(key, count + 1);
+		});
+		return [...map].sort((a,b)=> b[1] - a[1]);
+	}, [columnFilters]);
 
 	const columns = useMemo(() => {
 		return [
+			// Column to store filter function
+			col.accessor(x => x.stackLabel, {
+				id: 'filterStack',
+				enableHiding: true,
+				filterFn: (row, columnId, value: Array<StackAbbr>, addMeta) => {
+					if (!value.length) return true;
+
+					const stackLabel = row.original.stackLabel || 'N/A';
+					return value.some(stackFilter => stackFilter === stackLabel);
+				},
+			}),
 			// Column to store filter function
 			col.accessor(x => x.platformString, {
 				id: 'filterPlatform',
@@ -228,6 +248,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 				latestTrophy: false,
 				filterHasPlat: false,
 				filterPlatform: false,
+				filterStack: false,
 			},
 		},
 		state: {
@@ -254,14 +275,20 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 		});
 	};
 
+	const updateStackFilter = (stack: StackAbbr) => {
+		setColumnFilters(prevFilters => {
+			const prevFilteredStacks =
+				(prevFilters.find(filter => filter.id === 'filterStack')?.value as StackAbbr[]) ?? [];
+			const newFilteredStacks = prevFilteredStacks.includes(stack)
+				? prevFilteredStacks.filter(p => p !== stack)
+				: [...prevFilteredStacks, stack];
+			const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterStack');
+			const platformFilter = {id: 'filterStack', value: newFilteredStacks};
+			return [...cleanFilters, platformFilter];
+		});
+	};
+
 	const updatePlatformFilter = (platform: PlatformTag) => {
-		// setFilteredPlatforms(prevPlatforms => {
-		// 	console.log('prev', prevPlatforms)
-		// 	if (prevPlatforms.includes(platform)) {
-		// 		return prevPlatforms.filter(p => p !== platform);
-		// 	} else return [...prevPlatforms, platform];
-		// });
-		// console.log(filteredPlatforms);
 		setColumnFilters(prevFilters => {
 			const prevFilteredPlatforms =
 				(prevFilters.find(filter => filter.id === 'filterPlatform')?.value as PlatformTag[]) ?? [];
@@ -284,7 +311,11 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 			<div className="p-2">
 				{/* START OF INFO PANEL */}
 				<div style={{display: 'flex'}}>
-					<div className="h-2 tn-grid" id="tn-info-panel" style={css.infoPanel}>
+					<div
+						className="h-2 tn-grid"
+						id="tn-info-panel"
+						style={{...css.infoPanel, gridTemplateColumns: 'repeat(4, auto)'}}
+					>
 						<div class="tn-grid-col col1" style={{...css.infoPanel1}}>
 							<div id="num-rows">
 								<select
@@ -382,11 +413,6 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 								/>
 								<label for="plats">Plats</label>
 							</div>
-							<DropdownFilter optionsWithCounts={platformCounts} onOptionClick={updatePlatformFilter} />
-							<div style={{cursor: 'pointer'}} onClick={() => setIncludeSharedLists(prev => !prev)}>
-								<input type="checkbox" checked={includeSharedLists} style={{cursor: 'pointer'}} /> Include shared
-								lists
-							</div>
 							<div
 								style={{
 									display: 'grid',
@@ -424,6 +450,24 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 								/>
 								<label for="completed">Completed</label> */}
 							</div>
+						</div>
+
+						<div
+							class="tn-grid-col col4"
+							style={{...css.infoPanel2, ...{display: 'grid', gridTemplateRows: '1fr', gridTemplateColumns: '150px auto', gap: '1rem'}}}
+						>
+							<div>
+								<DropdownFilter
+									optionsWithCounts={platformCounts}
+									onOptionClick={updatePlatformFilter}
+									name="Platforms"
+								/>
+								<div style={{cursor: 'pointer', marginTop: '1rem'}} onClick={() => setIncludeSharedLists(prev => !prev)}>
+									<input type="checkbox" checked={includeSharedLists} style={{cursor: 'pointer'}} /> Include
+									shared lists
+								</div>
+							</div>
+							<DropdownFilter optionsWithCounts={stackCounts} onOptionClick={updateStackFilter} name="Stack" />
 						</div>
 					</div>
 				</div>

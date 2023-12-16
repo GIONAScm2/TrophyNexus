@@ -1,4 +1,5 @@
 import {useState} from 'preact/hooks';
+import {JSXInternal} from 'preact/src/jsx';
 
 // Stack
 // Completion type
@@ -10,35 +11,40 @@ const dropbtnStyle = {
 	padding: '10px',
 	fontSize: '16px',
 	border: 'none',
-};
+} satisfies JSXInternal.CSSProperties;
 
 // Since :hover and :focus are pseudo-classes, you'll need to handle these dynamically in your component logic
 
 const dropdownStyle = {
 	position: 'relative',
 	display: 'inline-block',
-};
+} satisfies JSXInternal.CSSProperties;
 
 const dropdownContentStyle = {
 	position: 'absolute',
 	backgroundColor: '#f1f1f1',
 	minWidth: '160px',
 	boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-};
+	// display: 'grid',
+	// gridTemplateColumns: 'repeat(2, min-content)',
+} satisfies JSXInternal.CSSProperties;
 
 const dropdownLinkStyle = {
 	color: 'black',
 	padding: '8px 12px',
 	textDecoration: 'none',
-	display: 'block',
-};
+	display: 'grid',
+  gridTemplateColumns: 'repeat(2, auto)',
+} satisfies JSXInternal.CSSProperties;
 
 export function DropdownFilter({
 	optionsWithCounts,
 	onOptionClick,
+  name
 }: {
 	optionsWithCounts: Array<[string, number]>;
 	onOptionClick: (x: any) => any;
+  name:string
 }) {
 	const [isVisible, setIsVisible] = useState(false);
 	const [linkHoverIndex, setLinkHoverIndex] = useState<number | null>(null);
@@ -62,32 +68,35 @@ export function DropdownFilter({
 				onMouseLeave={() => setIsVisible(false)}
 				style={dropdownStyle}
 			>
-				<button style={dropbtnStyle}>Platforms {selectedOptions.length > 0 && `(${selectedOptions.length})`}</button>
-				{isVisible && (
+				<button style={dropbtnStyle}>{name} {selectedOptions.length > 0 && `(${selectedOptions.length})`}</button>
+				{
 					<div style={dropdownContentStyle}>
-						{optionsWithCounts.map(([option, count], index) => (
-							<a
-								key={option}
-								href="javascript:void(0);"
-								onClick={() => {
-									toggleOption(option);
-									onOptionClick(option);
-								}}
-								style={{
-									...dropdownLinkStyle,
-									backgroundColor:
-										linkHoverIndex === index || selectedOptions.includes(option) ? '#ddd' : 'inherit',
-									fontWeight: selectedOptions.includes(option) ? 'bold' : 'inherit',
-								}}
-								onMouseEnter={() => setLinkHoverIndex(index)}
-								onMouseLeave={() => setLinkHoverIndex(null)}
-							>
-								{option}
-								<span> ({count.toLocaleString()})</span>
-							</a>
-						))}
+						{isVisible &&
+							optionsWithCounts.map(([option, count], index) => (
+								<>
+									<a
+										key={option}
+										href="javascript:void(0);"
+										onClick={() => {
+											toggleOption(option);
+											onOptionClick(option);
+										}}
+										style={{
+											...dropdownLinkStyle,
+											backgroundColor:
+												linkHoverIndex === index || selectedOptions.includes(option) ? '#ddd' : 'inherit',
+											fontWeight: selectedOptions.includes(option) ? 'bold' : 'inherit',
+										}}
+										onMouseEnter={() => setLinkHoverIndex(index)}
+										onMouseLeave={() => setLinkHoverIndex(null)}
+									>
+                    <div>{option}</div>
+                    <div style={{justifySelf: 'end'}}>{count.toLocaleString()}</div>
+									</a>
+								</>
+							))}
 					</div>
-				)}
+				}
 			</div>
 		</div>
 	);
