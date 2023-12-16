@@ -3414,6 +3414,68 @@ const SortingIcon = ({ column, css = {} }) => {
 
 /***/ }),
 
+/***/ "./src/sites/PSNP/components/tables/games/DropdownFilter.tsx":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DropdownFilter: () => (/* binding */ DropdownFilter)
+/* harmony export */ });
+/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
+/* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
+
+
+const dropbtnStyle = {
+    backgroundColor: '#3498DB',
+    color: 'white',
+    padding: '10px',
+    fontSize: '16px',
+    border: 'none',
+};
+const dropdownStyle = {
+    position: 'relative',
+    display: 'inline-block',
+};
+const dropdownContentStyle = {
+    position: 'absolute',
+    backgroundColor: '#f1f1f1',
+    minWidth: '160px',
+    boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+};
+const dropdownLinkStyle = {
+    color: 'black',
+    padding: '8px 12px',
+    textDecoration: 'none',
+    display: 'block',
+};
+function DropdownFilter({ optionsWithCounts, onOptionClick, }) {
+    const [isVisible, setIsVisible] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const [linkHoverIndex, setLinkHoverIndex] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+    const [selectedOptions, setSelectedOptions] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+    const toggleOption = (option) => {
+        setSelectedOptions(prevSelectedOptions => {
+            if (prevSelectedOptions.includes(option)) {
+                return prevSelectedOptions.filter(selectedOption => selectedOption !== option);
+            }
+            else {
+                return [...prevSelectedOptions, option];
+            }
+        });
+    };
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "filter-control", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "dropdown", onMouseOver: () => setIsVisible(true), onMouseLeave: () => setIsVisible(false), style: dropdownStyle, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", { style: dropbtnStyle, children: ["Platforms ", selectedOptions.length > 0 && `(${selectedOptions.length})`] }), isVisible && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: dropdownContentStyle, children: optionsWithCounts.map(([option, count], index) => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("a", { href: "javascript:void(0);", onClick: () => {
+                            toggleOption(option);
+                            onOptionClick(option);
+                        }, style: {
+                            ...dropdownLinkStyle,
+                            backgroundColor: linkHoverIndex === index || selectedOptions.includes(option) ? '#ddd' : 'inherit',
+                            fontWeight: selectedOptions.includes(option) ? 'bold' : 'inherit',
+                        }, onMouseEnter: () => setLinkHoverIndex(index), onMouseLeave: () => setLinkHoverIndex(null), children: [option, (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { children: [" (", count.toLocaleString(), ")"] })] }, option))) }))] }) }));
+}
+
+
+/***/ }),
+
 /***/ "./src/sites/PSNP/components/tables/games/GameRow.tsx":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -3446,8 +3508,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
 /* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
 /* harmony import */ var _GameRow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/tables/games/GameRow.tsx");
 /* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
@@ -3457,6 +3519,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ColumnFilter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/sites/PSNP/components/tables/ColumnFilter.tsx");
 /* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
 /* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
+/* harmony import */ var _DropdownFilter__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/sites/PSNP/components/tables/games/DropdownFilter.tsx");
 
 
 
@@ -3469,7 +3532,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__.createColumnHelper)();
+
+const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.createColumnHelper)();
 const GamesTable = ({ allGames, prefs }) => {
     const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(50);
     const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([{ id: 'latestTrophy', desc: false }]);
@@ -3477,8 +3541,62 @@ const GamesTable = ({ allGames, prefs }) => {
     const [trophyCellSortKey, setTrophyCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(['userNumTrophies', null]);
     const [miscSortKey, setMiscSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)('latestTrophy');
     const [radioValPlats, setRadioValPlats] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+    const [includeSharedLists, setIncludeSharedLists] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+    const platformCounts = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+        const mutualTags = [
+            ['PS3', 0],
+            ['PS4', 0],
+            ['PS5', 0],
+            ['Vita', 0],
+        ];
+        if (includeSharedLists)
+            mutualTags.push(['VR', 0]);
+        else
+            mutualTags.push(['PSVR1', 0], ['PSVR2', 0]);
+        const platformCountMap = new Map(mutualTags);
+        if (includeSharedLists) {
+            allGames.reduce((map, game) => {
+                game.platforms.forEach(platform => {
+                    const count = map.get(platform);
+                    if (typeof count === 'number') {
+                        map.set(platform, count + 1);
+                    }
+                });
+                return map;
+            }, platformCountMap);
+        }
+        else {
+            allGames.reduce((map, game) => {
+                if (!game.platformString.includes('/')) {
+                    const count = map.get(game.platformString);
+                    if (typeof count === 'number') {
+                        map.set(game.platformString, count + 1);
+                    }
+                }
+                return map;
+            }, platformCountMap);
+        }
+        return [...platformCountMap];
+    }, [includeSharedLists]);
     const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
         return [
+            col.accessor(x => x.platformString, {
+                id: 'filterPlatform',
+                enableHiding: true,
+                filterFn: (row, columnId, value, addMeta) => {
+                    if (!value.length)
+                        return true;
+                    const platforms = row.original.platforms;
+                    const filterContainsAPlatformTag = value.some(filteredPlatform => platforms.includes(filteredPlatform));
+                    const filterContainsPlatformString = value.some(filteredPlatform => row.original.platformString === filteredPlatform);
+                    if (!filterContainsAPlatformTag && !filterContainsPlatformString)
+                        return false;
+                    else if (!includeSharedLists)
+                        return platforms.length === 1 || (platforms.includes('VR') && value.some(filteredTag => filteredTag.includes('VR')));
+                    else
+                        return true;
+                },
+            }),
             col.accessor(x => '', {
                 id: 'filterHasPlat',
                 enableHiding: true,
@@ -3525,7 +3643,7 @@ const GamesTable = ({ allGames, prefs }) => {
                 if (typeof val1 === 'number')
                     return val1;
                 else
-                    return val1[trophyCellSortKey[1]];
+                    return val1?.[trophyCellSortKey[1]];
             }, {
                 id: `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`,
                 size: 250,
@@ -3549,8 +3667,8 @@ const GamesTable = ({ allGames, prefs }) => {
                 },
             }),
         ];
-    }, [sorting, trophyCellSortKey, miscSortKey]);
-    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.useReactTable)({
+    }, [sorting, trophyCellSortKey, miscSortKey, includeSharedLists]);
+    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.useReactTable)({
         defaultColumn: {
             minSize: 0,
             size: 0,
@@ -3562,7 +3680,8 @@ const GamesTable = ({ allGames, prefs }) => {
                 createdAt: false,
                 updatedAt: false,
                 latestTrophy: false,
-                filterHasPlat: false
+                filterHasPlat: false,
+                filterPlatform: false,
             },
         },
         state: {
@@ -3570,13 +3689,13 @@ const GamesTable = ({ allGames, prefs }) => {
             columnFilters,
         },
         onColumnFiltersChange: setColumnFilters,
-        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__.getFilteredRowModel)(),
-        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__.getFacetedRowModel)(),
-        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__.getFacetedUniqueValues)(),
-        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__.getFacetedMinMaxValues)(),
+        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFilteredRowModel)(),
+        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFacetedRowModel)(),
+        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFacetedUniqueValues)(),
+        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFacetedMinMaxValues)(),
         onSortingChange: setSorting,
-        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__.getCoreRowModel)(),
-        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_11__.getSortedRowModel)(),
+        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getCoreRowModel)(),
+        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getSortedRowModel)(),
     });
     const updatePlatRadioFilter = (e) => {
         const val = JSON.parse(e.currentTarget.value);
@@ -3587,33 +3706,53 @@ const GamesTable = ({ allGames, prefs }) => {
             return updated;
         });
     };
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
-                                                    const val = e.currentTarget.value;
-                                                    const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_9__.parseNum)(val);
-                                                    const numRows = Number.isNaN(num) ? allGames.length : num;
-                                                    setNumRowsToShow(numRows);
-                                                }, children: ['50', '100', '250', '500', '1000', `${allGames.length}`].map(num => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: num, children: num }))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "num-rows-select", children: " Rows" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { id: "games-count", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_10__.fractionInner, marginRight: '20px' }, children: [table.getFilteredRowModel().rows.length, "/", allGames.length] }) })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col2", id: "sorting-presets", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Sorting Presets:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
-                                            display: 'grid',
-                                            gridTemplateRows: 'auto',
-                                            gridTemplateColumns: 'min-content auto',
-                                            columnGap: '3px',
-                                            fontSize: '16px',
-                                        }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { value: miscSortKey, onChange: e => {
-                                                    setMiscSortKey(e.currentTarget.value);
-                                                    setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
-                                                }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'latestTrophy', children: "Date Played" }, miscSortKey) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_7__.SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
-                                            display: 'grid',
-                                            gridTemplateRows: 'repeat(1, auto)',
-                                            gridTemplateColumns: 'repeat(6, min-content)',
-                                            columnGap: '5px',
-                                            fontSize: '16px',
-                                        }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "hasPlat", value: "null", checked: radioValPlats === null, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "nonplats", name: "hasPlat", value: "0", checked: radioValPlats === 0, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "nonplats", children: "Nonplats" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "plats", name: "hasPlat", value: "1", checked: radioValPlats === 1, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "plats", children: "Plats" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: {
-                                            display: 'grid',
-                                            gridTemplateRows: 'repeat(1, auto)',
-                                            gridTemplateColumns: 'repeat(6, min-content)',
-                                            columnGap: '5px',
-                                            fontSize: '16px',
-                                        } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ColumnFilter__WEBPACK_IMPORTED_MODULE_8__.ColumnFilter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
+    const updatePlatformFilter = (platform) => {
+        setColumnFilters(prevFilters => {
+            const prevFilteredPlatforms = prevFilters.find(filter => filter.id === 'filterPlatform')?.value ?? [];
+            const newFilteredPlatforms = prevFilteredPlatforms.includes(platform)
+                ? prevFilteredPlatforms.filter(p => p !== platform)
+                : [...prevFilteredPlatforms, platform];
+            const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterPlatform');
+            const platformFilter = { id: 'filterPlatform', value: newFilteredPlatforms };
+            return [...cleanFilters, platformFilter];
+        });
+    };
+    const platformsWithCounts = table.getCoreRowModel().flatRows.reduce((map, row) => {
+        const platform = row.original.platformString;
+        const count = map.get(platform);
+        if (!count)
+            map.set(platform, 1);
+        else
+            map.set(platform, count + 1);
+        return map;
+    }, new Map());
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
+                                                        const val = e.currentTarget.value;
+                                                        const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_9__.parseNum)(val);
+                                                        const numRows = Number.isNaN(num) ? allGames.length : num;
+                                                        setNumRowsToShow(numRows);
+                                                    }, children: ['50', '100', '250', '500', '1000', `${allGames.length}`].map(num => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: num, children: num }))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "num-rows-select", children: " Rows" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { id: "games-count", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_10__.fractionInner, marginRight: '20px' }, children: [table.getFilteredRowModel().rows.length, "/", allGames.length] }) })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col2", id: "sorting-presets", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Sorting Presets:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                                                display: 'grid',
+                                                gridTemplateRows: 'auto',
+                                                gridTemplateColumns: 'min-content auto',
+                                                columnGap: '3px',
+                                                fontSize: '16px',
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { value: miscSortKey, onChange: e => {
+                                                        setMiscSortKey(e.currentTarget.value);
+                                                        setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
+                                                    }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'latestTrophy', children: "Date Played" }, miscSortKey) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_7__.SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                                                display: 'grid',
+                                                gridTemplateRows: 'repeat(1, auto)',
+                                                gridTemplateColumns: 'repeat(6, min-content)',
+                                                columnGap: '5px',
+                                                fontSize: '16px',
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "hasPlat", value: "null", checked: radioValPlats === null, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "nonplats", name: "hasPlat", value: "0", checked: radioValPlats === 0, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "nonplats", children: "Nonplats" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "plats", name: "hasPlat", value: "1", checked: radioValPlats === 1, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "plats", children: "Plats" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_11__.DropdownFilter, { optionsWithCounts: platformCounts, onOptionClick: updatePlatformFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { cursor: 'pointer' }, onClick: () => setIncludeSharedLists(prev => !prev), children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "checkbox", checked: includeSharedLists, style: { cursor: 'pointer' } }), " Include shared lists"] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: {
+                                                display: 'grid',
+                                                gridTemplateRows: 'repeat(1, auto)',
+                                                gridTemplateColumns: 'repeat(6, min-content)',
+                                                columnGap: '5px',
+                                                fontSize: '16px',
+                                            } })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ColumnFilter__WEBPACK_IMPORTED_MODULE_8__.ColumnFilter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
                                     .getRowModel()
                                     .rows.slice(0, numRowsToShow)
                                     .map(row => {
@@ -3622,7 +3761,7 @@ const GamesTable = ({ allGames, prefs }) => {
                                                     ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.td,
                                                     padding: 0,
                                                     width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
-                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
+                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
                                         }) }, row.id));
                                 }) })] })] })] }));
 };
@@ -4036,6 +4175,16 @@ class DbGame extends trophyutil__WEBPACK_IMPORTED_MODULE_0__.PsnpEntity {
             return 'Completed';
         else
             return 'Platinum';
+    }
+    get platformString() {
+        const platforms = this.platforms;
+        if (platforms.length === 1)
+            return platforms[0];
+        else if (platforms.length === 2 && platforms.includes('VR')) {
+            return platforms.includes('PS4') ? 'PSVR1' : 'PSVR2';
+        }
+        else
+            return platforms.join('/');
     }
     constructor(game) {
         super(game);

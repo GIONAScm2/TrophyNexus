@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'preact/hooks';
+import {useMemo, useRef, useState} from 'preact/hooks';
 import {DbGame} from '../../../models/dbGame';
 import {
 	ColumnFiltersState,
@@ -21,10 +21,11 @@ import {TrophyCellSortKey} from '../series/useSeriesColumns';
 import {FilterIcon} from '../FilterIcon';
 import {SortingIcon} from '../SortingIcon';
 import {ColumnFilter} from '../ColumnFilter';
-import {parseNum} from 'trophyutil';
+import {PlatformTag, parseNum, sleep} from 'trophyutil';
 import {fractionInner} from '../../css/SeriesRow';
-import { IUserSettings } from '../../../../../shared/services/userPrefs/types';
-import { JSX } from 'preact';
+import {IUserSettings} from '../../../../../shared/services/userPrefs/types';
+import {JSX} from 'preact';
+import {DropdownFilter} from './DropdownFilter';
 
 interface GamesTableProps {
 	allGames: DbGame[];
@@ -41,15 +42,72 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 	const [trophyCellSortKey, setTrophyCellSortKey] = useState<TrophyCellSortKey>(['userNumTrophies', null]);
 	const [miscSortKey, setMiscSortKey] = useState<MiscSortKey>('latestTrophy');
 	const [radioValPlats, setRadioValPlats] = useState<null | 0 | 1>(null);
+	const [includeSharedLists, setIncludeSharedLists] = useState(true);
+	const platformCounts = useMemo(() => {
+		const mutualTags: Array<[string, number]> = [
+			['PS3', 0],
+			['PS4', 0],
+			['PS5', 0],
+			['Vita', 0],
+		];
+		if (includeSharedLists) mutualTags.push(['VR', 0]);
+		else mutualTags.push(['PSVR1', 0], ['PSVR2', 0]);
+
+		const platformCountMap = new Map(mutualTags);
+
+		// With shared lists enabled, multiple platform tags put a game in multiple filter options.
+		if (includeSharedLists) {
+			allGames.reduce((map, game) => {
+				game.platforms.forEach(platform => {
+					const count = map.get(platform);
+					if (typeof count === 'number') {
+						map.set(platform, count + 1);
+					}
+				});
+				return map;
+			}, platformCountMap);
+		} // With shared lists disabled, each game is attributed to only a single platform option.
+		else {
+			allGames.reduce((map, game) => {
+				if (!game.platformString.includes('/')) {
+					const count = map.get(game.platformString);
+					if (typeof count === 'number') {
+						map.set(game.platformString, count + 1);
+					}
+				}
+				return map;
+			}, platformCountMap);
+		}
+		return [...platformCountMap];
+	}, [includeSharedLists]);
 
 	const columns = useMemo(() => {
 		return [
 			// Column to store filter function
-			col.accessor(x=> '', {
+			col.accessor(x => x.platformString, {
+				id: 'filterPlatform',
+				enableHiding: true,
+				filterFn: (row, columnId, value: PlatformTag[] | (Omit<PlatformTag, 'VR'> | 'PSVR1' | 'PSVR2')[], addMeta) => {
+					if (!value.length) return true;
+
+					const platforms = row.original.platforms;
+					const filterContainsAPlatformTag = value.some(filteredPlatform =>
+						platforms.includes(filteredPlatform as string)
+					);
+					const filterContainsPlatformString = value.some(
+						filteredPlatform => row.original.platformString === filteredPlatform
+					);
+
+					if (!filterContainsAPlatformTag && !filterContainsPlatformString) return false;
+					else if (!includeSharedLists) return platforms.length === 1 || (platforms.includes('VR') && value.some(filteredTag=> filteredTag.includes('VR')));
+					else return true;
+				},
+			}),
+			// Column to store filter function
+			col.accessor(x => '', {
 				id: 'filterHasPlat',
 				enableHiding: true,
-				filterFn: (row, columnId, value, addMeta) => {
-					// `value` will either be `null` (all), `0` (nonplats only) or `1` (plats only)
+				filterFn: (row, columnId, value: typeof radioValPlats, addMeta) => {
 					if (value === null) return true;
 
 					const hasPlat = !!row.original.trophyCount?.platinum;
@@ -95,7 +153,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 				row => {
 					const val1 = row[trophyCellSortKey[0]];
 					if (typeof val1 === 'number') return val1;
-					else return val1[trophyCellSortKey[1]!];
+					else return val1?.[trophyCellSortKey[1]!];
 				},
 				{
 					id: `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`,
@@ -143,14 +201,14 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 
 						if (key1 === 'trophyCount' || key1 === 'userTrophyCount') {
 							const key2 = trophyCellSortKey[1];
-							comparisonValue = rowA.original[key1][key2] - rowB.original[key1][key2];
-						} else comparisonValue = rowA.original[key1] - rowB.original[key1];
+							comparisonValue = rowA.original[key1]![key2] - rowB.original[key1]![key2];
+						} else comparisonValue = rowA.original[key1]! - rowB.original[key1]!;
 						return comparisonValue;
 					},
 				}
 			),
 		];
-	}, [sorting, trophyCellSortKey, miscSortKey]);
+	}, [sorting, trophyCellSortKey, miscSortKey, includeSharedLists]);
 
 	const table = useReactTable({
 		defaultColumn: {
@@ -164,7 +222,8 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 				createdAt: false,
 				updatedAt: false,
 				latestTrophy: false,
-				filterHasPlat: false
+				filterHasPlat: false,
+				filterPlatform: false,
 			},
 		},
 		state: {
@@ -191,6 +250,34 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 		});
 	};
 
+	const updatePlatformFilter = (platform: PlatformTag) => {
+		// setFilteredPlatforms(prevPlatforms => {
+		// 	console.log('prev', prevPlatforms)
+		// 	if (prevPlatforms.includes(platform)) {
+		// 		return prevPlatforms.filter(p => p !== platform);
+		// 	} else return [...prevPlatforms, platform];
+		// });
+		// console.log(filteredPlatforms);
+		setColumnFilters(prevFilters => {
+			const prevFilteredPlatforms =
+				(prevFilters.find(filter => filter.id === 'filterPlatform')?.value as PlatformTag[]) ?? [];
+			const newFilteredPlatforms = prevFilteredPlatforms.includes(platform)
+				? prevFilteredPlatforms.filter(p => p !== platform)
+				: [...prevFilteredPlatforms, platform];
+			const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterPlatform');
+			const platformFilter = {id: 'filterPlatform', value: newFilteredPlatforms};
+			return [...cleanFilters, platformFilter];
+		});
+	};
+
+	const platformsWithCounts = table.getCoreRowModel().flatRows.reduce((map: Map<string, number>, row) => {
+		const platform = row.original.platformString;
+		const count = map.get(platform);
+		if (!count) map.set(platform, 1);
+		else map.set(platform, count + 1);
+		return map;
+	}, new Map());
+
 	return (
 		<div className="col-xs-8" style={{flexBasis: '100%', maxWidth: '100%'}}>
 			<div className="title flex v-align">
@@ -200,67 +287,67 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 			</div>
 			<div className="p-2">
 				{/* START OF INFO PANEL */}
-				<div style={{display: 'flex'}}></div>
-				<div className="h-2 tn-grid" id="tn-info-panel" style={css.infoPanel}>
-					<div class="tn-grid-col col1" style={{...css.infoPanel1}}>
-						<div id="num-rows">
-							<select
-								name="num-rows"
-								id="num-rows-select"
-								value={numRowsToShow.toString()}
-								onChange={e => {
-									const val = e.currentTarget.value;
-									const num = parseNum(val);
-									const numRows = Number.isNaN(num) ? allGames.length : num;
-									setNumRowsToShow(numRows);
-								}}
-							>
-								{['50', '100', '250', '500', '1000', `${allGames.length}`].map(num => (
-									<option value={num}>{num}</option>
-								))}
-							</select>
-							<label for="num-rows-select"> Rows</label>
+				<div style={{display: 'flex'}}>
+					<div className="h-2 tn-grid" id="tn-info-panel" style={css.infoPanel}>
+						<div class="tn-grid-col col1" style={{...css.infoPanel1}}>
+							<div id="num-rows">
+								<select
+									name="num-rows"
+									id="num-rows-select"
+									value={numRowsToShow.toString()}
+									onChange={e => {
+										const val = e.currentTarget.value;
+										const num = parseNum(val);
+										const numRows = Number.isNaN(num) ? allGames.length : num;
+										setNumRowsToShow(numRows);
+									}}
+								>
+									{['50', '100', '250', '500', '1000', `${allGames.length}`].map(num => (
+										<option value={num}>{num}</option>
+									))}
+								</select>
+								<label for="num-rows-select"> Rows</label>
+							</div>
+							<div id="games-count">
+								<span style={{...fractionInner, marginRight: '20px'}}>
+									{table.getFilteredRowModel().rows.length}/{allGames.length}
+								</span>
+							</div>
 						</div>
-						<div id="games-count">
-							<span style={{...fractionInner, marginRight: '20px'}}>
-								{table.getFilteredRowModel().rows.length}/{allGames.length}
-							</span>
-						</div>
-					</div>
 
-					<div class="tn-grid-col col2" id="sorting-presets" style={{...css.infoPanel2}}>
-						<span style={{fontSize: '20px', fontWeight: 'bold'}}>Sorting Presets:</span>
-						<div
-							style={{
-								display: 'grid',
-								gridTemplateRows: 'auto',
-								gridTemplateColumns: 'min-content auto',
-								columnGap: '3px',
-								fontSize: '16px',
-							}}
-						>
-							<select
-								value={miscSortKey}
-								onChange={e => {
-									setMiscSortKey(e.currentTarget.value as MiscSortKey);
-									setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
+						<div class="tn-grid-col col2" id="sorting-presets" style={{...css.infoPanel2}}>
+							<span style={{fontSize: '20px', fontWeight: 'bold'}}>Sorting Presets:</span>
+							<div
+								style={{
+									display: 'grid',
+									gridTemplateRows: 'auto',
+									gridTemplateColumns: 'min-content auto',
+									columnGap: '3px',
+									fontSize: '16px',
 								}}
 							>
-								<option key={miscSortKey} value={'latestTrophy' satisfies MiscSortKey}>
-									Date Played
-								</option>
-								{/* <option key={miscSortKey} value={'updatedAt' satisfies MiscSortKey}>
+								<select
+									value={miscSortKey}
+									onChange={e => {
+										setMiscSortKey(e.currentTarget.value as MiscSortKey);
+										setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
+									}}
+								>
+									<option key={miscSortKey} value={'latestTrophy' satisfies MiscSortKey}>
+										Date Played
+									</option>
+									{/* <option key={miscSortKey} value={'updatedAt' satisfies MiscSortKey}>
 										Date Updated
 									</option>
 									<option key={miscSortKey} value={'bestCompleted' satisfies MiscSortKey}>
 										Best Completions
 									</option> */}
-							</select>
-							<SortingIcon column={table.getColumn(miscSortKey)} css={{height: '26px'}} />
+								</select>
+								<SortingIcon column={table.getColumn(miscSortKey)} css={{height: '26px'}} />
+							</div>
 						</div>
-					</div>
 
-					<div class="tn-grid-col col3" id="filter-options" style={{...css.infoPanel3}}>
+						<div class="tn-grid-col col3" id="filter-options" style={{...css.infoPanel3}}>
 							<span style={{fontSize: '20px', fontWeight: 'bold'}}>Filter Options:</span>
 							<div
 								style={{
@@ -298,6 +385,11 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 									onChange={updatePlatRadioFilter}
 								/>
 								<label for="plats">Plats</label>
+							</div>
+							<DropdownFilter optionsWithCounts={platformCounts} onOptionClick={updatePlatformFilter} />
+							<div style={{cursor: 'pointer'}} onClick={() => setIncludeSharedLists(prev => !prev)}>
+								<input type="checkbox" checked={includeSharedLists} style={{cursor: 'pointer'}} /> Include shared
+								lists
 							</div>
 							<div
 								style={{
@@ -337,6 +429,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 								<label for="completed">Completed</label> */}
 							</div>
 						</div>
+					</div>
 				</div>
 
 				{/* END OF INFO PANEL */}

@@ -54,11 +54,11 @@ export class DbGame extends PsnpEntity implements GameDocIDB {
 	completionRank?: string | undefined;
 	latestTrophy?: number | undefined;
 	trophyCount?: TrophyCount | undefined;
-	userTrophyCount?: TrophyCount | undefined;
+	userTrophyCount: TrophyCount;
 	points?: number | undefined;
-	userPoints?: number | undefined;
+	userPoints: number;
 	numTrophies?: number | undefined;
-	userNumTrophies?: number | undefined;
+	userNumTrophies: number;
 	createdAt: string;
 	updatedAt: string;
 	forumId?: number | null | undefined;
@@ -90,6 +90,13 @@ export class DbGame extends PsnpEntity implements GameDocIDB {
 		if (!this.completionStatus) return null;
 		else if (this.completionStatus === 'completed' || (this.rarityDlc && this.percent === 100)) return 'Completed';
 		else return 'Platinum';
+	}
+	get platformString():string {
+		const platforms = this.platforms;
+		if (platforms.length === 1) return platforms[0]!;
+		else if (platforms.length === 2 && platforms.includes('VR')) {
+			return platforms.includes('PS4') ? 'PSVR1' : 'PSVR2';
+		} else return platforms.join('/');
 	}
 
 	constructor(game: GameDocIDB) {

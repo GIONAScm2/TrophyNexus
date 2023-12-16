@@ -124,6 +124,7 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 								</span>
 							</div>
 						</div>
+
 						<div class="tn-grid-col col2" id="sorting-presets" style={{...css.infoPanel2}}>
 							<span style={{fontSize: '20px', fontWeight: 'bold'}}>Sorting Presets:</span>
 							<div
@@ -155,6 +156,7 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 								<SortingIcon column={table.getColumn(miscSortKey)} css={{height: '26px'}} />
 							</div>
 						</div>
+						
 						<div class="tn-grid-col col3" id="filter-options" style={{...css.infoPanel3}}>
 							<span style={{fontSize: '20px', fontWeight: 'bold'}}>Filter Options:</span>
 							<div
