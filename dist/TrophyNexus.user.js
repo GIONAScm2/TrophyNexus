@@ -3592,7 +3592,8 @@ const GamesTable = ({ allGames, prefs }) => {
                     if (!filterContainsAPlatformTag && !filterContainsPlatformString)
                         return false;
                     else if (!includeSharedLists)
-                        return platforms.length === 1 || (platforms.includes('VR') && value.some(filteredTag => filteredTag.includes('VR')));
+                        return (platforms.length === 1 ||
+                            (platforms.includes('VR') && value.some(filteredTag => filteredTag.includes('VR'))));
                     else
                         return true;
                 },
@@ -3717,15 +3718,6 @@ const GamesTable = ({ allGames, prefs }) => {
             return [...cleanFilters, platformFilter];
         });
     };
-    const platformsWithCounts = table.getCoreRowModel().flatRows.reduce((map, row) => {
-        const platform = row.original.platformString;
-        const count = map.get(platform);
-        if (!count)
-            map.set(platform, 1);
-        else
-            map.set(platform, count + 1);
-        return map;
-    }, new Map());
     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
                                                         const val = e.currentTarget.value;
                                                         const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_9__.parseNum)(val);

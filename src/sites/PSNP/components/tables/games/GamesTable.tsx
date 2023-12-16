@@ -99,7 +99,11 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 					);
 
 					if (!filterContainsAPlatformTag && !filterContainsPlatformString) return false;
-					else if (!includeSharedLists) return platforms.length === 1 || (platforms.includes('VR') && value.some(filteredTag=> filteredTag.includes('VR')));
+					else if (!includeSharedLists)
+						return (
+							platforms.length === 1 ||
+							(platforms.includes('VR') && value.some(filteredTag => filteredTag.includes('VR')))
+						);
 					else return true;
 				},
 			}),
@@ -269,14 +273,6 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames,
 			return [...cleanFilters, platformFilter];
 		});
 	};
-
-	const platformsWithCounts = table.getCoreRowModel().flatRows.reduce((map: Map<string, number>, row) => {
-		const platform = row.original.platformString;
-		const count = map.get(platform);
-		if (!count) map.set(platform, 1);
-		else map.set(platform, count + 1);
-		return map;
-	}, new Map());
 
 	return (
 		<div className="col-xs-8" style={{flexBasis: '100%', maxWidth: '100%'}}>
