@@ -11,6 +11,7 @@ const dropbtnStyle = {
 	padding: '10px',
 	fontSize: '16px',
 	border: 'none',
+  minWidth: '120px',
 } satisfies JSXInternal.CSSProperties;
 
 // Since :hover and :focus are pseudo-classes, you'll need to handle these dynamically in your component logic
@@ -23,7 +24,7 @@ const dropdownStyle = {
 const dropdownContentStyle = {
 	position: 'absolute',
 	backgroundColor: '#f1f1f1',
-	minWidth: '160px',
+	minWidth: '120px',
 	boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
 	// display: 'grid',
 	// gridTemplateColumns: 'repeat(2, min-content)',
