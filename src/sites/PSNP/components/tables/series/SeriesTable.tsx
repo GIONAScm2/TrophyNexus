@@ -1,10 +1,8 @@
 import {DbSeries} from '../../../models/dbSeries';
 import * as css from '../../css/SeriesTable';
 import {
-	Column,
 	ColumnFiltersState,
 	SortingState,
-	Table,
 	flexRender,
 	getCoreRowModel,
 	getFacetedMinMaxValues,
@@ -14,7 +12,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-import {useEffect, useState} from 'preact/hooks';
+import {useState} from 'preact/hooks';
 import {parseNum} from 'trophyutil';
 import {JSX} from 'preact';
 import {IUserSettings} from '../../../../../shared/services/userPrefs/types';

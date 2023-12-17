@@ -259,43 +259,6 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 								/>
 								<label for="plats">Plats</label>
 							</div>
-							<div
-								style={{
-									display: 'grid',
-									gridTemplateRows: 'repeat(1, auto)',
-									gridTemplateColumns: 'repeat(6, min-content)',
-									columnGap: '5px',
-									fontSize: '16px',
-								}}
-							>
-								{/* <input
-									type="radio"
-									id="all"
-									name="completion"
-									value="null"
-									checked={radioValCompletion === null}
-									onChange={updateCompletionRadioFilter}
-								/>
-								<label for="all">All</label>
-								<input
-									type="radio"
-									id="incomplete"
-									name="completion"
-									value="0"
-									checked={radioValCompletion === 0}
-									onChange={updateCompletionRadioFilter}
-								/>
-								<label for="incomplete">Incomplete</label>
-								<input
-									type="radio"
-									id="completed"
-									name="completion"
-									value="1"
-									checked={radioValCompletion === 1}
-									onChange={updateCompletionRadioFilter}
-								/>
-								<label for="completed">Completed</label> */}
-							</div>
 						</div>
 
 						<div
