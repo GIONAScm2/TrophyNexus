@@ -27,7 +27,7 @@ interface GamesTableProps {
 	prefs: IUserSettings;
 }
 
-export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames, prefs}) => {
+export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}) => {
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
 	const [sorting, setSorting] = useState<SortingState>([{id: 'latestTrophy', desc: false}]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => []);

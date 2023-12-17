@@ -3530,7 +3530,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const GamesTable = ({ allGames, prefs }) => {
+const GamesTable = ({ allGames }) => {
     const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(50);
     const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([{ id: 'latestTrophy', desc: false }]);
     const [columnFilters, setColumnFilters] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(() => []);
@@ -3722,7 +3722,7 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
             col.accessor(x => x.stackLabel, {
                 id: 'filterStack',
                 enableHiding: true,
-                filterFn: (row, columnId, value, addMeta) => {
+                filterFn: (row, _columnId, value, _addMeta) => {
                     if (!value.length)
                         return true;
                     const stackLabel = row.original.stackLabel || 'N/A';
@@ -3732,7 +3732,7 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
             col.accessor(x => x.platformString, {
                 id: 'filterPlatform',
                 enableHiding: true,
-                filterFn: (row, columnId, value, addMeta) => {
+                filterFn: (row, _columnId, value, _addMeta) => {
                     if (!value.length)
                         return true;
                     const platforms = row.original.platforms;
@@ -3747,10 +3747,10 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
                         return true;
                 },
             }),
-            col.accessor(x => '', {
+            col.accessor(_x => '', {
                 id: 'filterHasPlat',
                 enableHiding: true,
-                filterFn: (row, columnId, value, addMeta) => {
+                filterFn: (row, _columnId, value, _addMeta) => {
                     if (value === null)
                         return true;
                     const hasPlat = !!row.original.trophyCount?.platinum;
@@ -3768,14 +3768,14 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
             }),
             col.accessor('createdAt', {
                 enableHiding: true,
-                header: h => 'Date Created',
+                header: _h => 'Date Created',
                 sortingFn: (rowA, rowB, columnId) => {
                     return (0,_sorting__WEBPACK_IMPORTED_MODULE_5__.sortColumnByDate)(sorting, rowA, rowB, columnId, x => Date.parse(x.original.createdAt));
                 },
             }),
             col.accessor('updatedAt', {
                 enableHiding: true,
-                header: h => 'Date Updated',
+                header: _h => 'Date Updated',
                 sortingFn: (rowA, rowB, columnId) => {
                     return (0,_sorting__WEBPACK_IMPORTED_MODULE_5__.sortColumnByDate)(sorting, rowA, rowB, columnId, x => Date.parse(x.original.updatedAt));
                 },
@@ -3786,7 +3786,7 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
                 maxSize: 500,
                 cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_6__.GameRowMain, { game: row.original }),
                 header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_3__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Game" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_4__.SortingIcon, { column: h.column })] })),
-                sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
+                sortingFn: (rowA, rowB, _columnId) => rowA.original.name.localeCompare(rowB.original.name),
             }),
             col.accessor(row => {
                 const val1 = row[trophyCellSortKey[0]];
@@ -3804,7 +3804,7 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
                                     setTrophyCellSortKey(newValue);
                                     setColumnFilters(prevFilters => prevFilters.filter(filter => filter.id !== `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`));
                                 }, style: { fontWeight: 'normal', fontSize: '14px' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['userPoints', null]), children: "Points (Earned)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['points', null]), children: "Points (All)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['userNumTrophies', null]), children: "Trophies (Earned)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['numTrophies', null]), children: "Trophies (All)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['userTrophyCount', 'platinum']), children: "Platinum (Earned)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['trophyCount', 'platinum']), children: "Platinum (All)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['userTrophyCount', 'gold']), children: "Gold (Earned)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['trophyCount', 'gold']), children: "Gold (All)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['userTrophyCount', 'silver']), children: "Silver (Earned)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['trophyCount', 'silver']), children: "Silver (All)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['userTrophyCount', 'bronze']), children: "Bronze (Earned)" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: JSON.stringify(['trophyCount', 'bronze']), children: "Bronze (All)" })] }) })] })),
-                sortingFn: (rowA, rowB, columnId) => {
+                sortingFn: (rowA, rowB, _columnId) => {
                     let comparisonValue = 0;
                     const key1 = trophyCellSortKey[0];
                     if (key1 === 'trophyCount' || key1 === 'userTrophyCount') {

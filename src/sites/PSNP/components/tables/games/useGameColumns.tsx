@@ -29,7 +29,7 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 			col.accessor(x => x.stackLabel, {
 				id: 'filterStack',
 				enableHiding: true,
-				filterFn: (row, columnId, value: Array<StackAbbr>, addMeta) => {
+				filterFn: (row, _columnId, value: Array<StackAbbr>, _addMeta) => {
 					if (!value.length) return true;
 
 					const stackLabel = row.original.stackLabel || 'N/A';
@@ -40,7 +40,7 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 			col.accessor(x => x.platformString, {
 				id: 'filterPlatform',
 				enableHiding: true,
-				filterFn: (row, columnId, value: PlatformTag[] | (Omit<PlatformTag, 'VR'> | 'PSVR1' | 'PSVR2')[], addMeta) => {
+				filterFn: (row, _columnId, value: PlatformTag[] | (Omit<PlatformTag, 'VR'> | 'PSVR1' | 'PSVR2')[], _addMeta) => {
 					if (!value.length) return true;
 
 					const platforms = row.original.platforms;
@@ -61,10 +61,10 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 				},
 			}),
 			// Column to store filter function
-			col.accessor(x => '', {
+			col.accessor(_x => '', {
 				id: 'filterHasPlat',
 				enableHiding: true,
-				filterFn: (row, columnId, value: null | 0 | 1, addMeta) => {
+				filterFn: (row, _columnId, value: null | 0 | 1, _addMeta) => {
 					if (value === null) return true;
 
 					const hasPlat = !!row.original.trophyCount?.platinum;
@@ -80,14 +80,14 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 			}),
 			col.accessor('createdAt', {
 				enableHiding: true,
-				header: h => 'Date Created',
+				header: _h => 'Date Created',
 				sortingFn: (rowA, rowB, columnId) => {
 					return sortColumnByDate(sorting, rowA, rowB, columnId, x => Date.parse(x.original.createdAt));
 				},
 			}),
 			col.accessor('updatedAt', {
 				enableHiding: true,
-				header: h => 'Date Updated',
+				header: _h => 'Date Updated',
 				sortingFn: (rowA, rowB, columnId) => {
 					return sortColumnByDate(sorting, rowA, rowB, columnId, x => Date.parse(x.original.updatedAt));
 				},
@@ -104,7 +104,7 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 						<SortingIcon column={h.column} />
 					</>
 				),
-				sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
+				sortingFn: (rowA, rowB, _columnId) => rowA.original.name.localeCompare(rowB.original.name),
 			}),
 			col.accessor(
 				row => {
@@ -152,7 +152,7 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 							</div>
 						</>
 					),
-					sortingFn: (rowA, rowB, columnId) => {
+					sortingFn: (rowA, rowB, _columnId) => {
 						let comparisonValue = 0;
 						const key1 = trophyCellSortKey[0];
 
