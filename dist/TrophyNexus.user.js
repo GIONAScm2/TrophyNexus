@@ -3511,18 +3511,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./node_modules/@tanstack/react-table/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
 /* harmony import */ var _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesTable.ts");
-/* harmony import */ var _GameRow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/tables/games/GameRow.tsx");
-/* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
-/* harmony import */ var _sorting__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/sites/PSNP/components/tables/sorting.ts");
-/* harmony import */ var _FilterIcon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/sites/PSNP/components/tables/FilterIcon.tsx");
-/* harmony import */ var _SortingIcon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/sites/PSNP/components/tables/SortingIcon.tsx");
-/* harmony import */ var _ColumnFilter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/sites/PSNP/components/tables/ColumnFilter.tsx");
-/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
-/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
-/* harmony import */ var _DropdownFilter__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/sites/PSNP/components/tables/games/DropdownFilter.tsx");
+/* harmony import */ var _SortingIcon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/tables/SortingIcon.tsx");
+/* harmony import */ var _ColumnFilter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/tables/ColumnFilter.tsx");
+/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
+/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
+/* harmony import */ var _DropdownFilter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/sites/PSNP/components/tables/games/DropdownFilter.tsx");
+/* harmony import */ var _useGameColumns__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/sites/PSNP/components/tables/games/useGameColumns.tsx");
 
 
 
@@ -3533,18 +3530,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
-const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.createColumnHelper)();
 const GamesTable = ({ allGames, prefs }) => {
     const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(50);
     const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([{ id: 'latestTrophy', desc: false }]);
     const [columnFilters, setColumnFilters] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(() => []);
-    const [trophyCellSortKey, setTrophyCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(['userNumTrophies', null]);
-    const [miscSortKey, setMiscSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)('latestTrophy');
     const [radioValPlats, setRadioValPlats] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
     const [includeSharedLists, setIncludeSharedLists] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+    const { columns, miscSortKey, setMiscSortKey } = (0,_useGameColumns__WEBPACK_IMPORTED_MODULE_8__.useGamesTableColumns)({ sorting, includeSharedLists, setColumnFilters });
     const platformCounts = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
         const mutualTags = [
             ['PS3', 0],
@@ -3590,6 +3582,141 @@ const GamesTable = ({ allGames, prefs }) => {
         });
         return [...map].sort((a, b) => b[1] - a[1]);
     }, [columnFilters]);
+    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_9__.useReactTable)({
+        defaultColumn: {
+            minSize: 0,
+            size: 0,
+        },
+        data: allGames,
+        columns,
+        initialState: {
+            columnVisibility: {
+                createdAt: false,
+                updatedAt: false,
+                latestTrophy: false,
+                filterHasPlat: false,
+                filterPlatform: false,
+                filterStack: false,
+            },
+        },
+        state: {
+            sorting,
+            columnFilters,
+        },
+        onColumnFiltersChange: setColumnFilters,
+        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_10__.getFilteredRowModel)(),
+        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_10__.getFacetedRowModel)(),
+        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_10__.getFacetedUniqueValues)(),
+        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_10__.getFacetedMinMaxValues)(),
+        onSortingChange: setSorting,
+        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_10__.getCoreRowModel)(),
+        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_10__.getSortedRowModel)(),
+    });
+    const updatePlatRadioFilter = (e) => {
+        const val = JSON.parse(e.currentTarget.value);
+        setRadioValPlats(val);
+        setColumnFilters(prevFilters => {
+            const updated = prevFilters.filter(filter => filter.id !== 'filterHasPlat');
+            updated.push({ id: 'filterHasPlat', value: val });
+            return updated;
+        });
+    };
+    const updateStackFilter = (stack) => {
+        setColumnFilters(prevFilters => {
+            const prevFilteredStacks = prevFilters.find(filter => filter.id === 'filterStack')?.value ?? [];
+            const newFilteredStacks = prevFilteredStacks.includes(stack)
+                ? prevFilteredStacks.filter(p => p !== stack)
+                : [...prevFilteredStacks, stack];
+            const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterStack');
+            const platformFilter = { id: 'filterStack', value: newFilteredStacks };
+            return [...cleanFilters, platformFilter];
+        });
+    };
+    const updatePlatformFilter = (platform) => {
+        setColumnFilters(prevFilters => {
+            const prevFilteredPlatforms = prevFilters.find(filter => filter.id === 'filterPlatform')?.value ?? [];
+            const newFilteredPlatforms = prevFilteredPlatforms.includes(platform)
+                ? prevFilteredPlatforms.filter(p => p !== platform)
+                : [...prevFilteredPlatforms, platform];
+            const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterPlatform');
+            const platformFilter = { id: 'filterPlatform', value: newFilteredPlatforms };
+            return [...cleanFilters, platformFilter];
+        });
+    };
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, gridTemplateColumns: 'repeat(4, auto)' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
+                                                        const val = e.currentTarget.value;
+                                                        const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_5__.parseNum)(val);
+                                                        const numRows = Number.isNaN(num) ? allGames.length : num;
+                                                        setNumRowsToShow(numRows);
+                                                    }, children: ['50', '100', '250', '500', '1000', `${allGames.length}`].map(num => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: num, children: num }))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "num-rows-select", children: " Rows" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { id: "games-count", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_6__.fractionInner, marginRight: '20px' }, children: [table.getFilteredRowModel().rows.length, "/", allGames.length] }) })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col2", id: "sorting-presets", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Sorting Presets:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                                                display: 'grid',
+                                                gridTemplateRows: 'auto',
+                                                gridTemplateColumns: 'min-content auto',
+                                                columnGap: '3px',
+                                                fontSize: '16px',
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { value: miscSortKey, onChange: e => {
+                                                        setMiscSortKey(e.currentTarget.value);
+                                                        setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
+                                                    }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'latestTrophy', children: "Date Played" }, miscSortKey) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_3__.SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                                                display: 'grid',
+                                                gridTemplateRows: 'repeat(1, auto)',
+                                                gridTemplateColumns: 'repeat(6, min-content)',
+                                                columnGap: '5px',
+                                                fontSize: '16px',
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "hasPlat", value: "null", checked: radioValPlats === null, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "nonplats", name: "hasPlat", value: "0", checked: radioValPlats === 0, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "nonplats", children: "Nonplats" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "plats", name: "hasPlat", value: "1", checked: radioValPlats === 1, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "plats", children: "Plats" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: {
+                                                display: 'grid',
+                                                gridTemplateRows: 'repeat(1, auto)',
+                                                gridTemplateColumns: 'repeat(6, min-content)',
+                                                columnGap: '5px',
+                                                fontSize: '16px',
+                                            } })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col4", style: {
+                                        ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2,
+                                        ...{ display: 'grid', gridTemplateRows: '1fr', gridTemplateColumns: '150px auto', gap: '1rem' },
+                                    }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_7__.DropdownFilter, { optionsWithCounts: platformCounts, onOptionClick: updatePlatformFilter, name: "Platforms" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { cursor: 'pointer', marginTop: '1rem' }, onClick: () => setIncludeSharedLists(prev => !prev), children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "checkbox", checked: includeSharedLists, style: { cursor: 'pointer' } }), " Include shared lists"] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_7__.DropdownFilter, { optionsWithCounts: stackCounts, onOptionClick: updateStackFilter, name: "Stack" })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_9__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ColumnFilter__WEBPACK_IMPORTED_MODULE_4__.ColumnFilter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
+                                    .getRowModel()
+                                    .rows.slice(0, numRowsToShow)
+                                    .map(row => {
+                                    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: row.getVisibleCells().map(cell => {
+                                            return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { style: {
+                                                    ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.td,
+                                                    padding: 0,
+                                                    width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
+                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_9__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
+                                        }) }, row.id));
+                                }) })] })] })] }));
+};
+
+
+/***/ }),
+
+/***/ "./src/sites/PSNP/components/tables/games/useGameColumns.tsx":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useGamesTableColumns: () => (/* binding */ useGamesTableColumns)
+/* harmony export */ });
+/* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
+/* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
+/* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
+/* harmony import */ var _FilterIcon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/tables/FilterIcon.tsx");
+/* harmony import */ var _SortingIcon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/tables/SortingIcon.tsx");
+/* harmony import */ var _sorting__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/sites/PSNP/components/tables/sorting.ts");
+/* harmony import */ var _GameRow__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/sites/PSNP/components/tables/games/GameRow.tsx");
+
+
+
+
+
+
+
+
+const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.createColumnHelper)();
+function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters }) {
+    const [miscSortKey, setMiscSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)('latestTrophy');
+    const [trophyCellSortKey, setTrophyCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(['userNumTrophies', null]);
     const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
         return [
             col.accessor(x => x.stackLabel, {
@@ -3657,8 +3784,8 @@ const GamesTable = ({ allGames, prefs }) => {
                 id: 'game',
                 size: 500,
                 maxSize: 500,
-                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_3__.GameRowMain, { game: row.original }),
-                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_6__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Game" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_7__.SortingIcon, { column: h.column })] })),
+                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_6__.GameRowMain, { game: row.original }),
+                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_3__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Game" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_4__.SortingIcon, { column: h.column })] })),
                 sortingFn: (rowA, rowB, columnId) => rowA.original.name.localeCompare(rowB.original.name),
             }),
             col.accessor(row => {
@@ -3671,8 +3798,8 @@ const GamesTable = ({ allGames, prefs }) => {
                 id: `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`,
                 size: 250,
                 maxSize: 300,
-                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_4__.TrophyCountRow, { entity: row.original }),
-                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_6__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Trophies" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_7__.SortingIcon, { column: h.column }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { marginTop: '10px' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("select", { value: JSON.stringify(trophyCellSortKey), onChange: e => {
+                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_TrophyCount__WEBPACK_IMPORTED_MODULE_2__.TrophyCountRow, { entity: row.original }),
+                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_3__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Trophies" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_4__.SortingIcon, { column: h.column }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { marginTop: '10px' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("select", { value: JSON.stringify(trophyCellSortKey), onChange: e => {
                                     const newValue = JSON.parse(e.currentTarget.value);
                                     setTrophyCellSortKey(newValue);
                                     setColumnFilters(prevFilters => prevFilters.filter(filter => filter.id !== `${trophyCellSortKey[0]}${trophyCellSortKey[1] ?? ''}`));
@@ -3691,106 +3818,8 @@ const GamesTable = ({ allGames, prefs }) => {
             }),
         ];
     }, [sorting, trophyCellSortKey, miscSortKey, includeSharedLists]);
-    const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.useReactTable)({
-        defaultColumn: {
-            minSize: 0,
-            size: 0,
-        },
-        data: allGames,
-        columns,
-        initialState: {
-            columnVisibility: {
-                createdAt: false,
-                updatedAt: false,
-                latestTrophy: false,
-                filterHasPlat: false,
-                filterPlatform: false,
-                filterStack: false,
-            },
-        },
-        state: {
-            sorting,
-            columnFilters,
-        },
-        onColumnFiltersChange: setColumnFilters,
-        getFilteredRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFilteredRowModel)(),
-        getFacetedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFacetedRowModel)(),
-        getFacetedUniqueValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFacetedUniqueValues)(),
-        getFacetedMinMaxValues: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getFacetedMinMaxValues)(),
-        onSortingChange: setSorting,
-        getCoreRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getCoreRowModel)(),
-        getSortedRowModel: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_12__.getSortedRowModel)(),
-    });
-    const updatePlatRadioFilter = (e) => {
-        const val = JSON.parse(e.currentTarget.value);
-        setRadioValPlats(val);
-        setColumnFilters(prevFilters => {
-            const updated = prevFilters.filter(filter => filter.id !== 'filterHasPlat');
-            updated.push({ id: 'filterHasPlat', value: val });
-            return updated;
-        });
-    };
-    const updateStackFilter = (stack) => {
-        setColumnFilters(prevFilters => {
-            const prevFilteredStacks = prevFilters.find(filter => filter.id === 'filterStack')?.value ?? [];
-            const newFilteredStacks = prevFilteredStacks.includes(stack)
-                ? prevFilteredStacks.filter(p => p !== stack)
-                : [...prevFilteredStacks, stack];
-            const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterStack');
-            const platformFilter = { id: 'filterStack', value: newFilteredStacks };
-            return [...cleanFilters, platformFilter];
-        });
-    };
-    const updatePlatformFilter = (platform) => {
-        setColumnFilters(prevFilters => {
-            const prevFilteredPlatforms = prevFilters.find(filter => filter.id === 'filterPlatform')?.value ?? [];
-            const newFilteredPlatforms = prevFilteredPlatforms.includes(platform)
-                ? prevFilteredPlatforms.filter(p => p !== platform)
-                : [...prevFilteredPlatforms, platform];
-            const cleanFilters = prevFilters.filter(filter => filter.id !== 'filterPlatform');
-            const platformFilter = { id: 'filterPlatform', value: newFilteredPlatforms };
-            return [...cleanFilters, platformFilter];
-        });
-    };
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "col-xs-8", style: { flexBasis: '100%', maxWidth: '100%' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "title flex v-align", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "grow", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h3", { children: "Games" }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "p-2", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { display: 'flex' }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "h-2 tn-grid", id: "tn-info-panel", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel, gridTemplateColumns: 'repeat(4, auto)' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col1", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel1 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { id: "num-rows", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { name: "num-rows", id: "num-rows-select", value: numRowsToShow.toString(), onChange: e => {
-                                                        const val = e.currentTarget.value;
-                                                        const num = (0,trophyutil__WEBPACK_IMPORTED_MODULE_9__.parseNum)(val);
-                                                        const numRows = Number.isNaN(num) ? allGames.length : num;
-                                                        setNumRowsToShow(numRows);
-                                                    }, children: ['50', '100', '250', '500', '1000', `${allGames.length}`].map(num => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: num, children: num }))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "num-rows-select", children: " Rows" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { id: "games-count", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_10__.fractionInner, marginRight: '20px' }, children: [table.getFilteredRowModel().rows.length, "/", allGames.length] }) })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col2", id: "sorting-presets", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Sorting Presets:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
-                                                display: 'grid',
-                                                gridTemplateRows: 'auto',
-                                                gridTemplateColumns: 'min-content auto',
-                                                columnGap: '3px',
-                                                fontSize: '16px',
-                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { value: miscSortKey, onChange: e => {
-                                                        setMiscSortKey(e.currentTarget.value);
-                                                        setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
-                                                    }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'latestTrophy', children: "Date Played" }, miscSortKey) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_7__.SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
-                                                display: 'grid',
-                                                gridTemplateRows: 'repeat(1, auto)',
-                                                gridTemplateColumns: 'repeat(6, min-content)',
-                                                columnGap: '5px',
-                                                fontSize: '16px',
-                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "all", name: "hasPlat", value: "null", checked: radioValPlats === null, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "all", children: "All" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "nonplats", name: "hasPlat", value: "0", checked: radioValPlats === 0, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "nonplats", children: "Nonplats" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "radio", id: "plats", name: "hasPlat", value: "1", checked: radioValPlats === 1, onChange: updatePlatRadioFilter }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("label", { for: "plats", children: "Plats" })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: {
-                                                display: 'grid',
-                                                gridTemplateRows: 'repeat(1, auto)',
-                                                gridTemplateColumns: 'repeat(6, min-content)',
-                                                columnGap: '5px',
-                                                fontSize: '16px',
-                                            } })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col4", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel2, ...{ display: 'grid', gridTemplateRows: '1fr', gridTemplateColumns: '150px auto', gap: '1rem' } }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_11__.DropdownFilter, { optionsWithCounts: platformCounts, onOptionClick: updatePlatformFilter, name: "Platforms" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { cursor: 'pointer', marginTop: '1rem' }, onClick: () => setIncludeSharedLists(prev => !prev), children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", { type: "checkbox", checked: includeSharedLists, style: { cursor: 'pointer' } }), " Include shared lists"] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_DropdownFilter__WEBPACK_IMPORTED_MODULE_11__.DropdownFilter, { optionsWithCounts: stackCounts, onOptionClick: updateStackFilter, name: "Stack" })] })] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", { id: "game_list", style: _css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.table, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("thead", { children: table.getHeaderGroups().map(headerGroup => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: headerGroup.headers.map(header => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("th", { colSpan: header.colSpan, style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.th, width: header.getSize() !== 0 ? header.getSize() : undefined }, children: header.isPlaceholder ? null : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: header.column.getCanSort() ? 'cursor-pointer select-none' : '', children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(header.column.columnDef.header, header.getContext()) }), header.column.getCanFilter() ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ColumnFilter__WEBPACK_IMPORTED_MODULE_8__.ColumnFilter, { column: header.column, table: table }) })) : null] })) }, header.id))) }, headerGroup.id))) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tbody", { children: table
-                                    .getRowModel()
-                                    .rows.slice(0, numRowsToShow)
-                                    .map(row => {
-                                    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("tr", { children: row.getVisibleCells().map(cell => {
-                                            return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("td", { style: {
-                                                    ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.td,
-                                                    padding: 0,
-                                                    width: cell.column.getSize() !== 0 ? cell.column.getSize() : undefined,
-                                                }, children: (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_13__.flexRender)(cell.column.columnDef.cell, cell.getContext()) }, cell.id));
-                                        }) }, row.id));
-                                }) })] })] })] }));
-};
+    return { columns, miscSortKey, setMiscSortKey };
+}
 
 
 /***/ }),
@@ -3864,7 +3893,6 @@ const SeriesTable = ({ allSeries, prefs }) => {
     const { columns } = (0,_useSeriesColumns__WEBPACK_IMPORTED_MODULE_5__.useSeriesTableColumns)({
         sorting,
         setColumnFilters,
-        numRowsToShow,
     });
     const table = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.useReactTable)({
         defaultColumn: {
@@ -3980,7 +4008,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.createColumnHelper)();
-function useSeriesTableColumns({ sorting, setColumnFilters, numRowsToShow }) {
+function useSeriesTableColumns({ sorting, setColumnFilters }) {
     const [stagesCellSortKey, setStagesCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)('userNumStagesCompleted');
     const [gamesCellSortKey, setGamesCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)('userNumGamesCompleted');
     const [trophyCellSortKey, setTrophyCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_4__.useState)(['userNumTrophies', null]);

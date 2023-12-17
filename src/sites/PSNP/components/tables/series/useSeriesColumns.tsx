@@ -1,4 +1,4 @@
-import {ColumnFiltersState, HeaderContext, SortingState, createColumnHelper} from '@tanstack/react-table';
+import {ColumnFiltersState, SortingState, createColumnHelper} from '@tanstack/react-table';
 import {DbSeries} from '../../../models/dbSeries';
 import {TrophyCount} from 'trophyutil';
 import {fractionInner} from '../../css/SeriesRow';
@@ -31,9 +31,8 @@ const col = createColumnHelper<DbSeries>();
 interface UseSeriesTableColumnsProps {
 	sorting: SortingState;
 	setColumnFilters: StateUpdater<ColumnFiltersState>;
-	numRowsToShow: number;
 }
-export function useSeriesTableColumns({sorting, setColumnFilters, numRowsToShow}: UseSeriesTableColumnsProps) {
+export function useSeriesTableColumns({sorting, setColumnFilters}: UseSeriesTableColumnsProps) {
 	const [stagesCellSortKey, setStagesCellSortKey] = useState<StagesCellSortKey>('userNumStagesCompleted');
 	const [gamesCellSortKey, setGamesCellSortKey] = useState<GamesCellSortKey>('userNumGamesCompleted');
 	const [trophyCellSortKey, setTrophyCellSortKey] = useState<TrophyCellSortKey>(['userNumTrophies', null]);
