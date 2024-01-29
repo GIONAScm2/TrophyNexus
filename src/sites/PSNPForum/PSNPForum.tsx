@@ -1,6 +1,7 @@
 import {useEffect} from 'preact/hooks';
 import {TrophyNexusPsnpForum} from './nexus';
 import injectShortcutToTrophyList from './features/injectShortcutToTrophyList';
+import {PsnpForumPageType} from 'trophyutil';
 
 interface PSNPForumProps {
 	nexus: TrophyNexusPsnpForum;
@@ -9,7 +10,11 @@ interface PSNPForumProps {
 export const PSNPForum: preact.FunctionComponent<PSNPForumProps> = ({children, nexus}) => {
 	useEffect(() => {
 		(async () => {
-			injectShortcutToTrophyList(nexus);
+			switch (nexus.pageType) {
+				case PsnpForumPageType.Topic:
+					injectShortcutToTrophyList(nexus);
+					break;
+			}
 		})();
 	}, []);
 

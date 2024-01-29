@@ -4,7 +4,7 @@ import TrophyNexus from '../../nexus';
 
 export default async function injectShortcutToTrophyList(nexus: TrophyNexus) {
 	const doc = nexus.doc;
-	waitForEl<HTMLElement>('ul[itemscope]').then(nav => {
+	waitForEl<HTMLElement>('ul[data-role="breadcrumbList"]').then(nav => {
 		const breadcrumbText = nav.querySelector<HTMLElement>(`li:nth-child(3) > a > span`)?.textContent?.trim();
 		if (!breadcrumbText || breadcrumbText !== 'Game Forums') {
 			return;

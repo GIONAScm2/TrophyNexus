@@ -4,7 +4,7 @@
 // @run-at       document-start
 // @namespace    https://github.com/GIONAScm2/TrophyNexus
 // @description  I love trophies, and with this script, so will you
-// @version      1.5.0
+// @version      1.5.1
 // @downloadURL  https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js
 // @updateURL    https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js	
 // @match        https://psnprofiles.com/*
@@ -2555,13 +2555,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
 /* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
 /* harmony import */ var _features_injectShortcutToTrophyList__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNPForum/features/injectShortcutToTrophyList.ts");
+/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
+
 
 
 
 const PSNPForum = ({ children, nexus }) => {
     (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
         (async () => {
-            (0,_features_injectShortcutToTrophyList__WEBPACK_IMPORTED_MODULE_2__["default"])(nexus);
+            switch (nexus.pageType) {
+                case trophyutil__WEBPACK_IMPORTED_MODULE_3__.PsnpForumPageType.Topic:
+                    (0,_features_injectShortcutToTrophyList__WEBPACK_IMPORTED_MODULE_2__["default"])(nexus);
+                    break;
+            }
         })();
     }, []);
     return (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {});
@@ -2584,7 +2590,7 @@ __webpack_require__.r(__webpack_exports__);
 
 async function injectShortcutToTrophyList(nexus) {
     const doc = nexus.doc;
-    (0,_shared_utils_domUtil__WEBPACK_IMPORTED_MODULE_0__.waitForEl)('ul[itemscope]').then(nav => {
+    (0,_shared_utils_domUtil__WEBPACK_IMPORTED_MODULE_0__.waitForEl)('ul[data-role="breadcrumbList"]').then(nav => {
         const breadcrumbText = nav.querySelector(`li:nth-child(3) > a > span`)?.textContent?.trim();
         if (!breadcrumbText || breadcrumbText !== 'Game Forums') {
             return;
