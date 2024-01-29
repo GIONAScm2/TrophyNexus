@@ -27,12 +27,19 @@ const DefaultUserSettings = {
 				desc: `Forces 'Rarest Trophies' to show only one trophy per game.`,
 				category: 'general',
 			},
+			trophyCheckboxes: {
+				value: false as boolean,
+				name: 'Copyable trophies',
+				desc: 'Adds checkboxes to trophy lists to copy their names and descriptions to clipboard.',
+				category: 'general',
+			},
 			hideFlagBlock: {
 				value: true as boolean,
 				name: 'Hide flag block',
 				desc: 'Hides red flag block from profile',
 				category: 'flagged',
 			},
+
 			// [PrefKey.inject100Club]: {
 			// 	value: true,
 			// 	name: `Show me in '100% Club'`,

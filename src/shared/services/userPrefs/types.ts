@@ -16,6 +16,7 @@ export interface UserBoolsPSNP {
 	renderGamesTable: BoolProps;
 	rarestTrophiesUnique: BoolProps;
 	hideFlagBlock: BoolProps;
+	trophyCheckboxes: BoolProps;
 	/** Platted games are treated as completed games, like when viewing a game series stage. */
 	platifyComplation: BoolProps;
 	/** Hides nonplats on series pages */

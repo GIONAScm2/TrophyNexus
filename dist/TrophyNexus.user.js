@@ -4,7 +4,7 @@
 // @run-at       document-start
 // @namespace    https://github.com/GIONAScm2/TrophyNexus
 // @description  I love trophies, and with this script, so will you
-// @version      1.5.1
+// @version      1.6.0
 // @downloadURL  https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js
 // @updateURL    https://github.com/GIONAScm2/TrophyNexus/raw/main/TrophyNexus.user.js	
 // @match        https://psnprofiles.com/*
@@ -2293,6 +2293,12 @@ const DefaultUserSettings = {
                 desc: `Forces 'Rarest Trophies' to show only one trophy per game.`,
                 category: 'general',
             },
+            trophyCheckboxes: {
+                value: false,
+                name: 'Copyable trophies',
+                desc: 'Adds checkboxes to trophy lists to copy their names and descriptions to clipboard.',
+                category: 'general',
+            },
             hideFlagBlock: {
                 value: true,
                 name: 'Hide flag block',
@@ -2386,6 +2392,63 @@ class UserSettings {
 function isUserSettings(obj) {
     const keys = ['PSNP', 'psnId'];
     return (0,trophyutil__WEBPACK_IMPORTED_MODULE_0__.isStandardObj)(obj) && keys.every(key => key in obj);
+}
+
+
+/***/ }),
+
+/***/ "./src/shared/utils/CopyCheckbox.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CopyCheckbox: () => (/* binding */ CopyCheckbox),
+/* harmony export */   copyToClipboard: () => (/* binding */ copyToClipboard)
+/* harmony export */ });
+/* harmony import */ var _domUtil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/shared/utils/domUtil.ts");
+
+class CopyCheckbox {
+    doc;
+    members;
+    selected;
+    richContainer = (0,_domUtil__WEBPACK_IMPORTED_MODULE_0__.newElement)(`div`, {});
+    constructor(doc, ...trophies) {
+        this.doc = doc;
+        this.members = [];
+        this.selected = [];
+        this.addMembers(...trophies);
+    }
+    addMembers(...trophies) {
+        trophies.forEach(ach => {
+            const trophyElement = ach.getElement(this.doc);
+            const cb = (trophyElement?.querySelector(`input.copyCheck`) ||
+                (0,_domUtil__WEBPACK_IMPORTED_MODULE_0__.newElement)(`input`, {
+                    type: `checkbox`,
+                    style: `margin-left:5px;`,
+                    class: `copyCheck`,
+                }));
+            cb.addEventListener(`change`, (e) => {
+                if (e.currentTarget?.checked)
+                    this.selected.push(ach);
+                else
+                    this.selected.splice(this.selected.indexOf(ach), 1);
+                this.richContainer.innerHTML = ``;
+                this.selected.forEach(sel => {
+                    this.richContainer.innerHTML += `<b>${sel.name}</b>&shy;${`\v` + sel.desc}<br>`;
+                });
+                copyToClipboard(this.richContainer.innerHTML);
+            });
+            trophyElement?.querySelector(`:is(td > a.title, .titleAnchor)`)?.after(cb);
+        });
+        this.members = [...this.members, ...trophies];
+    }
+}
+function copyToClipboard(text) {
+    var type = `text/html`;
+    var blob = new Blob([text], { type });
+    var data = [new ClipboardItem({ [type]: blob })];
+    navigator.clipboard.write(data);
 }
 
 
@@ -2841,12 +2904,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_db_updateUserGames__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/sites/PSNP/services/db/updateUserGames.ts");
 /* harmony import */ var _services_DOM_dependentDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/sites/PSNP/services/DOM/dependentDOM.ts");
 /* harmony import */ var _services_DOM_independentDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/sites/PSNP/services/DOM/independentDOM.ts");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faGear__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faGear.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faGear__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__("./node_modules/@fortawesome/free-solid-svg-icons/faGear.js");
 /* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./node_modules/@fortawesome/react-fontawesome/index.es.js");
 /* harmony import */ var _services_db_updateAllFromServer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/sites/PSNP/services/db/updateAllFromServer.ts");
 /* harmony import */ var _services_db_updateAllSeriesLocally__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./src/sites/PSNP/services/db/updateAllSeriesLocally.ts");
 /* harmony import */ var _services_db_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("./src/sites/PSNP/services/db/updateAllGamesLocally.ts");
 /* harmony import */ var _pages_gamesCatalog__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__("./src/sites/PSNP/pages/gamesCatalog.tsx");
+/* harmony import */ var _pages_gameTrophyList__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__("./src/sites/PSNP/pages/gameTrophyList.tsx");
+
 
 
 
@@ -2879,11 +2944,16 @@ const PSNP = ({ children, nexus }) => {
                 setCacheModalOpen(nexus.needToInitCache && !nexus.userPrefs.PSNP.suppressCacheModal);
                 if (!nexus.needToInitCache) {
                     Promise.all([(0,_services_db_updateAllSeriesLocally__WEBPACK_IMPORTED_MODULE_12__.updateAllSeriesLocally)(nexus), (0,_services_db_updateAllGamesLocally__WEBPACK_IMPORTED_MODULE_13__.updateAllGamesLocally)(nexus)]).then(([_games]) => {
-                        if (nexus.pageType === trophyutil__WEBPACK_IMPORTED_MODULE_5__.PsnpPageType.SeriesCatalog) {
-                            (0,_pages_seriesCatalog__WEBPACK_IMPORTED_MODULE_4__.initSeriesCatalog)(nexus);
-                        }
-                        else if (nexus.pageType === trophyutil__WEBPACK_IMPORTED_MODULE_5__.PsnpPageType.Games) {
-                            (0,_pages_gamesCatalog__WEBPACK_IMPORTED_MODULE_14__.initGamesCatalog)(nexus);
+                        switch (nexus.pageType) {
+                            case trophyutil__WEBPACK_IMPORTED_MODULE_5__.PsnpPageType.SeriesCatalog:
+                                (0,_pages_seriesCatalog__WEBPACK_IMPORTED_MODULE_4__.initSeriesCatalog)(nexus);
+                                break;
+                            case trophyutil__WEBPACK_IMPORTED_MODULE_5__.PsnpPageType.Games:
+                                (0,_pages_gamesCatalog__WEBPACK_IMPORTED_MODULE_14__.initGamesCatalog)(nexus);
+                                break;
+                            case trophyutil__WEBPACK_IMPORTED_MODULE_5__.PsnpPageType.GameTrophyList:
+                                (0,_pages_gameTrophyList__WEBPACK_IMPORTED_MODULE_15__.initGameTrophyList)(nexus);
+                                break;
                         }
                     });
                 }
@@ -2895,7 +2965,7 @@ const PSNP = ({ children, nexus }) => {
     };
     return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_ModalCache__WEBPACK_IMPORTED_MODULE_6__.ModalCache, { nexus: nexus, isOpen: cacheModalOpen, baseGenerator: updateAllGamesAndSeries, userGenerator: needToPopulateUserProgress ? updateUserGames : undefined, title: "Initialize Local Database", onClose: () => {
                     setCacheModalOpen(false);
-                }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", { children: "To enable the coolest features, you'll need to perform a one-time database initialization which should take 10-30s." }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("br", {}), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("p", { children: ["You can also do this later via the floating context menu (bottom right ", (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_10__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faGear__WEBPACK_IMPORTED_MODULE_15__.faGear }), ")."] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ContextMenu__WEBPACK_IMPORTED_MODULE_2__.ContextMenu, { onClick: toggleSettingsModal, pageType: nexus.pageType, nexus: nexus, contextButtons: nexus.userPrefs.PSNP.suppressCacheModal
+                }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", { children: "To enable the coolest features, you'll need to perform a one-time database initialization which should take 10-30s." }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("br", {}), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("p", { children: ["You can also do this later via the floating context menu (bottom right ", (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_10__.FontAwesomeIcon, { icon: _fortawesome_free_solid_svg_icons_faGear__WEBPACK_IMPORTED_MODULE_16__.faGear }), ")."] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ContextMenu__WEBPACK_IMPORTED_MODULE_2__.ContextMenu, { onClick: toggleSettingsModal, pageType: nexus.pageType, nexus: nexus, contextButtons: nexus.userPrefs.PSNP.suppressCacheModal
                     ? [
                         {
                             name: 'Init DB',
@@ -4389,6 +4459,52 @@ class TrophyNexusPsnp extends _nexus__WEBPACK_IMPORTED_MODULE_0__["default"] {
         super(nexus);
         this.pageType = pageType;
     }
+}
+
+
+/***/ }),
+
+/***/ "./src/sites/PSNP/pages/gameTrophyList.tsx":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   initGameTrophyList: () => (/* binding */ initGameTrophyList)
+/* harmony export */ });
+/* harmony import */ var _shared_utils_CopyCheckbox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/shared/utils/CopyCheckbox.ts");
+/* harmony import */ var _shared_utils_domUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/shared/utils/domUtil.ts");
+/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
+
+
+
+async function initGameTrophyList(nexus) {
+    const parser = new trophyutil__WEBPACK_IMPORTED_MODULE_2__.ParserGamePage();
+    Promise.all([nexus.elements.Common.footer, nexus.elements.Common.headerH3]).then(([footer, headerH3]) => {
+        const gameDetails = parser.parse(nexus.doc);
+        const trophies = gameDetails.trophyGroups.flatMap(group => group.trophies.map(trophy => new trophyutil__WEBPACK_IMPORTED_MODULE_2__.PsnpTrophy(trophy)));
+        if (nexus.userPrefs.PSNP.bools.trophyCheckboxes.value === true) {
+            new _shared_utils_CopyCheckbox__WEBPACK_IMPORTED_MODULE_0__.CopyCheckbox(nexus.doc, ...trophies);
+            const cbAll = (0,_shared_utils_domUtil__WEBPACK_IMPORTED_MODULE_1__.newElement)(`input`, { type: `checkbox`, style: `margin-left:5px;` }, `All`);
+            cbAll.addEventListener(`change`, function () {
+                if (this.checked) {
+                    document.querySelectorAll(`input.copyCheck`).forEach(cb => {
+                        if (!cb.checked) {
+                            cb.click();
+                        }
+                    });
+                }
+                else {
+                    document.querySelectorAll(`input.copyCheck`).forEach(cb => {
+                        if (cb.checked) {
+                            cb.click();
+                        }
+                    });
+                }
+            });
+            headerH3.appendChild(cbAll);
+        }
+    });
 }
 
 
@@ -13065,7 +13181,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   PsnpTrophy: () => (/* reexport safe */ _models_index_js__WEBPACK_IMPORTED_MODULE_0__.PsnpTrophy),
 /* harmony export */   Select: () => (/* reexport safe */ _util_index_js__WEBPACK_IMPORTED_MODULE_2__.Select),
 /* harmony export */   SeriesDoc: () => (/* reexport safe */ _models_index_js__WEBPACK_IMPORTED_MODULE_0__.SeriesDoc),
-/* harmony export */   StackData: () => (/* reexport safe */ _models_index_js__WEBPACK_IMPORTED_MODULE_0__.StackData),
+/* harmony export */   StackAssociation: () => (/* reexport safe */ _models_index_js__WEBPACK_IMPORTED_MODULE_0__.StackAssociation),
 /* harmony export */   StackLookup: () => (/* reexport safe */ _models_index_js__WEBPACK_IMPORTED_MODULE_0__.StackLookup),
 /* harmony export */   TROPHY_GRADE_POINTS: () => (/* reexport safe */ _models_index_js__WEBPACK_IMPORTED_MODULE_0__.TROPHY_GRADE_POINTS),
 /* harmony export */   TTAPageType: () => (/* reexport safe */ _util_index_js__WEBPACK_IMPORTED_MODULE_2__.TTAPageType),
@@ -13275,11 +13391,13 @@ const StackLookup = {
     UK: 'United Kingdom',
     FR: 'French',
     ES: 'Spanish',
+    SA: 'Saudi Arabian',
     // Non-regions:
     DG: 'Digital',
     PH: 'Physical',
     RR: 'Rereleased',
     OR: 'Original',
+    BO: 'Bonus/Bundle',
 };
 //# sourceMappingURL=game.interface.js.map
 
@@ -13299,7 +13417,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   PsnpSeriesListing: () => (/* reexport safe */ _series_impl_js__WEBPACK_IMPORTED_MODULE_4__.PsnpSeriesListing),
 /* harmony export */   PsnpTrophy: () => (/* reexport safe */ _trophy_impl_js__WEBPACK_IMPORTED_MODULE_7__.PsnpTrophy),
 /* harmony export */   SeriesDoc: () => (/* reexport safe */ _series_impl_js__WEBPACK_IMPORTED_MODULE_4__.SeriesDoc),
-/* harmony export */   StackData: () => (/* reexport safe */ _stackData_js__WEBPACK_IMPORTED_MODULE_6__.StackData),
+/* harmony export */   StackAssociation: () => (/* reexport safe */ _stackData_js__WEBPACK_IMPORTED_MODULE_6__.StackAssociation),
 /* harmony export */   StackLookup: () => (/* reexport safe */ _game_interface_js__WEBPACK_IMPORTED_MODULE_2__.StackLookup),
 /* harmony export */   TROPHY_GRADE_POINTS: () => (/* reexport safe */ _trophy_interface_js__WEBPACK_IMPORTED_MODULE_8__.TROPHY_GRADE_POINTS),
 /* harmony export */   calculateTrophyPoints: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.calculateTrophyPoints),
@@ -13420,10 +13538,21 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   StackData: () => (/* binding */ StackData)
+/* harmony export */   StackAssociation: () => (/* binding */ StackAssociation)
 /* harmony export */ });
-class StackData {
+var SaveTransferPotency;
+(function (SaveTransferPotency) {
+    SaveTransferPotency["Low"] = "Low";
+    SaveTransferPotency["Med"] = "Med";
+    SaveTransferPotency["High"] = "High";
+    SaveTransferPotency["Potential"] = "Potent(ial)";
+    SaveTransferPotency["Unknown"] = "?";
+})(SaveTransferPotency || (SaveTransferPotency = {}));
+/** Represents a group of stacking games. */
+class StackAssociation {
     stacks;
+    // get hasSameNumTrophies() {}
+    // get hasSamePlatCount() {}
     constructor(stacks) {
         this.stacks = this.labelStacks(stacks);
     }
@@ -13497,7 +13626,7 @@ class StackData {
     buildDetailedStacks(stacks) {
         const detailedStacks = stacks.map(stack => ({
             ...stack,
-            platformString: StackData.buildPlatformTag(stack.platforms),
+            platformString: StackAssociation.buildPlatformTag(stack.platforms),
             stack: '',
             stackLabels: [],
         }));
@@ -13663,11 +13792,13 @@ class PsnpTrophy {
     get rarityString() {
         return this.rarity.toFixed(2);
     }
+    getElement(doc) {
+        const tableRow = doc.querySelector(`#content a[href*="/${this.urlPath}"]`)?.closest('tr');
+        return tableRow ?? null;
+    }
     /** Parses a trophy element's 'date earned' into a date timestamp (ms). */
     static timestampFromDateEarned(element) {
-        const dateAndTimeNodes = [
-            ...element.querySelectorAll(`td:nth-of-type(3) :is(.typo-top-date, .typo-bottom-date) > nobr`),
-        ];
+        const dateAndTimeNodes = [...element.querySelectorAll(`td:nth-of-type(3) :is(.typo-top-date, .typo-bottom-date) > nobr`)];
         const [dateEl, timeEl] = dateAndTimeNodes;
         const dateText = dateEl.textContent?.replace(/(\d+)(st|nd|rd|th)/, '$1') || '';
         const timeText = timeEl.textContent || '';
@@ -13749,7 +13880,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ParserDlcListing extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_0__.PsnpParser {
-    type = 'DLC Listing';
+    expectedEntityType = 'DLC Listing';
     _parse(tr) {
         const titleAnchorEl = tr.querySelector(`td a.title`);
         const href = titleAnchorEl?.getAttribute('href');
@@ -13804,7 +13935,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /** Parses a partial game representation from TrophyList pages. */
 class ParserGamePartialStack extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_0__.PsnpParser {
-    type = 'Partial Game (TrophyList)';
+    expectedEntityType = 'Partial Game (TrophyList)';
     _parse(tr) {
         const titleAnchorEl = tr.querySelector(`td > span > span > a[href^='/trophies/']`);
         const href = titleAnchorEl?.getAttribute('href');
@@ -13855,7 +13986,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /** Parses a partial game representation from TrophyList pages. */
 class ParserGamePage extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_0__.PsnpParser {
-    type = 'Game Page';
+    expectedEntityType = 'Game Page';
     _parse(doc) {
         const navTabs = [...doc.querySelectorAll(`ul.navigation > li > a[href]`)];
         const forumLink = navTabs.find(anchor => anchor.textContent?.trim() === 'Forum');
@@ -14018,7 +14149,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /** Parses a 'playable' game containing user progress from Profile and Series pages. */
 class ParserGamePlayable extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_0__.PsnpParser {
-    type = 'Playable Game';
+    expectedEntityType = 'Playable Game';
     _parse(tr) {
         const titleAnchorEl = tr.querySelector(`a.title`);
         const href = titleAnchorEl?.getAttribute('href');
@@ -14107,7 +14238,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /** Parses a standard game representation from Games and GameSearch pages. */
 class ParserGameStandard extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_0__.PsnpParser {
-    type = 'Standard Game';
+    expectedEntityType = 'Standard Game';
     _parse(tr) {
         const isSearchResult = !!tr.querySelector(`td:nth-of-type(5) > span.separator.left > span.typo-top`);
         const titleAnchorEl = tr.querySelector(`a.title`);
@@ -14221,15 +14352,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /** Parses an entity `T` from `E`. */
 class PsnpParser {
-    /** Parses an entity from a DOM target (Document or Element).
-     *
-     * @throws If any of the entity's required fields are parsed as `null`.	*/
     parse(domTarget) {
-        const parsedItem = this._parse(domTarget);
-        if (!parsedItem) {
-            throw new Error(`Failed to parse ${this.type}`);
+        try {
+            const parsedItem = this._parse(domTarget);
+            if (!parsedItem) {
+                throw new Error(`Failed to parse ${this.expectedEntityType}`);
+            }
+            return parsedItem;
         }
-        return parsedItem;
+        catch (err) {
+            throw err;
+        }
     }
     /**
      * Given a PSNP url (href or pathname), returns a tuple of the entity ID and serialized name.
@@ -14255,6 +14388,9 @@ class PsnpParser {
         const id = +parts[0];
         const nameSerialized = parts.slice(1).join('-');
         return [id, nameSerialized];
+    }
+    throwError(prop) {
+        throw new Error(`Failed to parse "${prop}" for ${this.expectedEntityType}`);
     }
 }
 //# sourceMappingURL=psnpParser.js.map
@@ -14293,7 +14429,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ParserSeriesListing extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_2__.PsnpParser {
-    type = 'Series Listing';
+    expectedEntityType = 'Series Listing';
     _parse(tr) {
         const titleAnchorEl = tr.querySelector(`a.title`);
         const href = titleAnchorEl?.getAttribute('href');
@@ -14341,7 +14477,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ParserSeriesPageNeutral extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_1__.PsnpParser {
-    type = 'Series Page';
+    expectedEntityType = 'Series Page';
     _parse(_window) {
         const name = _window.document.querySelector(`div.series-info div.ellipsis > span`)?.textContent?.trim();
         const hrefIdAndTitle = this._extractIdAndTitleFromPsnpUrl({ url: _window.location.pathname });
@@ -14437,7 +14573,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ParserTrophy extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_1__.PsnpParser {
-    type = 'Trophy';
+    expectedEntityType = 'Trophy';
     _parse(tr) {
         const titleAnchorEl = tr.querySelector(`a.title`);
         const href = titleAnchorEl?.getAttribute('href');
@@ -14485,7 +14621,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ParserTrophyGroups extends _psnpParser_js__WEBPACK_IMPORTED_MODULE_1__.PsnpParser {
-    type = 'Trophy Group';
+    expectedEntityType = 'Trophy Group';
     _parse(doc) {
         const groups = this.getTrophyGroups(doc)
             .map(groupNode => {
