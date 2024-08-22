@@ -59,6 +59,7 @@ export class DbSeriesController {
 	/** Updates a series' user metrics based on a single provided `game`. */
 	private updateGameScopedMetrics(series: DbSeries, game: DbGame) {
 		const platifyComplation = this.prefs.platifyComplation.value;
+		const hideNonplats = this.prefs.platifySeriesHideNonplats.value;
 
 		if (game.percent) series.userNumGamesPlayed++;
 		if (game.userTrophyCount?.platinum) series.userNumGamesPlatted++;
@@ -74,7 +75,7 @@ export class DbSeriesController {
 		const gameIsCompleted = platifyComplation ? !!game.userTrophyCount?.platinum : !!(game.percent && game.percent === 100);
 		if (gameIsCompleted) series.userNumGamesCompleted++;
 
-		series.userNumGamesTotal += platifyComplation ? game.trophyCount?.platinum ?? 0 : 1;
+		series.userNumGamesTotal += hideNonplats ? game.trophyCount?.platinum ?? 0 : 1;
 	}
 
 	/** Updates a series' user metrics based on a single provided `stage`. */

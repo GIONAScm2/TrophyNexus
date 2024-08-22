@@ -2342,7 +2342,7 @@ const DefaultUserSettings = {
             platifySeriesHideNonplats: {
                 value: false,
                 name: '[Series] Hide Nonplats',
-                desc: 'Hides nonplats on series pages',
+                desc: 'Hides nonplat games/stages from game series.',
                 category: 'platify',
             },
         },
@@ -4964,6 +4964,7 @@ let DbSeriesController = (() => {
         }
         updateGameScopedMetrics(series, game) {
             const platifyComplation = this.prefs.platifyComplation.value;
+            const hideNonplats = this.prefs.platifySeriesHideNonplats.value;
             if (game.percent)
                 series.userNumGamesPlayed++;
             if (game.userTrophyCount?.platinum)
@@ -4983,7 +4984,7 @@ let DbSeriesController = (() => {
             const gameIsCompleted = platifyComplation ? !!game.userTrophyCount?.platinum : !!(game.percent && game.percent === 100);
             if (gameIsCompleted)
                 series.userNumGamesCompleted++;
-            series.userNumGamesTotal += platifyComplation ? game.trophyCount?.platinum ?? 0 : 1;
+            series.userNumGamesTotal += hideNonplats ? game.trophyCount?.platinum ?? 0 : 1;
         }
         updateStageScopedMetrics(series, stage) {
             const platifyComplation = this.prefs.platifyComplation.value;

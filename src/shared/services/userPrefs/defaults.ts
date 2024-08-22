@@ -78,7 +78,7 @@ const DefaultUserSettings = {
 			platifySeriesHideNonplats: {
 				value: false as boolean,
 				name: '[Series] Hide Nonplats',
-				desc: 'Hides nonplats on series pages',
+				desc: 'Hides nonplat games/stages from game series.',
 				category: 'platify',
 			},
 		},
