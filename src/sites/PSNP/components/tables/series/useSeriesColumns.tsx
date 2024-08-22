@@ -24,7 +24,7 @@ type KeyType = keyof Pick<
 export type TrophyCellSortKey<K extends KeyType = KeyType> = K extends 'trophyCount' | 'userTrophyCount'
 	? [K, keyof TrophyCount]
 	: [K, null];
-export type MiscSortKey = 'userLatestTrophy' | 'bestCompleted' | 'updatedAt';
+export type SeriesTableMiscSortKey = 'userLatestTrophy' | 'bestCompleted' | 'updatedAt';
 
 const col = createColumnHelper<DbSeries>();
 
@@ -40,7 +40,7 @@ export function useSeriesTableColumns({sorting, setColumnFilters}: UseSeriesTabl
 	const columns = useMemo(() => {
 		return [
 			col.accessor(x => '', {
-				id: 'bestCompleted' satisfies MiscSortKey,
+				id: 'bestCompleted' satisfies SeriesTableMiscSortKey,
 				enableHiding: true,
 				header: h => 'Best Completed',
 				sortingFn: (rowA, rowB, columnId) => {
@@ -79,7 +79,7 @@ export function useSeriesTableColumns({sorting, setColumnFilters}: UseSeriesTabl
 					return sortColumnByDate(sorting, rowA, rowB, columnId, x => Date.parse(x.original.updatedAt));
 				},
 			}),
-			col.accessor('userLatestTrophy' satisfies MiscSortKey, {
+			col.accessor('userLatestTrophy' satisfies SeriesTableMiscSortKey, {
 				enableHiding: true,
 				header: h => 'Date',
 				sortingFn: (rowA, rowB, columnId) => {

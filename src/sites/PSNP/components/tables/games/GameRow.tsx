@@ -1,6 +1,9 @@
+import {msToSpeedString} from 'trophyutil';
 import {DbGame} from '../../../models/dbGame';
 import {msToDateString} from '../../../util/dates';
 import * as css from '../../css/GameRow';
+import * as _css from '../../css/SeriesRow';
+import ProgressBar from '../../../../../shared/components/ProgressBar';
 
 interface GameRowProps {
 	game: DbGame;
@@ -37,8 +40,14 @@ export const GameRowMain: preact.FunctionComponent<GameRowProps> = ({game: g}) =
 				{!!g.latestTrophy && (
 					<div class="small-info" style="margin-top: 4px">
 						{msToDateString(g.latestTrophy)}
+						{typeof g.completionSpeed === 'number' && (
+							<>
+								{bullet()} {g.completionSpeedType} in <b>{msToSpeedString(g.completionSpeed)}</b>
+							</>
+						)}
 					</div>
 				)}
+
 				{/* <span class="small-info" style="margin-top: 4px;">
 					{!!g.numOwners && (
 						<>
@@ -48,5 +57,18 @@ export const GameRowMain: preact.FunctionComponent<GameRowProps> = ({game: g}) =
 				</span> */}
 			</div>
 		</div>
+	);
+};
+
+export const GameRowCompletion: preact.FunctionComponent<GameRowProps> = ({game: g}) => {
+	return ( 
+		<>
+			{!!g.percent && <span class="separator">
+				<span class="typo-top" style={_css.fractionInner}>
+					{`${g.percent}%`}
+				</span>
+				<ProgressBar progress={g.percent / 100}>{`${g.percent}%`}</ProgressBar>
+			</span>}
+		</>
 	);
 };

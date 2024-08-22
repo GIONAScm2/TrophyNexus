@@ -29,7 +29,7 @@ interface GamesTableProps {
 
 export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}) => {
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
-	const [sorting, setSorting] = useState<SortingState>([{id: 'latestTrophy', desc: false}]);
+	const [sorting, setSorting] = useState<SortingState>([{id: 'latestTrophy', desc: true}]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => []);
 	const [radioValPlats, setRadioValPlats] = useState<null | 0 | 1>(null);
 	const [includeSharedLists, setIncludeSharedLists] = useState(true);
@@ -96,6 +96,7 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 				filterHasPlat: false,
 				filterPlatform: false,
 				filterStack: false,
+				completionSpeed: false,
 			},
 		},
 		state: {
@@ -209,12 +210,9 @@ export const GamesTable: preact.FunctionComponent<GamesTableProps> = ({allGames}
 									<option key={miscSortKey} value={'latestTrophy' satisfies GamesTableMiscSortKey}>
 										Date Played
 									</option>
-									{/* <option key={miscSortKey} value={'updatedAt' satisfies MiscSortKey}>
-										Date Updated
+									<option key={miscSortKey} value={'completionSpeed' satisfies GamesTableMiscSortKey}>
+										Completion Speed
 									</option>
-									<option key={miscSortKey} value={'bestCompleted' satisfies MiscSortKey}>
-										Best Completions
-									</option> */}
 								</select>
 								<SortingIcon column={table.getColumn(miscSortKey)} css={{height: '26px'}} />
 							</div>

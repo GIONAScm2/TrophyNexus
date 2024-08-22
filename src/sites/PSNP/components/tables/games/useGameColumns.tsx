@@ -6,10 +6,11 @@ import {TrophyCountRow} from '../../TrophyCount';
 import {FilterIcon} from '../FilterIcon';
 import {SortingIcon} from '../SortingIcon';
 import {sortColumnByDate} from '../sorting';
-import {GameRowMain} from './GameRow';
+import {GameRowCompletion, GameRowMain} from './GameRow';
 import {TrophyCellSortKey} from '../series/useSeriesColumns';
+import {fractionInner} from '../../css/SeriesRow';
 
-export type GamesTableMiscSortKey = 'latestTrophy';
+export type GamesTableMiscSortKey = 'latestTrophy' | 'completionSpeed';
 
 interface UseGamesTableColumnsProps {
 	sorting: SortingState;
@@ -25,6 +26,9 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 
 	const columns = useMemo(() => {
 		return [
+			col.accessor('completionSpeed' satisfies GamesTableMiscSortKey, {
+				enableHiding: true,
+			}),
 			// Column to store filter function
 			col.accessor(x => x.stackLabel, {
 				id: 'filterStack',
@@ -92,6 +96,42 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 					return sortColumnByDate(sorting, rowA, rowB, columnId, x => Date.parse(x.original.updatedAt));
 				},
 			}),
+			// Actual displayed columns
+			col.accessor('_id', {
+				size: 100,
+				maxSize: 150,
+				enableColumnFilter: false,
+				header: h => {
+					return (
+						<>
+							<FilterIcon headerContext={h} />
+							<span style={{margin: '0px 5px'}}>ID</span>
+							<SortingIcon column={h.column} />
+						</>
+					);
+				},
+				cell: ({row, table, renderValue, cell}) => {
+					const sorted = table.getSortedRowModel().flatRows;
+					const index = sorted.findIndex(r => r.original._id === row.original._id) + 1;
+
+					return (
+						<div
+							style={{
+								display: 'grid',
+								gridTemplateRows: 'repeat(5, 1fr)',
+								justifyItems: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<div style={{...fractionInner, fontSize: '30px', gridArea: '1 / 1 / 5 / 2'}}>{index}</div>
+							<div style={{gridArea: '5 / 1 / 6 / 2'}}>
+								<b>#</b>
+								{row.original._id}
+							</div>
+						</div>
+					);
+				},
+			}),
 			col.accessor('name', {
 				id: 'game',
 				size: 500,
@@ -105,6 +145,19 @@ export function useGamesTableColumns({sorting, includeSharedLists, setColumnFilt
 					</>
 				),
 				sortingFn: (rowA, rowB, _columnId) => rowA.original.name.localeCompare(rowB.original.name),
+			}),
+			col.accessor('percent', {
+				size: 230,
+				maxSize: 250,
+				cell: ({row}) => <GameRowCompletion game={row.original} />,
+				header: h => (
+					<>
+						<FilterIcon headerContext={h} />
+						<span style={{margin: '0px 5px'}}>Completion</span>
+						<SortingIcon column={h.column} />
+					</>
+				),
+				sortingFn: (rowA, rowB, columnId) => (rowA.original.percent ?? 0) - (rowB.original.percent ?? 0),
 			}),
 			col.accessor(
 				row => {

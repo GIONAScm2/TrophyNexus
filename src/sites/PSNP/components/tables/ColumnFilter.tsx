@@ -81,7 +81,7 @@ export function ColumnFilter({
 				type="text"
 				value={(columnFilterValue ?? '') as string}
 				onChange={value => column.setFilterValue(value)}
-				placeholder={`Search ${column.getFacetedUniqueValues().size} rows`}
+				placeholder={`Search ${column.getFacetedUniqueValues().size} values`}
 				className="w-36 border shadow rounded"
 				list={column.id + 'list'}
 				style={inputDebouncedCSS}

@@ -29,7 +29,7 @@ export class CopyCheckbox {
 				else this.selected.splice(this.selected.indexOf(ach), 1);
 				this.richContainer.innerHTML = ``;
 				this.selected.forEach(sel => {
-					this.richContainer.innerHTML += `<b>${sel.name}</b>&shy;${`\v` + sel.desc}<br>`;
+					this.richContainer.innerHTML += `<b>${sel.name}:</b> ${sel.desc}<br>`;
 				});
 				copyToClipboard(this.richContainer.innerHTML);
 			});

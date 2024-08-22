@@ -1,15 +1,6 @@
 import {parseNum} from 'trophyutil';
 
-interface ProfileHeaderStats {
-    numGamesPlayed: number;
-    numGamesCompleted: number;
-    completionPercent: number;
-    numUnearnedTrophies: number;
-    trophiesPerDay: number;
-    views: number;
-    worldRank: number;
-    countryRank: number;
-}
+
 
 export default function parseHeaderStats(doc: Document) {
 	const statNodes = [...doc.querySelectorAll<HTMLSpanElement>(`span.stat.grow`)];

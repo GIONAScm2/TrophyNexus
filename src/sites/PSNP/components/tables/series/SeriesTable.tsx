@@ -17,7 +17,7 @@ import {parseNum} from 'trophyutil';
 import {JSX} from 'preact';
 import {IUserSettings} from '../../../../../shared/services/userPrefs/types';
 import {fractionInner} from '../../css/SeriesRow';
-import {MiscSortKey, useSeriesTableColumns} from './useSeriesColumns';
+import {SeriesTableMiscSortKey, useSeriesTableColumns} from './useSeriesColumns';
 import {ColumnFilter} from '../ColumnFilter';
 import {SortingIcon} from '../SortingIcon';
 
@@ -29,7 +29,7 @@ interface SeriesTableProps {
 export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeries, prefs}) => {
 	const [numRowsToShow, setNumRowsToShow] = useState(50);
 	const [sorting, setSorting] = useState<SortingState>([{id: 'userLatestTrophy', desc: true}]);
-	const [miscSortKey, setMiscSortKey] = useState<MiscSortKey>('userLatestTrophy');
+	const [miscSortKey, setMiscSortKey] = useState<SeriesTableMiscSortKey>('userLatestTrophy');
 	const [radioValPlats, setRadioValPlats] = useState<null | 0 | 1>(prefs.PSNP.bools.platifySeriesHideNonplats.value ? 1 : null);
 	const [radioValCompletion, setRadioValCompletion] = useState<null | 0 | 1>(null);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => [{id: 'bestCompleted', value: radioValPlats}]);
@@ -136,17 +136,17 @@ export const SeriesTable: preact.FunctionComponent<SeriesTableProps> = ({allSeri
 								<select
 									value={miscSortKey}
 									onChange={e => {
-										setMiscSortKey(e.currentTarget.value as MiscSortKey);
+										setMiscSortKey(e.currentTarget.value as SeriesTableMiscSortKey);
 										setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
 									}}
 								>
-									<option key={miscSortKey} value={'userLatestTrophy' satisfies MiscSortKey}>
+									<option key={miscSortKey} value={'userLatestTrophy' satisfies SeriesTableMiscSortKey}>
 										Date Played
 									</option>
-									<option key={miscSortKey} value={'updatedAt' satisfies MiscSortKey}>
+									<option key={miscSortKey} value={'updatedAt' satisfies SeriesTableMiscSortKey}>
 										Date Updated
 									</option>
-									<option key={miscSortKey} value={'bestCompleted' satisfies MiscSortKey}>
+									<option key={miscSortKey} value={'bestCompleted' satisfies SeriesTableMiscSortKey}>
 										Best Completions
 									</option>
 								</select>

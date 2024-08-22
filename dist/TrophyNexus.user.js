@@ -2435,7 +2435,7 @@ class CopyCheckbox {
                     this.selected.splice(this.selected.indexOf(ach), 1);
                 this.richContainer.innerHTML = ``;
                 this.selected.forEach(sel => {
-                    this.richContainer.innerHTML += `<b>${sel.name}</b>&shy;${`\v` + sel.desc}<br>`;
+                    this.richContainer.innerHTML += `<b>${sel.name}:</b> ${sel.desc}<br>`;
                 });
                 copyToClipboard(this.richContainer.innerHTML);
             });
@@ -3429,7 +3429,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 300, ...prop
 function ColumnFilter({ column, table, }) {
     const firstValue = table.getFilteredRowModel().flatRows[0]?.getValue(column.id);
     const columnFilterValue = column.getFilterValue();
-    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ...inputDebouncedCSS, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: inputDebouncedCSS })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} rows`, className: "w-36 border shadow rounded", list: column.id + 'list', style: inputDebouncedCSS }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
+    return typeof firstValue === 'number' ? ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { className: "flex space-x-2", style: { justifyContent: 'center' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[0] ?? '', onChange: value => column.setFilterValue((old) => [value, old?.[1]]), placeholder: `Min`, className: "w-24 border shadow rounded", style: { ...inputDebouncedCSS, marginRight: '10px' } }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "number", min: Number(column.getFacetedMinMaxValues()?.[0] ?? ''), max: Number(column.getFacetedMinMaxValues()?.[1] ?? ''), value: columnFilterValue?.[1] ?? '', onChange: value => column.setFilterValue((old) => [old?.[0], value]), placeholder: `Max`, className: "w-24 border shadow rounded", style: inputDebouncedCSS })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] })) : ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(DebouncedInput, { type: "text", value: (columnFilterValue ?? ''), onChange: value => column.setFilterValue(value), placeholder: `Search ${column.getFacetedUniqueValues().size} values`, className: "w-36 border shadow rounded", list: column.id + 'list', style: inputDebouncedCSS }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { className: "h-1" })] }));
 }
 
 
@@ -3561,17 +3561,27 @@ function DropdownFilter({ optionsWithCounts, onOptionClick, name }) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GameRowCompletion: () => (/* binding */ GameRowCompletion),
 /* harmony export */   GameRowMain: () => (/* binding */ GameRowMain)
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
-/* harmony import */ var _util_dates__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/sites/PSNP/util/dates.tsx");
-/* harmony import */ var _css_GameRow__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/css/GameRow.ts");
+/* harmony import */ var trophyutil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/trophyutil/dist/index.js");
+/* harmony import */ var _util_dates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/util/dates.tsx");
+/* harmony import */ var _css_GameRow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/css/GameRow.ts");
+/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
+/* harmony import */ var _shared_components_ProgressBar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/shared/components/ProgressBar.tsx");
+
+
+
 
 
 
 const bullet = () => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '1.7rem', verticalAlign: '-2px' }, children: " \u2022 " });
 const GameRowMain = ({ game: g }) => {
-    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "outerGrid", style: _css_GameRow__WEBPACK_IMPORTED_MODULE_2__.outerGrid, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { href: `/trophies/${g._idAndName}`, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("picture", { class: "game", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", { src: g.src }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "ellipsis", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { class: "title", href: `/trophies/${g._idAndName}`, children: g.name }), !!g.stackLabel && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [bullet(), " ", g.stackLabel] }))] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "platforms", style: "width:100%; text-align: left", children: g.platforms.map(platform => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: `tag platform ${platform.toLowerCase()}`, style: "text-align: center", children: platform }))) }), !!g.latestTrophy && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "small-info", style: "margin-top: 4px", children: (0,_util_dates__WEBPACK_IMPORTED_MODULE_1__.msToDateString)(g.latestTrophy) }))] })] }));
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "outerGrid", style: _css_GameRow__WEBPACK_IMPORTED_MODULE_3__.outerGrid, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { href: `/trophies/${g._idAndName}`, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("picture", { class: "game", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", { src: g.src }) }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "ellipsis", children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", { class: "title", href: `/trophies/${g._idAndName}`, children: g.name }), !!g.stackLabel && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [bullet(), " ", g.stackLabel] }))] }) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { class: "platforms", style: "width:100%; text-align: left", children: g.platforms.map(platform => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: `tag platform ${platform.toLowerCase()}`, style: "text-align: center", children: platform }))) }), !!g.latestTrophy && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "small-info", style: "margin-top: 4px", children: [(0,_util_dates__WEBPACK_IMPORTED_MODULE_2__.msToDateString)(g.latestTrophy), typeof g.completionSpeed === 'number' && ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [bullet(), " ", g.completionSpeedType, " in ", (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("b", { children: (0,trophyutil__WEBPACK_IMPORTED_MODULE_1__.msToSpeedString)(g.completionSpeed) })] }))] }))] })] }));
+};
+const GameRowCompletion = ({ game: g }) => {
+    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: !!g.percent && (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", { class: "separator", children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { class: "typo-top", style: _css_SeriesRow__WEBPACK_IMPORTED_MODULE_4__.fractionInner, children: `${g.percent}%` }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_shared_components_ProgressBar__WEBPACK_IMPORTED_MODULE_5__["default"], { progress: g.percent / 100, children: `${g.percent}%` })] }) }));
 };
 
 
@@ -3608,7 +3618,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const GamesTable = ({ allGames }) => {
     const [numRowsToShow, setNumRowsToShow] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(50);
-    const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([{ id: 'latestTrophy', desc: false }]);
+    const [sorting, setSorting] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)([{ id: 'latestTrophy', desc: true }]);
     const [columnFilters, setColumnFilters] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(() => []);
     const [radioValPlats, setRadioValPlats] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
     const [includeSharedLists, setIncludeSharedLists] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
@@ -3673,6 +3683,7 @@ const GamesTable = ({ allGames }) => {
                 filterHasPlat: false,
                 filterPlatform: false,
                 filterStack: false,
+                completionSpeed: false,
             },
         },
         state: {
@@ -3730,10 +3741,10 @@ const GamesTable = ({ allGames }) => {
                                                 gridTemplateColumns: 'min-content auto',
                                                 columnGap: '3px',
                                                 fontSize: '16px',
-                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("select", { value: miscSortKey, onChange: e => {
+                                            }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("select", { value: miscSortKey, onChange: e => {
                                                         setMiscSortKey(e.currentTarget.value);
                                                         setSorting(prevSorting => prevSorting.filter(sort => sort.id !== miscSortKey));
-                                                    }, children: (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'latestTrophy', children: "Date Played" }, miscSortKey) }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_3__.SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                                                    }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'latestTrophy', children: "Date Played" }, miscSortKey), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("option", { value: 'completionSpeed', children: "Completion Speed" }, miscSortKey)] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_3__.SortingIcon, { column: table.getColumn(miscSortKey), css: { height: '26px' } })] })] }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { class: "tn-grid-col col3", id: "filter-options", style: { ..._css_SeriesTable__WEBPACK_IMPORTED_MODULE_2__.infoPanel3 }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { fontSize: '20px', fontWeight: 'bold' }, children: "Filter Options:" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
                                                 display: 'grid',
                                                 gridTemplateRows: 'repeat(1, auto)',
                                                 gridTemplateColumns: 'repeat(6, min-content)',
@@ -3768,13 +3779,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   useGamesTableColumns: () => (/* binding */ useGamesTableColumns)
 /* harmony export */ });
 /* harmony import */ var preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js");
-/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
+/* harmony import */ var _tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./node_modules/@tanstack/table-core/build/lib/index.mjs");
 /* harmony import */ var preact_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/preact/hooks/dist/hooks.module.js");
 /* harmony import */ var _TrophyCount__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/sites/PSNP/components/TrophyCount.tsx");
 /* harmony import */ var _FilterIcon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/sites/PSNP/components/tables/FilterIcon.tsx");
 /* harmony import */ var _SortingIcon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/sites/PSNP/components/tables/SortingIcon.tsx");
 /* harmony import */ var _sorting__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/sites/PSNP/components/tables/sorting.ts");
 /* harmony import */ var _GameRow__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/sites/PSNP/components/tables/games/GameRow.tsx");
+/* harmony import */ var _css_SeriesRow__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/sites/PSNP/components/css/SeriesRow.ts");
 
 
 
@@ -3783,12 +3795,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_7__.createColumnHelper)();
+
+const col = (0,_tanstack_react_table__WEBPACK_IMPORTED_MODULE_8__.createColumnHelper)();
 function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters }) {
     const [miscSortKey, setMiscSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)('latestTrophy');
     const [trophyCellSortKey, setTrophyCellSortKey] = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useState)(['userNumTrophies', null]);
     const columns = (0,preact_hooks__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
         return [
+            col.accessor('completionSpeed', {
+                enableHiding: true,
+            }),
             col.accessor(x => x.stackLabel, {
                 id: 'filterStack',
                 enableHiding: true,
@@ -3850,6 +3866,24 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
                     return (0,_sorting__WEBPACK_IMPORTED_MODULE_5__.sortColumnByDate)(sorting, rowA, rowB, columnId, x => Date.parse(x.original.updatedAt));
                 },
             }),
+            col.accessor('_id', {
+                size: 100,
+                maxSize: 150,
+                enableColumnFilter: false,
+                header: h => {
+                    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_3__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "ID" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_4__.SortingIcon, { column: h.column })] }));
+                },
+                cell: ({ row, table, renderValue, cell }) => {
+                    const sorted = table.getSortedRowModel().flatRows;
+                    const index = sorted.findIndex(r => r.original._id === row.original._id) + 1;
+                    return ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: {
+                            display: 'grid',
+                            gridTemplateRows: 'repeat(5, 1fr)',
+                            justifyItems: 'center',
+                            alignItems: 'center',
+                        }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", { style: { ..._css_SeriesRow__WEBPACK_IMPORTED_MODULE_7__.fractionInner, fontSize: '30px', gridArea: '1 / 1 / 5 / 2' }, children: index }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", { style: { gridArea: '5 / 1 / 6 / 2' }, children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("b", { children: "#" }), row.original._id] })] }));
+                },
+            }),
             col.accessor('name', {
                 id: 'game',
                 size: 500,
@@ -3857,6 +3891,13 @@ function useGamesTableColumns({ sorting, includeSharedLists, setColumnFilters })
                 cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_6__.GameRowMain, { game: row.original }),
                 header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_3__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Game" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_4__.SortingIcon, { column: h.column })] })),
                 sortingFn: (rowA, rowB, _columnId) => rowA.original.name.localeCompare(rowB.original.name),
+            }),
+            col.accessor('percent', {
+                size: 230,
+                maxSize: 250,
+                cell: ({ row }) => (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_GameRow__WEBPACK_IMPORTED_MODULE_6__.GameRowCompletion, { game: row.original }),
+                header: h => ((0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, { children: [(0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_FilterIcon__WEBPACK_IMPORTED_MODULE_3__.FilterIcon, { headerContext: h }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", { style: { margin: '0px 5px' }, children: "Completion" }), (0,preact_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_SortingIcon__WEBPACK_IMPORTED_MODULE_4__.SortingIcon, { column: h.column })] })),
+                sortingFn: (rowA, rowB, columnId) => (rowA.original.percent ?? 0) - (rowB.original.percent ?? 0),
             }),
             col.accessor(row => {
                 const val1 = row[trophyCellSortKey[0]];
