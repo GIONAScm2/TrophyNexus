@@ -11,6 +11,7 @@
 // @match        https://forum.psnprofiles.com/*
 // @match        https://www.trueachievements.com/*
 // @match        https://www.truetrophies.com/*
+// @match		 https://platprices.com/*
 // @connect      cloudfunctions.net
 // @noframes
 // @grant        unsafeWindow
@@ -2056,6 +2057,33 @@ const App = ({ nexus }) => {
         else if (nexus.siteName === 'TA' || nexus.siteName === 'TT') {
             pageType = (0,trophyutil__WEBPACK_IMPORTED_MODULE_5__.getTTAPageType)(nexus.url);
             setSiteNexus(new _sites_TTA_nexus__WEBPACK_IMPORTED_MODULE_2__.TrophyNexusTTA(nexus, pageType));
+        }
+        else if (nexus.siteName === 'PlatPrices') {
+            if (location.pathname.startsWith('/search')) {
+                window.addEventListener('DOMContentLoaded', e => {
+                    const gameNodes = [...document.querySelectorAll('.game-container-li')];
+                    let numGamesDisplayed = gameNodes.length;
+                    for (const node of gameNodes) {
+                        const gameName = node.querySelector('.game-name')?.textContent?.trim();
+                        const diffAndLengthNodes = [...node.querySelectorAll('[class^="difficulty"]')];
+                        if (diffAndLengthNodes.length === 1) {
+                        }
+                        else {
+                            const lengthString = diffAndLengthNodes[1]?.textContent?.trim() ?? '';
+                            const upperBoundLengthString = lengthString.match(/([\d\.]+)/g)?.pop();
+                            if (!upperBoundLengthString)
+                                continue;
+                            const upperBoundLength = parseFloat(upperBoundLengthString);
+                            if (upperBoundLength <= 2) {
+                                console.log(`Hiding: ${gameName} (${lengthString})`);
+                                numGamesDisplayed -= 1;
+                                node.remove();
+                            }
+                        }
+                    }
+                    document.querySelector('h1 span.long-screen-display')?.after(` (adjusted: ${numGamesDisplayed})`);
+                });
+            }
         }
         console.log(`${nexus.siteName}${pageType ? ` (${pageType})` : ''}`);
     }, []);
@@ -5797,6 +5825,7 @@ const HostnameToSiteName = {
     'forum.psnprofiles.com': 'PSNPForum',
     'www.truetrophies.com': 'TT',
     'www.trueachievements.com': 'TA',
+    'platprices.com': 'PlatPrices',
 };
 function getSiteName(hostname) {
     if (hostname in HostnameToSiteName) {

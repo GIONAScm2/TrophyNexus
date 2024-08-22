@@ -89,6 +89,7 @@ const config = {
 			// @match        https://forum.psnprofiles.com/*
 			// @match        https://www.trueachievements.com/*
 			// @match        https://www.truetrophies.com/*
+			// @match		 https://platprices.com/*
 			// @connect      cloudfunctions.net
 			// @noframes
 			// @grant        unsafeWindow

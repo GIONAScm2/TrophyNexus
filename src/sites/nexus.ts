@@ -8,6 +8,7 @@ export const HostnameToSiteName = {
 	'forum.psnprofiles.com': 'PSNPForum',
 	'www.truetrophies.com': 'TT',
 	'www.trueachievements.com': 'TA',
+	'platprices.com': 'PlatPrices',
 } as const;
 
 export type Hostname = keyof typeof HostnameToSiteName;
